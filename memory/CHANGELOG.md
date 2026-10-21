@@ -1,5 +1,9 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 8b — careers hero UI fix)
+- Fixed careers hero stats grid not centering under the centered heading (missing `mx-auto` — grid hugged the left edge, first card clipped at narrow viewports). Verified centered at 1083/1440/390 (grid center == viewport center, zero overflow).
+- Careers H1 now wraps at the sentence: `text-balance` + non-breaking space in "cover&nbsp;letter" → desktop breaks as "Don't send a cover letter." / "Send us a text." (no mid-compound split, no orphan "a text." line); mobile breaks into 3 semantic lines.
+
 ## 2026-10-21 (session 8 — careers culture + test job cleanup)
 - Removed leftover TEST job postings ("TEST QA Audit Final 1792625788", "TEST Audit 1792625832") from the `job_postings` collection — public /api/careers/jobs returns only the 3 real roles.
 - Culture section rebuilt per user's culture brief: new header ("Our culture — Ownership-first. Rest built-in."), 6 cards (3×2 grid) leading with Ownership not oversight / Hit the target, then rest (weekly targets: done = rest, no performative overtime) / Work–life balance for real; added "What is the culture like at Fluxvex?" FAQ synced 1:1 with FAQPage JSON-LD (AEO/GEO).

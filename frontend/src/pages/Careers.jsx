@@ -329,9 +329,9 @@ export default function Careers() {
           </Reveal>
           <CinematicText
             as="h1"
-            className="mx-auto mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.02] tracking-tightest text-ink sm:text-5xl lg:text-[56px]"
+            className="mx-auto mt-4 max-w-3xl text-balance font-display text-4xl font-semibold leading-[1.02] tracking-tightest text-ink sm:text-5xl lg:text-[56px]"
           >
-            Don't send a cover letter. Send us a text.
+            Don't send a cover&nbsp;letter. Send us a text.
           </CinematicText>
           <Reveal y={14} delay={0.1}>
             <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-[1.75] text-ink-soft" data-testid="careers-answer-first">
@@ -342,7 +342,7 @@ export default function Careers() {
             </p>
           </Reveal>
           <Reveal y={12} delay={0.15}>
-            <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3" data-testid="careers-hero-stats">
+            <div className="mx-auto mt-8 grid max-w-2xl gap-3 sm:grid-cols-3" data-testid="careers-hero-stats">
               <HeroStat value={roles.length} label={roles.length === 1 ? "open role" : "open roles"} delay={0.2} testid="careers-stat-roles" />
               <HeroStat value="4 mo" label="program · unpaid" delay={0.28} testid="careers-stat-months" />
               <HeroStat value="PPO" label="guaranteed conversion chance" delay={0.36} testid="careers-stat-ppo" />
