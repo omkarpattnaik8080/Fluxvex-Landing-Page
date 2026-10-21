@@ -24,10 +24,13 @@ Prices NOT public: blurred masked glyphs ($••/₹ •,••• Starter, $�
 - `/blog` index: featured card + grid of 12 SEO posts (`data/blog/posts1.js`, `posts2.js`; helpers in `data/blog/index.js`). Authors per user request: omkar, sakti, sneha, ankit, saswat, nikhil (AUTHORS map, initial avatars). Topics cover agency analytics vs Fluxvex, best alternative, Swaydo alternative, AI in digital marketing, white-label, GA4/Meta/Google Ads guides, AI reporting buyer's guide.
 - `/blog/:slug` full article pages: block renderer (p/h2/h3/list/quote), byline, related posts, waitlist CTA, BlogPosting JSON-LD, per-route Seo (title/canonical/og). Unknown slug → 404. Blog linked from desktop pill nav, All Pages panel, mobile menu, footer.
 
-## Verified (2026-10-21, test iterations 1–6; iteration 6 = 100% pass)
-Backend pytest 13/13 (incl. sitemap 17 URLs + llms.txt blog line); frontend e2e: navbar dropdown stays open moving trigger→panel (hover-grace verified), Google Ads official mark rendered, no hero iso-flow, hero CTA opens modal, compliance badges ×4 on home + /security, vision + affiliate sections + CTAs, blog index 12 cards → detail pages render with canonical + JSON-LD, unknown slug → 404, nav/footer blog wiring, waitlist success + Mongo persistence, currency toggle + locked masks, calculator keyboard interaction, GSAP marquees, per-route canonical/og:url, legal draft pages noindex, 1 h1/page, zero console errors, no overflow at 1440/390.
+## Verified (2026-10-21, test iterations 1–9; iterations 8–9 = 100% pass)
+Backend pytest 17/17 (incl. /api/careers: valid+persistence, short-message rejection, invalid email, honeypot; sitemap 21 URLs); frontend e2e: everything prior PLUS careers page end-to-end (role preselect + scroll, valid UI submission → Mongo persistence, validation errors), TapCTA sweep (all testids resolve), 4-stage vision roadmap + AI band, lazy routes render, calculator tweens (20×3×2=120/1440/108 workdays; 60%→864 saved) + keyboard, scroll-spy (top/#why/#faq//pricing), interest preselect (Starter/Growth/default), reduced-motion sanity, zero console errors, no overflow at 1440/390.
+
+## Careers
+- `/careers`: 3 SaaS sales internships (4-month unpaid, guaranteed PPO conversion chances — India up to ₹6 LPA; US/UK above market standards), chat-style "Text Fluxvex" application form → POST /api/careers (career_applications collection), JobPosting (TELECOMMUTE/INTERN) + FAQPage JSON-LD, sitemap + llms.txt wired.
 
 ## Backlog
-- P0: Deploy + turn on "Enable Search Engine Crawling and Optimisation"; re-verify SEO on the live domain.
+- P0: DEPLOY PENDING USER CONFIRMATION (first deploy = 50 ECU, asked in chat); after deploy: enable "Search Engine Crawling and Optimisation", verify blog live.
 - P1: Google Sheets sync activation (user provides Apps Script /exec URL → GOOGLE_SHEETS_WEBAPP_URL); rate limit via X-Forwarded-For; Pydantic EmailStr.
-- P2: finalize legal (fields pending from user) → index + add to sitemap; Privacy/Terms after legal review → real entity details; /integrations detail pages; launch countdown timer beside locked prices; consent-gated analytics; real product screenshots at launch.
+- P2: finalize legal (fields pending from user) → index + add to sitemap; /integrations detail index page; consent-gated analytics; real product screenshots at launch.

@@ -49,3 +49,14 @@
 - NEW Affiliate Partner Program section (3 steps + animated 20% donut) after FAQ.
 - NEW Blog: /blog index (12 posts, featured card) + /blog/:slug full article pages; authors omkar, sakti, sneha, ankit, sourced from data/blog (posts1/posts2); topics include agency analytics vs Fluxvex, best alternative, Swaydo alternative, AI in digital marketing; BlogPosting JSON-LD, per-route Seo, related posts, waitlist CTA; Blog in desktop nav, All Pages panel, mobile menu, footer; sitemap.xml now 17 URLs; llms.txt updated.
 - Mobile 390px overflow from Vision billboards fixed (billboards repositioned inside the 330px plane).
+
+## 2026-10-21 (session 4 — careers, AEO/GEO, performance, calculator 10/10, scroll-spy; tests iteration 8-9: 100%)
+- NEW /careers page: hero "Don't send a cover letter. Send us a text.", 4 culture cards, 3 SaaS sales internship roles per user spec (India Bengaluru remote+hybrid up to ₹6 LPA; US remote above-market; UK remote above-market — all 4-month unpaid, guaranteed PPO conversion chances), UNIQUE chat-style "Text Fluxvex" application form (asks why join + where they can contribute) → new POST /api/careers endpoint (validation, honeypot, rate limit, career_applications collection, optional Sheets sync), JobPosting + FAQPage JSON-LD; wired into All Pages panel, footer, sitemap (21 URLs), llms.txt.
+- Vision section upgraded to the full agency OS story: 4-stage roadmap (Client reporting "Building now" → Proposal making → Invoicing → AI account manager, all future plans labeled), animated progress line + pulse connectors, State-of-the-art AI band (5 capabilities incl. AI account manager), compliance band.
+- Shared TapCTA (spring hover/press) converted into EVERY CTA across Navbar, Footer, FinalCta, HowItWorks, Platform, PricingPreview, Affiliate, Vision, Integration, BlogPost, Security, SecuritySection, WaitlistContext modal.
+- Performance: route-level React.lazy code splitting (blog corpus out of main bundle) + Suspense PageLoader; assets already lean.
+- ROI calculator redesigned 10/10: light inputs panel + dark premium estimate panel, tweened numbers, comparison bars, dark donut + range-dark slider, "43 full workdays back" callout.
+- Navbar scroll-sync: IntersectionObserver scroll-spy (About/#why, Resources/#faq, Home at top).
+- Waitlist modal: plan interest now preselects (Starter/Growth) via openWaitlist(from, {interest}).
+- ComplianceBadges redesigned as proper certification-seal SVG icons: GDPR EU-stars seal, HIPAA medical shield, DPDP tricolor+chakra seal, CCPA gold rosette.
+- Section order audit (UX conversion principles): verdict KEEP — current sequence already follows promise→proof→problem→solution→value→trust→pricing→objections→CTA.

@@ -1,0 +1,24 @@
+{
+  "summary": "Iteration 9 frontend-only testing. Verified new round features: section order (DOM proxy via section-* testids matches conversion sequence), route-level code splitting (lazy routes /blog, /careers, /integrations/ga4 render correctly after Suspense fallback), ROI calculator redesign (two-panel, correct math 20*3*2=120 monthly, 1440 annual, 108 workdays at default 40% reduction; 60% reduction shows 864 saved; keyboard arrow works; donut shows 60% less effort), navbar scroll-spy (top=home-active, #why=about-active, #faq=resources-active, /pricing=all inactive, back to / resets to home), waitlist interest preselect (Starter CTA => 'Starter', Growth CTA => 'Growth', navbar CTA => 'Not sure yet'), reduced-motion sanity (no NaN, 43 workdays displayed, hero/pricing visible), no horizontal overflow at 1440 or 390.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_9.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: 3 console warnings 'Please ensure that the container has a non-static position' (likely from GSAP/Lenis trigger container) — non-blocking but could be cleaned up by setting position:relative on the triggering container.",
+    "RoiCalculator renders inside SectionShell with id='calculator' (matches nav href /#calculator) — good.",
+    "Scroll-spy IntersectionObserver rootMargin -35%/-60% works well; the window.scroll handler resets activeSection<240px which correctly re-activates Home at top."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100%"},
+  "test_credentials": "N/A (no auth)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All iteration-9 scope passes: lazy routes OK, ROI tween values correct, scroll-spy pills reflect data-active properly, interest preselect wired through PricingPreview -> WaitlistContext -> waitlist-interest-select. Only non-blocking warnings about non-static container position (3 occurrences). No horizontal overflow. Full waitlist submit end-to-end was not re-run per instructions (unchanged this round; verified prior iteration).",
+  "rca of the issue": "N/A — no bugs found this round."
+}
