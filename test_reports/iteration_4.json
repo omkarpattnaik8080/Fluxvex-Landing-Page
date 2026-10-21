@@ -1,0 +1,29 @@
+{
+  "summary": "Iteration 4 — Fluxvex hero marquee + dashboard additions + isometric AiComparison. Backend regression: 13/13 pytest pass (test_fluxvex_api.py unchanged). Frontend end-to-end verified at 1440/1024/390. (1) Hero HeadlineMarquee: hero-headline is an <h1> with aria-label='Client reporting, on autopilot'; GSAP track transform animates matrix(1,0,0,1,-167.258,0) → matrix(1,0,0,1,-304.58,0) across 1.5s (moving=True); FluxvexMark separators render (verified visually in screenshot — note: FluxvexMark is a styled DIV, not <svg>, so query-by svg returned 0, but marks are visually present as yellow icons between phrase halves — NOT a bug). No horizontal overflow at 1440 (sw=cw=1440) or 390 (sw=cw=390). Exactly 1 h1 on home. (2) hero-subcopy font-family = 'Inter Tight, Inter, ui-sans-serif, system-ui, sans-serif' as designed; at 390 subcopy scrollWidth==clientWidth (334==334) — no clipping. (3) Hero dashboard additions: hero-ai-summary visible on both desktop AND mobile 390 with full Fluxvex AI line ('Fluxvex AI · Conversions hit a monthly high while spend stayed near plan…'); '12 client reports' floating chip visible @1440 (True) and hidden @1024 (False) — matches xl+ (≥1280) requirement; hero-ai-insight visible at both 1440 and 1024 (lg+) — matches new requirement. (4) AiComparison iso scenes: comparison-prompt-visual h=344.00px, comparison-workflow-visual h=343.99px (equal within 1px); comparison-need-1..6 all count=1; billboards render without clipping. (5) BackersBand GSAP regression: track transform animates matrix(1,0,0,1,-208.753,0) → matrix(1,0,0,1,-256.855,0). (6) Waitlist e2e from hero: hero-join-waitlist-button opens dialog; waitlist-email-input + waitlist-submit-button submit → 'You're on the list / Signup confirmed' success state; two Mongo docs persisted in waitlist collection with source='hero' (test_iter4_1792615741@example.com, test_iter4_1792615777@example.com — email lowercased by backend, expected). (7) Legal regression: /privacy-policy and /terms each 1 h1 + legal-draft-notice present. (8) ZERO JS console errors and ZERO pageerrors across home, 1024, 390, privacy, terms, waitlist dialog.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "HeadlineMarquee: aria-label + sr-only span correctly expose the headline to AT while visually using duplicated marquee track. The duplicated inner <span> with aria-hidden on only the second half still contributes to the accessible name twice through the first half; however aria-label on the h1 overrides the computed name so AT sees exactly 'Client reporting, on autopilot' once. OK.",
+    "HeadlineMarquee reduced-motion branch renders a static centered <span> — confirmed render path exists; not visually verified in this iteration (no OS-level reduced-motion), but code path is correct.",
+    "No new critical issues since iteration 3. Previously flagged in-memory rate-limit (shared ingress IP) and lack of Pydantic EmailStr still apply but are intentional per prior iterations."
+  ],
+  "updated_files": [
+    "/app/test_reports/pytest/pytest_results.xml (regenerated — 13 passed)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "N/A — no auth",
+  "seed_data_creation": "Two TEST_iter4_*@example.com waitlist docs created in Mongo waitlist collection, source=hero (safe to leave or purge).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "HeadlineMarquee track transform must be read on `[data-testid=hero-headline] > div` (first child), not on an svg. FluxvexMark renders as a styled DIV, not <svg> — don't assert svg count. '12 client reports' chip is xl+ only (hidden at 1024, visible at 1440). hero-ai-insight is lg+ (visible at 1024 and 1440). hero-ai-summary visible on mobile too (inside the ReportPreview card). Waitlist dialog testids: waitlist-email-input / waitlist-agency-input / waitlist-clients-select / waitlist-interest-select / waitlist-channel-chip-{google-ads|meta-ads|ga4|other} / waitlist-submit-button; backend lowercases email. Iteration 3 LegalDoc regex fix (upper bound 200) is still in place and working.",
+  "rca of the issue": "No bugs found this iteration."
+}

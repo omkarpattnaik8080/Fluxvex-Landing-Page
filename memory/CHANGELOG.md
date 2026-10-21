@@ -1,5 +1,11 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 4)
+- Legal published as drafts: /privacy-policy + /terms (user-provided docs, mini markdown renderer, draft banner, fill-in chips for unresolved fields, noindex until finalized, footer + cookie-banner + security-section links).
+- Hero: H1 → GSAP marquee ("Client reporting, on autopilot." with FluxvexMark separators, aria-label + sr-only, reduced-motion static); subheading → Inter Tight; dashboard gained a Fluxvex AI summary strip; new floating "12 client reports" stat card; AI insight card now visible from lg.
+- AiComparison: rebuilt as isometric mini-scenes (manual dashed loop with orbiting packet + question billboard VS 4-tile pipeline with packets + Client-ready billboards), equal heights, premium table retained.
+- Section order optimized for conversion; GSAP 3.15 installed (band + headline marquee, core only); zero console errors verified at 1440/1024/390 (test iterations 3–4: 100% pass).
+
 ## 2026-10-21 (session 3)
 - Fixed blocking waitlist bug: missing `import axios` in WaitlistContext.jsx — submissions now complete e2e with UPI-style success animation + Mongo persistence (verified by testing agent, iteration 1 & 2).
 - Pricing: INR/USD toggle first shipped with indicative prices, then converted per user to LOCKED pricing — blurred masked glyphs ($••, $•••, ₹ •,•••, ₹ ••,•••) with lock chip, shimmer, hover-peek; comparison table "Launch price (per month)" locked strings follow currency; pricing FAQs rewritten ("waitlist members see it first"); JSON-LD FAQ, home FAQ, llms.txt, meta description all synced; zero real price numbers in any surface.
