@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { GoogleAdsMark, MetaMark, GA4Mark, LinkedInMark, TikTokMark } from "@/components/brand/IntegrationMarks";
@@ -6,20 +8,20 @@ const LIVE = [
   {
     mark: <GoogleAdsMark size={22} />,
     name: "Google Ads",
+    href: "/integrations/google-ads",
     desc: "Campaign performance data from the channels you manage.",
-    soon: false,
   },
   {
     mark: <MetaMark size={22} />,
     name: "Meta Ads",
+    href: "/integrations/meta-ads",
     desc: "Delivery and creative results across Meta placements.",
-    soon: false,
   },
   {
     mark: <GA4Mark size={22} />,
     name: "Google Analytics 4",
+    href: "/integrations/ga4",
     desc: "Site engagement and conversion context for the story.",
-    soon: false,
   },
 ];
 
@@ -36,30 +38,52 @@ const SOON = [
   },
 ];
 
+const slugOf = (name) => name.toLowerCase().replace(/\s+/g, "-");
+
 function Card({ item, soon = false, i }) {
+  const body = (
+    <>
+      <div className="flex items-start justify-between">
+        <span className={`flex h-11 w-11 items-center justify-center rounded-lg border bg-surface ${soon ? "border-dashed border-black/20" : "border-line"}`}>
+          {item.mark}
+        </span>
+        {soon ? (
+          <span className="rounded-full border border-dashed border-black/25 bg-page px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-black/50" data-testid={`integration-soon-${slugOf(item.name)}`}>
+            Coming soon
+          </span>
+        ) : (
+          <span className="mt-1 h-2 w-2 rounded-full bg-mint" aria-hidden="true" />
+        )}
+      </div>
+      <div>
+        <p className="text-[15px] font-semibold text-ink">{item.name}</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">{item.desc}</p>
+      </div>
+      {soon ? (
+        <span className="mt-auto text-[11px] font-semibold uppercase tracking-[0.12em] text-black/35">In the pipeline</span>
+      ) : (
+        <span className="mt-auto inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent">
+          Integration details
+          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+        </span>
+      )}
+    </>
+  );
+
+  const cardClass = `flex h-full flex-col gap-3 p-6 transition-colors duration-300 ${soon ? "opacity-80" : "group hover:bg-accent-tint/25"}`;
+  const testid = `integration-card-${slugOf(item.name)}`;
+
   return (
     <Reveal delay={i * 0.08} className="bg-page h-full">
-      <div
-        className={`flex h-full flex-col gap-3 p-6 ${soon ? "opacity-80" : ""}`}
-        data-testid={`integration-card-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
-      >
-        <div className="flex items-start justify-between">
-          <span className={`flex h-11 w-11 items-center justify-center rounded-lg border bg-surface ${soon ? "border-dashed border-black/20" : "border-line"}`}>
-            {item.mark}
-          </span>
-          {soon ? (
-            <span className="rounded-full border border-dashed border-black/25 bg-page px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-black/50" data-testid={`integration-soon-${item.name.toLowerCase().replace(/\s+/g, "-")}`}>
-              Coming soon
-            </span>
-          ) : (
-            <span className="mt-1 h-2 w-2 rounded-full bg-mint" aria-hidden="true" />
-          )}
+      {soon ? (
+        <div className={cardClass} data-testid={testid}>
+          {body}
         </div>
-        <div>
-          <p className="text-[15px] font-semibold text-ink">{item.name}</p>
-          <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">{item.desc}</p>
-        </div>
-      </div>
+      ) : (
+        <Link to={item.href} className={cardClass} data-testid={testid}>
+          {body}
+        </Link>
+      )}
     </Reveal>
   );
 }

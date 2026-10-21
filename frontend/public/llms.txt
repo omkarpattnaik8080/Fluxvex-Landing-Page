@@ -17,3 +17,6 @@ Fluxvex is an automated client-reporting platform for digital marketing agencies
 - /privacy-policy — Privacy Policy (draft pending final legal review; highlighted fields completed before final publication).
 - /terms — Terms of Service (draft pending final legal review).
 - /blog — Client reporting guides, tool comparisons, and AI-in-marketing essays for agency teams.
+- /integrations/google-ads — Google Ads integration: what Fluxvex pulls, how the connection works, and how reports are delivered.
+- /integrations/meta-ads — Meta Ads integration: placement and creative results in one branded client report.
+- /integrations/ga4 — GA4 integration: acquisition, engagement and conversions translated into client language.

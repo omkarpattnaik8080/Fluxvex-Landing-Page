@@ -139,7 +139,7 @@ function MenuPanel({ open, onClose }) {
       }`}
       data-testid="mega-menu"
     >
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-3 gap-1 divide-line">
         {MENU_GROUPS.map((group) => (
           <div key={group.heading} className="px-4 py-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-black/40">{group.heading}</p>
@@ -177,7 +177,7 @@ function PagesPanel({ open, onClose }) {
       }`}
       data-testid="pages-menu"
     >
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-3 gap-1 divide-line">
         {ALL_PAGES.map((item) => (
           <Link
             key={item.title}
@@ -206,13 +206,20 @@ export default function Navbar() {
   const location = useLocation();
   const navRef = useRef(null);
   const closeTimer = useRef(null);
+  const openTimer = useRef(null);
 
   const scheduleMenuClose = () => {
     clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => setOpenMenu(null), 160);
   };
   const cancelMenuClose = () => clearTimeout(closeTimer.current);
-  useEffect(() => () => clearTimeout(closeTimer.current), []);
+  useEffect(() => {
+    clearTimeout(openTimer.current);
+    return () => {
+      clearTimeout(openTimer.current);
+      clearTimeout(closeTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     setOpenMenu(null);
@@ -269,8 +276,15 @@ export default function Navbar() {
 
   const pillDropdown = (label, key, testid) => (
     <button
-      onClick={() => setOpenMenu(openMenu === key ? null : key)}
-      onMouseEnter={() => setOpenMenu(key)}
+      onClick={() => {
+        clearTimeout(openTimer.current);
+        setOpenMenu(openMenu === key ? null : key);
+      }}
+      onMouseEnter={() => {
+        clearTimeout(openTimer.current);
+        openTimer.current = setTimeout(() => setOpenMenu(key), 60);
+      }}
+      onMouseLeave={() => clearTimeout(openTimer.current)}
       aria-expanded={openMenu === key}
       className={`flex items-center gap-1 rounded-full px-3 py-1.5 font-display text-[15px] font-medium tracking-[-0.01em] transition-colors ${
         openMenu === key ? "bg-black/[0.07] text-ink" : "text-black/65 hover:bg-black/[0.05] hover:text-ink"

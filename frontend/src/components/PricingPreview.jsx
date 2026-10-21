@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+import Countdown from "@/components/Countdown";
 import { CurrencyToggle } from "@/components/CurrencyToggle";
 import { useWaitlist } from "@/components/WaitlistContext";
 
@@ -84,7 +85,10 @@ export function PlanCard({ plan, currency = "usd", highlighted = false, source =
           <Lock className="h-3 w-3" />
         </span>
       </div>
-      <p className="mt-2 text-xs text-ink-soft">Launch pricing announced soon—waitlist members see it first.</p>
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <Countdown />
+        <p className="text-xs text-ink-soft">Launch pricing announced soon—waitlist members see it first.</p>
+      </div>
 
       <ul className="mt-7 flex-1 space-y-3 border-t border-hairline pt-7">
         {plan.bullets.map((b) => (

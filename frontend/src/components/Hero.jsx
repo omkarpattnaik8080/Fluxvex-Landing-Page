@@ -64,7 +64,12 @@ function ReportPreview() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="relative mx-auto w-full max-w-3xl" data-testid="hero-report-preview">
+    <div className="relative mx-auto w-full max-w-4xl" data-testid="hero-report-preview">
+      {/* ambient glow behind the dashboard */}
+      <div
+        aria-hidden="true"
+        className="absolute -inset-x-8 -top-8 bottom-0 rounded-[40px] bg-[radial-gradient(55%_60%_at_50%_30%,rgba(93,99,255,0.4),transparent_72%)] blur-2xl"
+      />
       {/* hairline corner ticks — draw on load */}
       <svg
         className="pointer-events-none absolute -inset-2 z-30 h-[calc(100%+16px)] w-[calc(100%+16px)]"
@@ -112,7 +117,7 @@ function ReportPreview() {
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl bg-white text-left shadow-[0_40px_90px_-24px_rgba(0,0,0,0.6)] ring-1 ring-black/10">
+      <div className="relative overflow-hidden rounded-xl bg-white text-left shadow-[0_40px_90px_-24px_rgba(0,0,0,0.6)] ring-1 ring-black/10">
         {/* browser chrome */}
         <div className="flex items-center gap-3 border-b border-black/[0.07] bg-[#FAFAF8] px-4 py-2.5">
           <div className="flex shrink-0 gap-1.5" aria-hidden="true">

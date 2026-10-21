@@ -93,7 +93,28 @@ export default function RoiCalculator() {
     <SectionShell id="calculator">
       <div className="mx-auto mb-14 max-w-3xl text-center lg:mb-20">
         <Reveal>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">The math, your inputs</p>
+          <motion.p
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.5 }}
+            variants={{ show: { transition: { staggerChildren: 0.07 } } }}
+            className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent"
+            data-testid="roi-eyebrow"
+          >
+            {"The math, your inputs".split(" ").map((w, i) => (
+              <motion.span
+                key={i}
+                className="inline-block"
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 320, damping: 24 } },
+                }}
+              >
+                {w}
+                {i < 3 ? "\u00A0" : ""}
+              </motion.span>
+            ))}
+          </motion.p>
         </Reveal>
         <CinematicText
           as="h2"

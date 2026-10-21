@@ -6,6 +6,8 @@ import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
 
+const SCENE_SCALE = "scale-[0.72] sm:scale-90 lg:scale-105";
+
 function Cursor() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24" className="absolute -bottom-2 -right-2 drop-shadow" aria-hidden="true">
@@ -18,24 +20,24 @@ function Cursor() {
 function VisualInputs() {
   return (
     <div className="h-full" data-testid="feature-visual-inputs">
-      <IsoPlane w={240} h={210} scale="scale-[0.8] sm:scale-95" className="h-full">
-        <IsoTile x={10} y={20} w={44} h={44}>
+      <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
+        <IsoTile x={12} y={20} w={44} h={44}>
           <GoogleAdsMark size={16} />
         </IsoTile>
-        <IsoTile x={10} y={82} w={44} h={44}>
+        <IsoTile x={12} y={82} w={44} h={44}>
           <MetaMark size={16} />
         </IsoTile>
-        <IsoTile x={10} y={144} w={44} h={44}>
+        <IsoTile x={12} y={144} w={44} h={44}>
           <GA4Mark size={16} />
         </IsoTile>
-        <IsoWire from={[56, 42]} to={[100, 102]} delay={0} />
-        <IsoWire from={[56, 104]} to={[100, 104]} delay={0.3} />
-        <IsoWire from={[56, 166]} to={[100, 106]} delay={0.6} />
-        <IsoTile x={100} y={82} w={44} h={44} active>
+        <IsoWire from={[58, 42]} to={[104, 102]} delay={0} />
+        <IsoWire from={[58, 104]} to={[104, 104]} delay={0.3} />
+        <IsoWire from={[58, 166]} to={[104, 106]} delay={0.6} />
+        <IsoTile x={104} y={82} w={44} h={44} active>
           <FluxvexMark size={22} className="rounded-lg" />
         </IsoTile>
-        <IsoBillboard x={162} y={34}>
-          <div className="w-52 space-y-1.5 whitespace-normal">
+        <IsoBillboard x={158} y={24}>
+          <div className="w-44 space-y-1.5 whitespace-normal">
             {[
               { icon: BarChart3, label: "Campaign metrics", count: "12", hot: false },
               { icon: TrendingUp, label: "Channel results", count: "+24", hot: true },
@@ -43,7 +45,7 @@ function VisualInputs() {
             ].map((row) => (
               <div
                 key={row.label}
-                className={`relative flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[11px] font-medium ${
+                className={`relative flex items-center gap-2 rounded-lg px-2 py-1.5 text-[10.5px] font-medium ${
                   row.hot ? "border border-accent/30 bg-accent-tint/70 text-ink" : "text-ink-soft"
                 }`}
               >
@@ -66,35 +68,35 @@ function VisualInputs() {
 function VisualSummaries() {
   return (
     <div className="h-full" data-testid="feature-visual-summaries">
-      <IsoPlane w={240} h={210} scale="scale-[0.8] sm:scale-95" className="h-full">
-        <IsoTile x={10} y={20} w={44} h={44}>
+      <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
+        <IsoTile x={12} y={20} w={44} h={44}>
           <GoogleAdsMark size={16} />
         </IsoTile>
-        <IsoTile x={10} y={82} w={44} h={44}>
+        <IsoTile x={12} y={82} w={44} h={44}>
           <MetaMark size={16} />
         </IsoTile>
-        <IsoTile x={10} y={144} w={44} h={44}>
+        <IsoTile x={12} y={144} w={44} h={44}>
           <GA4Mark size={16} />
         </IsoTile>
-        <IsoWire from={[56, 42]} to={[102, 102]} delay={0} />
-        <IsoWire from={[56, 104]} to={[102, 104]} delay={0.3} />
-        <IsoWire from={[56, 166]} to={[102, 106]} delay={0.6} />
-        <IsoTile x={102} y={82} w={46} h={46} active testid="feature-ai-tile">
+        <IsoWire from={[58, 42]} to={[106, 102]} delay={0} />
+        <IsoWire from={[58, 104]} to={[106, 104]} delay={0.3} />
+        <IsoWire from={[58, 166]} to={[106, 106]} delay={0.6} />
+        <IsoTile x={106} y={82} w={46} h={46} active testid="feature-ai-tile">
           <span className="relative">
             <span className="absolute inset-0 rounded-xl bg-accent/25 blur-md" aria-hidden="true" />
             <FluxvexMark size={22} className="relative rounded-lg" />
           </span>
         </IsoTile>
-        <IsoBillboard x={170} y={26}>
+        <IsoBillboard x={158} y={28}>
           <span className="flex items-center gap-2 whitespace-nowrap text-[11px] font-medium text-ink">
             <MetaMark size={13} />
-            Meta Ads — ROAS 2.4x this month
+            Meta Ads · ROAS 2.4x
           </span>
         </IsoBillboard>
-        <IsoBillboard x={170} y={120}>
+        <IsoBillboard x={150} y={126}>
           <span className="flex items-center gap-2 whitespace-nowrap text-[11px] font-semibold text-ink">
             <Sparkles className="h-3 w-3 text-accent" />
-            Fluxvex AI — Drafting the client summary…
+            AI · drafting summary
             <span className="typing-dot h-1 w-1 rounded-full bg-accent" />
             <span className="typing-dot h-1 w-1 rounded-full bg-accent" style={{ animationDelay: "0.18s" }} />
           </span>
@@ -108,8 +110,8 @@ function VisualSummaries() {
 function VisualDelivery() {
   return (
     <div className="h-full" data-testid="feature-visual-delivery">
-      <IsoPlane w={240} h={210} scale="scale-[0.8] sm:scale-95" className="h-full">
-        <IsoTile x={8} y={78} w={44} h={52} float={false}>
+      <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
+        <IsoTile x={16} y={78} w={44} h={52} float={false}>
           <span className="flex h-10 w-8 flex-col gap-[3px] p-1" aria-hidden="true">
             <span className="flex h-4 w-4 items-center justify-center rounded bg-ink font-display text-[7px] font-bold text-white">N</span>
             <span className="mt-1 h-[3px] w-full rounded bg-accent/50" />
@@ -117,12 +119,12 @@ function VisualDelivery() {
             <span className="h-[2px] w-3/5 rounded bg-black/10" />
           </span>
         </IsoTile>
-        <IsoWire from={[54, 104]} to={[98, 104]} delay={0} />
-        <IsoTile x={98} y={80} w={46} h={46} active>
+        <IsoWire from={[62, 104]} to={[110, 104]} delay={0} />
+        <IsoTile x={110} y={80} w={46} h={46} active>
           <Sparkles className="h-5 w-5 text-accent" strokeWidth={1.8} />
         </IsoTile>
-        <IsoWire from={[146, 104]} to={[190, 104]} delay={0.5} />
-        <IsoTile x={190} y={78} w={44} h={52} float={false}>
+        <IsoWire from={[158, 104]} to={[206, 104]} delay={0.5} />
+        <IsoTile x={206} y={78} w={44} h={52} float={false}>
           <span className="flex h-10 w-8 flex-col gap-[3px] p-1" aria-hidden="true">
             <span className="flex h-4 w-4 items-center justify-center rounded bg-accent font-display text-[7px] font-bold text-white">N</span>
             <span className="mt-1 h-[3px] w-full rounded bg-accent/60" />
@@ -130,13 +132,13 @@ function VisualDelivery() {
             <span className="h-[2px] w-3/5 rounded bg-black/10" />
           </span>
         </IsoTile>
-        <IsoBillboard x={104} y={150}>
-          <span className="whitespace-nowrap text-[11px] font-medium text-ink">Fluxvex generating fast report…</span>
+        <IsoBillboard x={64} y={146}>
+          <span className="whitespace-nowrap text-[11px] font-medium text-ink">Generating report…</span>
           <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[9px] font-semibold text-white align-middle">
             <Zap className="h-2.5 w-2.5 text-[#F5D748]" /> 3 Integrations
           </span>
         </IsoBillboard>
-        <IsoBillboard x={216} y={170}>
+        <IsoBillboard x={238} y={30}>
           <span className="flex items-center gap-2">
             <svg viewBox="0 0 40 40" className="h-9 w-9" aria-hidden="true">
               <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(16,16,20,0.12)" strokeWidth="3" />
@@ -219,7 +221,7 @@ export default function FeatureGrid() {
                 data-testid={`feature-card-${i + 1}`}
               >
                 <div className="hatch-band border-b border-line" aria-hidden="true" />
-                <div className="relative h-[320px] overflow-hidden bg-[radial-gradient(120%_100%_at_50%_0%,#FBFAF6_0%,#F1EFE8_100%)]">
+                <div className="relative h-[300px] overflow-hidden bg-[radial-gradient(120%_100%_at_50%_0%,#FBFAF6_0%,#F1EFE8_100%)]">
                   {card.visual}
                 </div>
                 <div className="flex flex-1 flex-col border-t border-line p-7">
@@ -227,7 +229,7 @@ export default function FeatureGrid() {
                     <card.icon className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
                     {card.category}
                   </p>
-                  <h3 className="mt-3 text-[19px] font-semibold text-ink">{card.title}</h3>
+                  <h3 className="mt-3 font-display text-[19px] font-semibold tracking-tight text-ink">{card.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-soft">{card.desc}</p>
                 </div>
               </div>
