@@ -1,0 +1,236 @@
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight, ArrowDown, Lock, Plus } from "lucide-react";
+import CinematicText from "@/components/ui/CinematicText";
+import { useWaitlist } from "@/components/WaitlistContext";
+import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
+
+function CornerFastener({ className }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`absolute z-10 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#0A5FA8] shadow-[inset_0_1px_2px_rgba(255,255,255,0.45),0_1px_2px_rgba(0,0,0,0.35)] ${className}`}
+    >
+      <span className="h-1 w-1 rounded-full bg-white/70" />
+    </span>
+  );
+}
+
+function ReportPreview() {
+  return (
+    <div className="relative mx-auto w-full max-w-3xl" data-testid="hero-report-preview">
+      {/* integration markers + connection lines */}
+      <div className="pointer-events-none absolute -top-4 left-0 right-0 hidden justify-between px-6 md:flex" aria-hidden="true">
+        {[
+          { mark: <GoogleAdsMark size={16} />, label: "Google Ads" },
+          { mark: <MetaMark size={16} />, label: "Meta Ads" },
+          { mark: <GA4Mark size={16} />, label: "GA4" },
+        ].map((c, i) => (
+          <div key={c.label} className={`flex flex-col items-center ${i === 0 ? "items-start pl-2" : i === 2 ? "items-end pr-2" : ""}`}>
+            <span className="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 py-1 pl-1 pr-3 text-[11px] font-medium text-white backdrop-blur-sm">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white">{c.mark}</span>
+              {c.label}
+            </span>
+            <svg width="2" height="26" className="mt-0 overflow-visible">
+              <line x1="1" y1="0" x2="1" y2="26" stroke="rgba(255,255,255,0.55)" strokeWidth="2" strokeDasharray="4 5" className="animate-dash-flow" />
+            </svg>
+          </div>
+        ))}
+      </div>
+
+      <div className="overflow-hidden rounded-xl bg-white text-left shadow-[0_40px_90px_-24px_rgba(0,26,43,0.55)] ring-1 ring-black/10">
+        {/* browser chrome */}
+        <div className="flex items-center gap-3 border-b border-black/[0.07] bg-[#FAFAF8] px-4 py-2.5">
+          <div className="flex gap-1.5" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#E8E6E0]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#E8E6E0]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#E8E6E0]" />
+          </div>
+          <span className="mx-auto flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-medium text-black/50 ring-1 ring-black/[0.06]">
+            <Lock className="h-3 w-3" /> fluxvex.app/reports/northbeam-june
+          </span>
+          <span className="w-10" />
+        </div>
+
+        <div className="p-5 sm:p-6">
+          {/* header */}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-black font-display text-sm font-bold text-white">N</span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-black">Northbeam Media</p>
+              <p className="text-[11px] text-black/45">Agency report</p>
+            </div>
+            <span className="ml-auto flex items-center gap-2">
+              <span className="rounded-full border border-black/[0.08] px-3 py-1 text-[11px] font-medium text-black/60">June 2025 ▾</span>
+              <span className="rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">Sample report</span>
+            </span>
+          </div>
+
+          {/* KPIs */}
+          <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            {[
+              ["Spend", "$48,210", "+8.2%"],
+              ["Impressions", "1.24M", "+11.6%"],
+              ["Clicks", "34,880", "+6.1%"],
+              ["Conversions", "1,204", "+14.9%"],
+            ].map(([label, value, delta]) => (
+              <div key={label} className="rounded-lg border border-black/[0.07] bg-[#FAFAF8] p-3">
+                <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">{label}</p>
+                <p className="mt-1 font-display text-lg font-semibold tracking-tight text-black">{value}</p>
+                <p className="text-[10.5px] font-medium text-[#0E8A3E]">{delta}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* chart + channels */}
+          <div className="mt-3 grid gap-2.5 sm:grid-cols-5">
+            <div className="rounded-lg border border-black/[0.07] p-3 sm:col-span-3">
+              <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">Performance trend</p>
+              <svg viewBox="0 0 300 90" className="mt-2 w-full" role="img" aria-label="Performance trend chart with an upward trajectory">
+                <defs>
+                  <linearGradient id="heroArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0099FF" stopOpacity="0.28" />
+                    <stop offset="100%" stopColor="#0099FF" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                {[18, 42, 66].map((y) => (
+                  <line key={y} x1="0" x2="300" y1={y} y2={y} stroke="#EEECE6" strokeWidth="1" />
+                ))}
+                <path d="M0 70 C 30 62, 45 74, 70 60 S 115 34, 140 44 S 190 20, 215 26 S 265 8, 300 10 L 300 90 L 0 90 Z" fill="url(#heroArea)" />
+                <path d="M0 70 C 30 62, 45 74, 70 60 S 115 34, 140 44 S 190 20, 215 26 S 265 8, 300 10" fill="none" stroke="#0099FF" strokeWidth="2.2" strokeLinecap="round" />
+                <circle cx="300" cy="10" r="3.5" fill="#0099FF" />
+              </svg>
+            </div>
+            <div className="space-y-2 rounded-lg border border-black/[0.07] p-3 sm:col-span-2">
+              <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">Channel mix</p>
+              {[
+                ["Google Ads", "58%", "w-[58%]"],
+                ["Meta Ads", "31%", "w-[31%]"],
+                ["GA4 sessions", "11%", "w-[11%]"],
+              ].map(([label, pct, w]) => (
+                <div key={label}>
+                  <div className="flex items-center justify-between text-[11px] text-black/60">
+                    <span>{label}</span>
+                    <span className="font-medium text-black/80">{pct}</span>
+                  </div>
+                  <div className="mt-1 h-1.5 rounded-full bg-black/[0.06]">
+                    <div className={`h-full rounded-full bg-accent ${w}`} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* footer */}
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-dashed border-black/[0.12] px-3 py-2.5">
+            <span className="flex items-center gap-2 text-[11px] font-medium text-black/55">
+              <Plus className="h-3.5 w-3.5 text-accent" /> White-label: branded for Northbeam Media
+            </span>
+            <span className="rounded-full bg-black px-3.5 py-1.5 text-[11px] font-semibold text-white">Export report</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Hero() {
+  const { openWaitlist } = useWaitlist();
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const cardY = useTransform(scrollYProgress, [0, 1], [0, -70]);
+  const gridY = useTransform(scrollYProgress, [0, 1], [0, 40]);
+
+  return (
+    <section ref={ref} className="px-2 pt-2 sm:px-2.5" data-testid="hero-section">
+      <div className="grain relative overflow-hidden rounded-2xl bg-accent">
+        {/* pixel mosaic + vignette */}
+        <div className="pixel-blocks absolute inset-0 opacity-90" aria-hidden="true" />
+        <motion.div
+          className="fine-grid-light absolute inset-0 opacity-[0.16]"
+          style={{ y: gridY }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_0%,transparent_55%,rgba(0,26,43,0.45)_100%)]" aria-hidden="true" />
+
+        <CornerFastener className="left-3 top-3" />
+        <CornerFastener className="right-3 top-3" />
+        <CornerFastener className="bottom-3 left-3" />
+        <CornerFastener className="bottom-3 right-3" />
+
+        <div className="relative mx-auto max-w-5xl px-5 pb-14 pt-14 text-center sm:px-8 sm:pt-20 lg:pb-20">
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm"
+            data-testid="hero-eyebrow"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse-dot" />
+            Automated client reporting for agencies
+          </motion.p>
+
+          <CinematicText
+            as="h1"
+            className="mx-auto mt-7 max-w-4xl font-display text-[44px] font-semibold leading-[0.98] tracking-tightest text-white sm:text-6xl lg:text-[72px]"
+          >
+            {["Client reporting,", "on autopilot."]}
+          </CinematicText>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="mx-auto mt-6 max-w-xl text-[17px] leading-[1.65] text-white/85 sm:text-lg sm:leading-7"
+            data-testid="hero-subcopy"
+          >
+            Turn Google Ads, Meta Ads, and GA4 data into polished, on-brand client
+            reports—without rebuilding spreadsheets and slides every reporting cycle.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.05 }}
+            className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"
+          >
+            <button
+              onClick={() => openWaitlist("hero")}
+              className="group inline-flex h-11 items-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-black transition-all hover:gap-3 hover:bg-white/90"
+              data-testid="hero-join-waitlist-button"
+            >
+              Join the waitlist
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <a
+              href="#workflow"
+              className="inline-flex h-11 items-center gap-2 rounded-full border border-white/35 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+              data-testid="hero-see-how-it-works-link"
+            >
+              See how it works
+              <ArrowDown className="h-4 w-4" />
+            </a>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+            className="mt-4 text-xs text-white/60"
+          >
+            Get product updates and early-access details.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 64, rotateX: 10 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ duration: 1.2, delay: 0.75, ease: [0.19, 1, 0.22, 1] }}
+            style={{ y: cardY, transformPerspective: 1200 }}
+            className="mt-14 sm:mt-16"
+          >
+            <ReportPreview />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}

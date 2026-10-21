@@ -1,0 +1,14 @@
+# Fluxvex
+
+Fluxvex is an automated client-reporting platform for digital marketing agencies. It turns Google Ads, Meta Ads, and GA4 data into consistent, white-label client reports without rebuilding spreadsheets and slides every reporting cycle.
+
+- Primary audience: small and growing digital marketing agencies reporting to multiple clients.
+- Initial integration focus: Google Ads, Meta Ads, and Google Analytics 4.
+- Status: pre-launch. The site currently collects waitlist signups and contact inquiries.
+
+## Pages
+
+- / — Main landing page: product story, workflow, features, sample report, ROI calculator, pricing preview, FAQ.
+- /pricing — Two upcoming plans (Starter, Growth); pricing announced before launch.
+- /security — Security and privacy approach: what data Fluxvex plans to access and the current control status.
+- /contact — Short inquiry form for product and walkthrough questions.
