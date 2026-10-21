@@ -1,7 +1,8 @@
-import { Plug, Sparkles, CalendarClock, ArrowRight } from "lucide-react";
+import { Plug, Sparkles, CalendarClock, ArrowRight, FileText, PenLine, Receipt, Zap } from "lucide-react";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+import ComplianceBadges from "@/components/ComplianceBadges";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { useWaitlist } from "@/components/WaitlistContext";
@@ -22,6 +23,42 @@ const PILLARS = [
     title: "Delivery on autopilot",
     desc: "Branded reports land with every client on schedule, every cycle—whether it is five clients or five hundred.",
   },
+];
+
+/* The agency OS roadmap — reporting today, proposals and invoicing as future plans */
+const STAGES = [
+  {
+    icon: FileText,
+    chip: "Building now",
+    chipStyle: "border-mint/40 bg-mint/10 text-[#0E8A3E]",
+    title: "Client reporting",
+    desc: "The launch focus. Automated, branded client reports from Google Ads, Meta Ads, and GA4—AI-drafted summaries, approved by your team, delivered on schedule.",
+    testid: "vision-roadmap-reporting",
+  },
+  {
+    icon: PenLine,
+    chip: "Future plan",
+    chipStyle: "border-accent/30 bg-accent-tint/60 text-accent",
+    title: "Proposal making",
+    desc: "AI-assisted proposals drafted from a prospect's real performance data—scope, deliverables, and pricing suggestions your team refines and sends.",
+    testid: "vision-roadmap-proposals",
+  },
+  {
+    icon: Receipt,
+    chip: "Future plan",
+    chipStyle: "border-accent/30 bg-accent-tint/60 text-accent",
+    title: "Invoicing",
+    desc: "Invoices generated from delivered work—retainers, reporting cycles, and ad spend—closing the loop from proposal to payment in one system.",
+    testid: "vision-roadmap-invoicing",
+  },
+];
+
+/* State-of-the-art AI capabilities — some at launch, some on the roadmap */
+const AI_CAPABILITIES = [
+  { text: "Drafts client-ready summaries and flags anomalies", plan: false },
+  { text: "Answers questions about any reporting period in plain language", plan: false },
+  { text: "Drafts proposals scoped from real client performance", plan: true },
+  { text: "Turns delivered work into ready-to-send invoices", plan: true },
 ];
 
 function VisionScene() {
@@ -68,8 +105,8 @@ export default function Vision() {
     <SectionShell id="vision">
       <SectionHeader
         overline="Our vision"
-        title="Every agency, reporting like the best in the business."
-        copy="Fluxvex started with one belief: reporting should be the easiest part of the retainer—the moment your work looks its best, not the night it gets built."
+        title="Not just reporting. The operating system for agencies."
+        copy="Fluxvex starts with the work agencies feel every month—client reporting. The plan is to expand into the full agency loop, from proposal making to invoicing, with state-of-the-art AI at the core of every step."
       />
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
@@ -96,11 +133,123 @@ export default function Vision() {
           ))}
         </div>
       </div>
+
+      {/* agency OS roadmap: reporting → proposals → invoicing */}
+      <div className="mt-16" data-testid="vision-roadmap">
+        <Reveal>
+          <div className="flex flex-col items-center gap-3 text-center">
+            <h3 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+              One system for the whole agency loop
+            </h3>
+            <p className="max-w-2xl text-[15px] leading-[1.7] text-ink-soft">
+              Reporting is where Fluxvex begins. From there, the same connected pipeline and AI core extend to the
+              work on either side of it—winning the engagement and getting paid for it.
+            </p>
+          </div>
+        </Reveal>
+        <div className="relative mt-10 grid gap-5 lg:grid-cols-3 lg:gap-8">
+          {STAGES.map((s, i) => (
+            <Reveal key={s.title} delay={i * 0.1} className="h-full">
+              <div className="relative h-full">
+                <div
+                  className="flex h-full flex-col rounded-2xl border border-line bg-page p-7 shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]"
+                  data-testid={s.testid}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-surface text-accent">
+                      <s.icon className="h-5 w-5" strokeWidth={1.8} />
+                    </span>
+                    <span className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${s.chipStyle}`}>
+                      {s.chip}
+                    </span>
+                  </div>
+                  <h4 className="mt-5 font-display text-xl font-semibold tracking-tight text-ink">
+                    <span className="mr-2 text-sm font-bold text-black/30">0{i + 1}</span>
+                    {s.title}
+                  </h4>
+                  <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink-soft">{s.desc}</p>
+                </div>
+                {i < STAGES.length - 1 && (
+                  <span
+                    className="absolute -right-[26px] top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-page text-accent shadow-[0_10px_20px_-8px_rgba(16,16,20,0.3)] lg:flex"
+                    aria-hidden="true"
+                  >
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                )}
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={0.2}>
+          <p className="mt-6 text-center text-xs text-black/45">
+            Client reporting ships at launch; proposals and invoicing are future plans on the same AI core—built
+            with waitlist feedback shaping the order.
+          </p>
+        </Reveal>
+      </div>
+
+      {/* state-of-the-art AI capabilities */}
+      <Reveal>
+        <div
+          className="fine-grid relative mt-14 overflow-hidden rounded-2xl border border-accent-border bg-accent-tint p-8 sm:p-10"
+          data-testid="vision-ai-block"
+        >
+          <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+            <div className="max-w-sm">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-white shadow-[0_16px_30px_-10px_rgba(61,67,232,0.6)]">
+                <Zap className="h-5 w-5" />
+              </span>
+              <h3 className="mt-5 font-display text-2xl font-semibold tracking-tight text-ink">
+                State-of-the-art AI at the core
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                One AI engine learns your accounts and your voice—drafting the work, flagging what matters, and
+                leaving every final call to your team.
+              </p>
+            </div>
+            <ul className="grid flex-1 gap-3 sm:grid-cols-2">
+              {AI_CAPABILITIES.map((c) => (
+                <li
+                  key={c.text}
+                  className="flex items-start gap-2.5 rounded-xl border border-accent/15 bg-page/80 p-4 text-[13.5px] font-medium leading-snug text-ink"
+                  data-testid={`vision-ai-capability${c.plan ? "-future" : ""}`}
+                >
+                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                  <span>
+                    {c.text}
+                    {c.plan && (
+                      <span className="ml-2 inline-block rounded-full border border-accent/30 bg-accent-tint/70 px-2 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-[0.12em] text-accent">
+                        Future plan
+                      </span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* compliance built in */}
+      <Reveal>
+        <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-line bg-page p-8 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-ink-soft">
+            Compliance built in from day one
+          </p>
+          <ComplianceBadges />
+          <p className="max-w-xl text-xs leading-relaxed text-black/45">
+            As the operating system expands into proposals and invoicing, the same privacy-first architecture—GDPR,
+            HIPAA, DPDP, and CCPA aligned—carries across every module.
+          </p>
+        </div>
+      </Reveal>
+
       <Reveal delay={0.1}>
         <div className="mt-12 flex flex-col items-center gap-5 rounded-2xl border border-line bg-page p-8 text-center sm:flex-row sm:justify-between sm:text-left">
           <p className="max-w-xl text-[15px] leading-relaxed text-ink-soft">
             We are building toward a launch where an agency connects its accounts once—and never rebuilds a
-            client report by hand again.
+            client report by hand again. The proposal and invoicing modules follow on the same foundation.
           </p>
           <button
             onClick={() => openWaitlist("vision")}
