@@ -65,6 +65,34 @@ function ReportPreview() {
 
   return (
     <div className="relative mx-auto w-full max-w-3xl" data-testid="hero-report-preview">
+      {/* hairline corner ticks — draw on load */}
+      <svg
+        className="pointer-events-none absolute -inset-2 z-30 h-[calc(100%+16px)] w-[calc(100%+16px)]"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        fill="none"
+        aria-hidden="true"
+      >
+        {[
+          "M3 14 V5 Q3 3 5 3 H14",
+          "M86 3 H95 Q97 3 97 5 V14",
+          "M97 86 V95 Q97 97 95 97 H86",
+          "M14 97 H5 Q3 97 3 95 V86",
+        ].map((d, i) => (
+          <motion.path
+            key={i}
+            d={d}
+            stroke="rgba(61,67,232,0.6)"
+            strokeWidth="1.5"
+            vectorEffect="non-scaling-stroke"
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 1.2 + i * 0.16 }}
+          />
+        ))}
+      </svg>
+
       {/* integration markers + connection lines */}
       <div className="pointer-events-none absolute -top-11 left-0 right-0 z-20 hidden justify-between px-10 md:flex" aria-hidden="true">
         {[

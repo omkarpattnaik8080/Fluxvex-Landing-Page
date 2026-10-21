@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
+import { PadlockIllustration } from "@/components/hairline/Illustrations";
 import { ArrowRight, KeyRound, Lock, Users, Vault, Trash2, Siren, ListChecks, FileText, ShieldCheck } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
@@ -45,7 +46,9 @@ function OrbitShield() {
         animate={reduce ? {} : { scale: [1, 1.18, 1], opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
       />
-      <ShieldCheck className="relative h-9 w-9 text-accent" strokeWidth={1.6} />
+      <div className="relative h-16 w-16">
+        <PadlockIllustration />
+      </div>
     </div>
   );
 }

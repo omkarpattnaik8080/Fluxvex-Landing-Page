@@ -1,5 +1,9 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 6)
+- Common illustration language adopted: hairline kit (Hub/Cabinet/Riffle/Slow/Padlock) built and applied to platform accordion, security vault, and operations rows; hero dashboard got draw-on hairline corner ticks; isometric scenes remain the flagship diagrams.
+- Hero final audit passed: marquee, trust line, iso flow, AI insight, corner ticks — no overflow, zero console errors at 1440/390.
+
 ## 2026-10-21 (session 5)
 - Social channels added: footer LinkedIn/GitHub/YouTube buttons (user-provided URLs), JSON-LD sameAs + llms.txt social line.
 - Hero final audit: new isometric mini-flow illustration (3 source tiles → dashed wires with traveling packets → glowing Fluxvex hub, xl+), "Free to join — no credit card needed" trust line under CTAs.
