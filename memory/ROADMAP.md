@@ -15,3 +15,10 @@
 - Consent-gated analytics events (respect the cookie banner choices).
 - Replace illustrated mockups with real product screenshots at launch.
 - Re-scrape social share cards after deploy (WhatsApp/FB cache OG aggressively).
+
+## Done 2026-10-21 (session 3)
+- Google Ads logo fix, navbar dropdown perf fix, hero declutter + animated CTAs, Consistency fonts, Vision section, Affiliate program section, Blog (index + 12 articles + SEO + sitemap), GDPR/HIPAA/DPDP/CCPA badges.
+
+## Added P2
+- Launch countdown timer beside the locked prices (curiosity hook).
+- Affiliate program page (/partners) if the section outgrows the homepage block.

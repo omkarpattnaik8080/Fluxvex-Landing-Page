@@ -38,3 +38,14 @@
 
 ## 2026-10-21 (session 2 — prior fork summary)
 - Light theme migration, routing, floating pill navbar, animated hero dashboard, all major sections, waitlist/contact backends, base SEO (head, JSON-LD, robots, llms.txt), lenis, UPI-style success animation.
+
+## 2026-10-21 (session 3 — final polish batch, test iteration 6: 100% pass)
+- Fixed Google Ads logo to official 2018 geometry (official SVG paths, viewBox 0 -13 256 256 — was rendering like an X).
+- Fixed navbar dropdown lag/flicker: panels always mounted with opacity/transform/visibility transitions, 160 ms hover close-grace on the whole navbar container, menu-pop keyframes no longer translate -50%.
+- Hero: removed the floating isometric diagram (only report toast + AI insight remain); CTAs rebuilt as spring-animated motion buttons with shine sweep + arrow micro-motion.
+- Consistency section: step headings now use Inter Tight (font-display) for uniform typography.
+- NEW ComplianceBadges (GDPR / HIPAA / DPDP / CCPA) on the home security section and /security page (+ HIPAA paragraph, copy aligned).
+- NEW Vision section (3D iso scene + 3 pillars + CTA) after the promise panel.
+- NEW Affiliate Partner Program section (3 steps + animated 20% donut) after FAQ.
+- NEW Blog: /blog index (12 posts, featured card) + /blog/:slug full article pages; authors omkar, sakti, sneha, ankit, sourced from data/blog (posts1/posts2); topics include agency analytics vs Fluxvex, best alternative, Swaydo alternative, AI in digital marketing; BlogPosting JSON-LD, per-route Seo, related posts, waitlist CTA; Blog in desktop nav, All Pages panel, mobile menu, footer; sitemap.xml now 17 URLs; llms.txt updated.
+- Mobile 390px overflow from Vision billboards fixed (billboards repositioned inside the 330px plane).

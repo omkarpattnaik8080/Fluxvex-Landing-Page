@@ -123,9 +123,13 @@ class TestSeo:
         ct = r.headers.get("content-type", "")
         assert "xml" in ct
         urls = re.findall(r'<loc>([^<]+)</loc>', r.text)
-        assert len(urls) == 4
+        # Iteration 6: 4 original + /blog + 12 blog posts = 17
+        assert len(urls) == 17
         for u in urls:
             assert u.startswith("https://www.fluxvex.com")
+        assert any(u.endswith("/blog") for u in urls)
+        blog_posts = [u for u in urls if "/blog/" in u]
+        assert len(blog_posts) == 12
 
     def test_robots(self, client):
         r = client.get(f"{BASE_URL}/robots.txt")
@@ -147,6 +151,7 @@ class TestSeo:
         assert '/privacy-policy' in body
         assert '/terms' in body
         assert 'draft' in body
+        assert '/blog' in body
 
     def test_sitemap_excludes_legal_drafts(self, client):
         r = client.get(f"{BASE_URL}/sitemap.xml")
