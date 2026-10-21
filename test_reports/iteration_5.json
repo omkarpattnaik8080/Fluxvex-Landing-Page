@@ -1,0 +1,30 @@
+{
+  "summary": "Iteration 5 — Fluxvex iso-conversion + functional showcase + light calculator + GSAP marquee + decluttered hero. Backend: 13/13 pytest pass (test_fluxvex_api.py unchanged). Frontend verified at 1440 and 390: ZERO console/page errors; no error boundary; exactly 1 <h1> on home. HERO decluttered: hero-headline/subcopy/join-waitlist-button/hero-ai-insight (lg+ visible)/hero-iso-flow (xl+ visible at 1440)/hero-ai-summary all present and visible; the '12 client reports' chip and sticky-note are GONE (text search returned null). No horizontal overflow at 1440 (sw=cw=1440) or 390 (sw=cw=390). MARQUEE moving: marquee-band track transform t1=matrix(1,0,0,1,-262.18,0) → t2=matrix(1,0,0,1,-328.936,0) over 1.2s — GSAP animating correctly. SHOWCASE functional periods verified: initial KPI set shown; clicking showcase-period-tab-may swaps to May dataset (Spend $44,540 / Impressions 1.11M / Clicks 32,875 / Conversions 1,048 with '-1.8% vs Apr' / '+4.6% vs Apr' etc. — matches spec); clicking showcase-period-tab-q2 swaps to Q2 (Spend $128,760 / 3.52M / 99,410 / Conversions 3,220 with '+24.8% vs Q1' — matches spec); showcase-export-button click shows showcase-export-note with text 'Sample report — exports unlock at launch.'. ISO sections: workflow-iso-stage (607×460 w/ 1 child), comparison-prompt-visual h=344, comparison-workflow-visual h=344 (equal), feature-visual-inputs/summaries/delivery each ~405×320, platform-cloud-visual 280×304 with platform-cloud-icons containing exactly 3 tiles and platform-cloud-badge rendered, operations-row-01/02/03 all 662px wide with 3 children each (iso diagrams visible). ROI CALCULATOR: all 10 testids present (roi-calculator, roi-clients-input, roi-hours-input, roi-reports-input, roi-reduction-input, roi-monthly-output=48, roi-annual-output=576, roi-reduction-value=40%, roi-reduction-donut=40%, roi-saved-output text contains 230 hours). Default math 8×3×2=48 monthly / 576 annual / 40%→230 saved all correct. Keyboard interaction: focus roi-clients-input + ArrowRight×2 → monthly updated 48→60 (10×3×2=60 ✓). No dark-theme remnants in calculator section. Previous iterations' waitlist e2e, SEO/legal, footer social testids already verified (iter 1-4) — regressions covered by backend pytest (SEO, waitlist, contact).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Showcase.jsx: the URL pill 'fluxvex.app/reports/northbeam-media/{slug}' is rendered but has NO data-testid (showcase-url-pill not found). Spec expected to verify the slug changes to 'may-2025'. The slug IS present in the rendered text (data-driven), but adding a data-testid=\"showcase-url-pill\" would improve testability. Not a bug — minor testability gap.",
+    "RoiCalculator: default values and keyboard interaction work; range-light sliders render as expected (confirmed visually — accent-filled fill on left of thumb).",
+    "IsoKit shared primitives are correctly reused — equal heights across comparison visuals (344/344) confirm w=36 PLANE constant propagates.",
+    "No new critical issues since iteration 4. Prior intentional notes still apply (in-memory rate-limit, no Pydantic EmailStr)."
+  ],
+  "updated_files": [
+    "/app/test_reports/pytest/pytest_results.xml (regenerated — 13 passed)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "N/A — no auth",
+  "seed_data_creation": "No new seed data this iteration (backend pytest creates+persists its own TEST_ docs via existing test_fluxvex_api.py).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Showcase period tab testids: showcase-period-tab-{may|june|q2}; export button+note: showcase-export-button / showcase-export-note (note auto-hides ~3s). KPI container testids are prefixed showcase-kpi* and show both value and delta inline. Showcase URL pill currently LACKS a data-testid — read raw text under the showcase section if needed. Marquee: data-testid=marquee-band; track is its first child <div> — read getComputedStyle(track).transform (NOT matrix on marquee-band itself). ROI calculator defaults: 8 clients × 3 hours × 2 reports = 48 monthly / 576 annual; 40% reduction = 230 hours saved. Hero floaters active at 1440: hero-ai-insight (lg+), hero-iso-flow (xl+), hero-ai-summary (always). Removed from hero: orb, sticky-note, '12 client reports' chip. Iso primitives shared via components/iso/IsoKit.jsx — same PLANE/BILLBOARD sizing across AiComparison/FeatureGrid/Platform/Consistency/HowItWorks.",
+  "rca of the issue": "No bugs found this iteration. All iteration-5 feature changes (isometric conversions, functional showcase periods, light RoI calculator, GSAP marquee, decluttered hero) verified working at 1440 and 390 with zero JS errors and 13/13 backend pytest green."
+}

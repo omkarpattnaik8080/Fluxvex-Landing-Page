@@ -1,5 +1,13 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 7)
+- One 3D isometric language everywhere: shared kit (components/iso/IsoKit.jsx) now drives HowItWorks, AiComparison (Claude + ChatGPT copy), FeatureGrid (3 iso scenes), Platform (iso scene replacing cloud), Consistency (iso diagrams per row).
+- Hero decluttered: orb, sticky note, stat chip removed; kept marquee headline + subcopy + CTAs + trust line + dashboard (corner ticks, AI summary) + AI insight/toast/iso flow.
+- Marquee strip below hero: GSAP marquee ("Client reporting, on autopilot" solid + Google Ads/Meta/GA4 outline + FluxvexMark separators, hover-slow).
+- Showcase: functional period tabs (May/June/Q2 2025) swap KPIs, trend chart, channel bars, URL slug, and re-type the AI summary; export button shows honest sample note.
+- Calculator: complete light redesign (accent sliders, big Inter Tight numbers, comparison bars, donut) — same math + testids.
+- Test iteration 5: 100% pass (backend 13/13, frontend 1440/390 zero errors).
+
 ## 2026-10-21 (session 6)
 - Common illustration language adopted: hairline kit (Hub/Cabinet/Riffle/Slow/Padlock) built and applied to platform accordion, security vault, and operations rows; hero dashboard got draw-on hairline corner ticks; isometric scenes remain the flagship diagrams.
 - Hero final audit passed: marquee, trust line, iso flow, AI insight, corner ticks — no overflow, zero console errors at 1440/390.

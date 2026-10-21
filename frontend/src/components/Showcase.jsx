@@ -146,7 +146,7 @@ export default function Showcase() {
               <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
               <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
             </div>
-            <span className="mx-auto hidden rounded-full border border-line bg-page px-4 py-1 text-[11px] font-medium text-black/50 sm:block">
+            <span className="mx-auto hidden rounded-full border border-line bg-page px-4 py-1 text-[11px] font-medium text-black/50 sm:block" data-testid="showcase-url-pill">
               fluxvex.app/reports/northbeam-media/{data.slug}
             </span>
             <span className="rounded-full bg-accent-tint px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent" data-testid="showcase-sample-badge">
