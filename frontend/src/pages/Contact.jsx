@@ -42,6 +42,7 @@ export default function Contact() {
       <Seo
         title="Contact Fluxvex — Questions About Agency Reporting"
         description="Questions about Fluxvex, integrations, or early access? Send a short inquiry and the team will reply by email."
+        path="/contact"
       />
       <Navbar />
       <main className="pt-[76px]">

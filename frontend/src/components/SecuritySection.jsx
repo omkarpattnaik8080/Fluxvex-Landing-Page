@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, KeyRound, Lock, Users, Vault, Trash2, Siren, ListChecks, FileText } from "lucide-react";
+import { ArrowRight, KeyRound, Lock, Users, Vault, Trash2, Siren, ListChecks, FileText, ShieldCheck } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 
@@ -48,10 +48,17 @@ export default function SecuritySection() {
 
         <Reveal delay={0.15}>
           <div className="flex h-full flex-col justify-between gap-8 rounded-xl border border-accent-border bg-accent-tint p-7 sm:p-8">
-            <p className="font-display text-xl font-medium leading-relaxed tracking-tight text-ink">
+            <div>
+              <div className="relative mx-auto flex h-16 w-16 items-center justify-center" aria-hidden="true">
+                <span className="absolute inset-0 rounded-full border border-dashed border-accent/40 motion-safe:animate-[spin_14s_linear_infinite]" />
+                <span className="absolute -top-0.5 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-accent shadow-[0_0_0_3px_rgba(61,67,232,0.15)]" />
+                <ShieldCheck className="h-8 w-8 text-accent" strokeWidth={1.6} />
+              </div>
+              <p className="mt-5 font-display text-xl font-medium leading-relaxed tracking-tight text-ink">
               “We are building Fluxvex with privacy and security as product requirements. We do not claim
               independent certification or audit status unless it has been completed and documented.”
             </p>
+            </div>
             <div>
               <p className="text-sm leading-relaxed text-ink-soft">
                 Regulation-specific posture—GDPR, CCPA/CPRA, and India’s DPDP—is described on our security page

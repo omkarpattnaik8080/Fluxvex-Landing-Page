@@ -1,10 +1,11 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import axios from "axios";
+import { motion, useReducedMotion } from "framer-motion";
+import { Check, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2 } from "lucide-react";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const WaitlistContext = createContext(null);
@@ -22,6 +23,67 @@ const INITIAL = {
   interest: "Not sure yet",
   trap: "",
 };
+
+/* UPI-style success animation: spring pop + tick draw + particle burst + ripples */
+function SuccessBurst() {
+  const reduce = useReducedMotion();
+  const particles = Array.from({ length: 12 }, (_, i) => {
+    const a = (i / 12) * Math.PI * 2;
+    return {
+      x: Math.cos(a) * 54,
+      y: Math.sin(a) * 54,
+      c: ["#43D675", "#3D43E8", "#F5D748"][i % 3],
+    };
+  });
+
+  return (
+    <div className="relative mx-auto mb-5 flex h-24 w-24 items-center justify-center" data-testid="waitlist-success-animation">
+      {!reduce &&
+        [0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="absolute inset-0 rounded-full border-2 border-mint"
+            initial={{ scale: 0.7, opacity: 0.7 }}
+            animate={{ scale: 2.05, opacity: 0 }}
+            transition={{ duration: 1.3, delay: 0.3 + i * 0.4, repeat: Infinity, repeatDelay: 0.8, ease: "easeOut" }}
+            aria-hidden="true"
+          />
+        ))}
+      {!reduce &&
+        particles.map((p, i) => (
+          <motion.span
+            key={i}
+            className="absolute h-1.5 w-1.5 rounded-full"
+            style={{ backgroundColor: p.c }}
+            initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+            animate={{ x: p.x, y: p.y, opacity: 0, scale: 0.6 }}
+            transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
+            aria-hidden="true"
+          />
+        ))}
+      <motion.span
+        className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-mint to-[#2BBE5C] shadow-[0_20px_45px_-14px_rgba(67,214,117,0.65)]"
+        initial={reduce ? false : { scale: 0 }}
+        animate={reduce ? {} : { scale: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 15 }}
+      >
+        <svg viewBox="0 0 40 40" className="h-10 w-10" aria-hidden="true">
+          <motion.path
+            d="M11 21l6 6 12-13"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={reduce ? false : { pathLength: 0 }}
+            animate={reduce ? {} : { pathLength: 1 }}
+            transition={{ duration: 0.45, delay: 0.3, ease: "easeOut" }}
+          />
+        </svg>
+      </motion.span>
+    </div>
+  );
+}
 
 function WaitlistForm({ source }) {
   const [form, setForm] = useState(INITIAL);
@@ -60,16 +122,32 @@ function WaitlistForm({ source }) {
 
   if (status === "success") {
     return (
-      <div className="py-6 text-center" data-testid="waitlist-success">
-        <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent-tint text-accent">
-          <Check className="h-6 w-6" />
-        </span>
-        <h3 className="font-display text-2xl font-semibold tracking-tight text-ink">
+      <div className="py-4 text-center" data-testid="waitlist-success">
+        <SuccessBurst />
+        <motion.h3
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55, duration: 0.5 }}
+          className="font-display text-2xl font-semibold tracking-tight text-ink"
+        >
           You’re on the list.
-        </h3>
-        <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink-soft">
+        </motion.h3>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
+          className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink-soft"
+        >
           We’ll email you when there is a meaningful Fluxvex launch or early-access update.
-        </p>
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9, duration: 0.5 }}
+          className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-mint/40 bg-mint/10 px-4 py-1.5 text-[12px] font-medium text-[#0E8A3E]"
+        >
+          <Check className="h-3.5 w-3.5" /> Signup confirmed
+        </motion.div>
       </div>
     );
   }

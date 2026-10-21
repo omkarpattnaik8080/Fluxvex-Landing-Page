@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -7,6 +8,7 @@ import Seo from "@/components/Seo";
 import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
 import { PlanCard } from "@/components/PricingPreview";
+import { CurrencyToggle } from "@/components/CurrencyToggle";
 import { useWaitlist } from "@/components/WaitlistContext";
 
 const TABLE_ROWS = [
@@ -19,8 +21,14 @@ const TABLE_ROWS = [
   ["Support tier", "To be announced", "To be announced"],
 ];
 
+const COMPARISON_ROWS = (currency) => [
+  ["Indicative price (per month)", currency === "usd" ? "$49" : "₹3,999", currency === "usd" ? "$149" : "₹11,999"],
+  ...TABLE_ROWS,
+];
+
 const PRICING_FAQS = [
-  ["When will pricing be announced?", "Before launch. Join the waitlist and you’ll get the announcement by email."],
+  ["When will pricing be announced?", "Indicative pricing in USD and INR is shown above as a guide—final pricing will be announced before launch. Join the waitlist and you’ll get the announcement by email."],
+  ["Why do USD and INR prices differ?", "The INR amounts are rounded conversions of the USD guide amounts for readability. The final announcement will confirm exact billing currencies, taxes, and terms."],
   ["Will early-access users receive launch updates?", "Yes. Waitlist members receive meaningful launch and early-access updates by email."],
   ["What counts as a client?", "We’re finalizing whether a client means one connected brand or one reporting workspace. The definition will be published with pricing."],
   ["Can I move from Starter to Growth?", "Yes—the plan structure is designed around client count, so you move when your portfolio does. Details will be announced with pricing."],
@@ -29,11 +37,13 @@ const PRICING_FAQS = [
 
 export default function Pricing() {
   const { openWaitlist } = useWaitlist();
+  const [currency, setCurrency] = useState("usd");
   return (
     <>
       <Seo
         title="Pricing — Two Plans for Agency Reporting | Fluxvex"
-        description="Starter and Growth plans are shaping up around your client portfolio. Fluxvex pricing will be announced before launch—join the waitlist for updates."
+        description="Starter and Growth plans with indicative launch pricing in USD and INR. Fluxvex final pricing will be announced before launch—join the waitlist for updates."
+        path="/pricing"
       />
       <Navbar />
       <main className="pt-[76px]">
@@ -50,17 +60,25 @@ export default function Pricing() {
             </CinematicText>
             <Reveal y={16} delay={0.15}>
               <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-ink-soft sm:text-base">
-                Two plans are taking shape around your client portfolio. Pricing will be announced before launch.
+                Two plans are taking shape around your client portfolio. Indicative launch pricing is shown below—final
+                pricing will be announced before launch.
               </p>
+            </Reveal>
+            <Reveal y={16} delay={0.25}>
+              <div className="mt-8 flex justify-center">
+                <CurrencyToggle value={currency} onChange={setCurrency} />
+              </div>
             </Reveal>
           </div>
 
-          <div className="mx-auto mt-14 grid max-w-4xl gap-5 lg:grid-cols-2">
+          <div className="mx-auto mt-12 grid max-w-4xl gap-5 lg:grid-cols-2">
             <Reveal className="h-full">
               <PlanCard
+                currency={currency}
                 plan={{
                   name: "Starter",
                   tag: "For focused portfolios",
+                  prices: { usd: "$49", inr: "₹3,999" },
                   bullets: [
                     "For agencies managing up to 5 clients",
                     "Core reporting workflow for the initial supported integrations",
@@ -76,9 +94,11 @@ export default function Pricing() {
             </Reveal>
             <Reveal delay={0.1} className="h-full">
               <PlanCard
+                currency={currency}
                 plan={{
                   name: "Growth",
                   tag: "For scaling agencies",
+                  prices: { usd: "$149", inr: "₹11,999" },
                   bullets: [
                     "For agencies managing more than 5 clients",
                     "Designed for a larger client portfolio",
@@ -93,11 +113,17 @@ export default function Pricing() {
               />
             </Reveal>
           </div>
+          <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-ink-soft/80" data-testid="pricing-indicative-note">
+            Indicative launch pricing in the selected currency—final pricing and billing terms will be announced before
+            launch.
+          </p>
 
           {/* comparison */}
           <Reveal>
             <div className="mx-auto mt-16 max-w-4xl">
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">How the plans compare</h2>
+              <CinematicText as="h2" className="font-display text-2xl font-semibold tracking-tight text-ink">
+                How the plans compare
+              </CinematicText>
               <div className="mt-6 overflow-x-auto rounded-xl border border-line bg-page" data-testid="pricing-comparison-table">
                 <table className="w-full min-w-[640px] text-left">
                   <thead>
@@ -108,7 +134,7 @@ export default function Pricing() {
                     </tr>
                   </thead>
                   <tbody>
-                    {TABLE_ROWS.map(([row, s, g], i) => (
+                    {COMPARISON_ROWS(currency).map(([row, s, g], i) => (
                       <tr key={row} className={`border-b border-hairline last:border-b-0 ${i % 2 ? "bg-surface/60" : ""}`}>
                         <td className="px-5 py-4 text-sm font-medium text-ink">{row}</td>
                         <td className="px-5 py-4 text-sm text-ink-soft">{s}</td>
@@ -127,7 +153,9 @@ export default function Pricing() {
           {/* pricing faqs */}
           <Reveal>
             <div className="mx-auto mt-16 max-w-3xl">
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">Pricing questions</h2>
+              <CinematicText as="h2" className="font-display text-2xl font-semibold tracking-tight text-ink">
+                Pricing questions
+              </CinematicText>
               <div className="mt-6 space-y-4">
                 {PRICING_FAQS.map(([q, a]) => (
                   <div key={q} className="rounded-xl border border-line bg-page p-5" data-testid={`pricing-faq-${q.length}`}>
@@ -142,9 +170,9 @@ export default function Pricing() {
           {/* cta */}
           <Reveal>
             <div className="mx-auto mt-16 max-w-4xl rounded-2xl border border-accent-border bg-accent-tint p-8 text-center sm:p-12">
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+              <CinematicText as="h2" className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
                 Get pricing updates
-              </h2>
+              </CinematicText>
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
                 Join the waitlist and pick your plan interest—we’ll email the announcement the moment it’s ready.
               </p>

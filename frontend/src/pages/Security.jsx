@@ -21,6 +21,7 @@ export default function Security() {
       <Seo
         title="Security & Privacy — Our Approach | Fluxvex"
         description="What account data Fluxvex plans to access, how access is protected, and the current status of our security and privacy controls—stated plainly, without unearned badges."
+        path="/security"
       />
       <Navbar />
       <main className="pt-[76px]">

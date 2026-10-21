@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
@@ -18,10 +19,16 @@ function Fastener({ className }) {
 
 export default function FinalCta() {
   const { openWaitlist } = useWaitlist();
+  const reduce = useReducedMotion();
   return (
     <section className="border-t border-line bg-elevated px-2 py-14 sm:px-2.5 sm:py-20" data-testid="section-final-cta">
       <div className="grain relative overflow-hidden rounded-2xl bg-accent px-6 py-20 text-center sm:py-28">
-        <div className="pixel-blocks absolute inset-0" aria-hidden="true" />
+        <motion.div
+          className="pixel-blocks absolute inset-0"
+          animate={reduce ? {} : { y: [0, -16, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          aria-hidden="true"
+        />
         <div className="absolute inset-0 bg-[radial-gradient(110%_90%_at_50%_0%,transparent_55%,rgba(20,21,90,0.5)_100%)]" aria-hidden="true" />
         <Fastener className="left-3 top-3" />
         <Fastener className="right-3 top-3" />

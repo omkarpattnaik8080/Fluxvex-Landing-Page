@@ -20,3 +20,5 @@ User-agent: Amazonbot
 User-agent: CCBot
 Allow: /
 Disallow: /api/
+
+Sitemap: https://www.fluxvex.com/sitemap.xml

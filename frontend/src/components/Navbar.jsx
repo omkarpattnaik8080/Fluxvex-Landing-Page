@@ -17,7 +17,7 @@ const MENU_GROUPS = [
     items: [
       { icon: "workflow", title: "Reporting Workflow", desc: "From connected data to client-ready reports", href: "/#workflow" },
       { icon: "features", title: "Features", desc: "Reporting, branding, and delivery", href: "/#features" },
-      { icon: "integrations", title: "Integrations", desc: "Google Ads, Meta Ads, and GA4", href: "/#integrations" },
+      { icon: "integrations", title: "Integrations", desc: "Google Ads, Meta Ads, GA4 · more soon", href: "/#integrations" },
       { icon: "product", title: "Inside the product", desc: "A sample report, end to end", href: "/#product" },
     ],
   },
@@ -242,7 +242,7 @@ export default function Navbar() {
   const pillLink = (item) => (
     <Link
       to={item.href}
-      className={`nav-underline rounded-full px-3 py-1.5 font-display text-[15px] font-medium tracking-[-0.01em] transition-colors ${
+      className={`rounded-full px-3 py-1.5 font-display text-[15px] font-medium tracking-[-0.01em] transition-colors ${
         isActive(item.href) ? "bg-black/[0.07] text-ink" : "text-black/65 hover:bg-black/[0.05] hover:text-ink"
       }`}
       data-active={isActive(item.href)}
@@ -283,10 +283,9 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Main">
-            {NAV_LINKS.slice(0, 2).map(pillLink)}
+            {NAV_LINKS.map(pillLink)}
             {pillDropdown("Sections", "sections", "nav-toggle-sections")}
             {pillDropdown("All Pages", "pages", "nav-toggle-pages")}
-            {NAV_LINKS.slice(2).map(pillLink)}
           </nav>
 
           <div className="hidden shrink-0 items-center gap-2 lg:flex">

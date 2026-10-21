@@ -117,6 +117,13 @@ body {
   .bob, .bob-slow { animation: none; }
 }
 
+/* Typing dots (prompt bubble) */
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot { animation: typing 1.2s ease-in-out infinite; }
+
 /* Dropdown panel entrance */
 @keyframes menu-pop {
   from { opacity: 0; transform: translate(-50%, -8px); }

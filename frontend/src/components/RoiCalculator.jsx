@@ -1,10 +1,39 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import CinematicText from "@/components/ui/CinematicText";
 import { SectionShell } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 
 const fmt = (n) => n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+
+function ReductionDonut({ value }) {
+  const r = 32;
+  const c = 2 * Math.PI * r;
+  return (
+    <div className="relative h-20 w-20 shrink-0" data-testid="roi-reduction-donut">
+      <svg viewBox="0 0 80 80" className="h-full w-full -rotate-90">
+        <circle cx="40" cy="40" r={r} fill="none" stroke="rgba(16,16,20,0.08)" strokeWidth="9" />
+        <motion.circle
+          cx="40"
+          cy="40"
+          r={r}
+          fill="none"
+          stroke="#3D43E8"
+          strokeWidth="9"
+          strokeLinecap="round"
+          strokeDasharray={c}
+          initial={false}
+          animate={{ strokeDashoffset: c * (1 - value / 100) }}
+          transition={{ type: "spring", stiffness: 90, damping: 18 }}
+        />
+      </svg>
+      <span className="absolute inset-0 flex items-center justify-center font-display text-sm font-semibold text-ink" data-testid="roi-reduction-value">
+        {value}%
+      </span>
+    </div>
+  );
+}
 
 export default function RoiCalculator() {
   const [clients, setClients] = useState(8);
@@ -112,30 +141,28 @@ export default function RoiCalculator() {
               </div>
             </div>
 
-            <div className="mt-10 rounded-xl border border-accent/25 bg-page p-6">
-              <div className="flex items-center justify-between">
+            <div className="mt-10 flex items-start gap-6 rounded-xl border border-accent/25 bg-page p-6">
+              <ReductionDonut value={reduction} />
+              <div className="min-w-0 flex-1">
                 <label htmlFor="roi-reduction-input" className="text-sm font-medium text-ink">
                   Hypothetical: if reporting effort dropped by
                 </label>
-                <span className="rounded-full bg-accent px-3 py-1 text-sm font-semibold text-white" data-testid="roi-reduction-value">
-                  {reduction}%
-                </span>
+                <input
+                  id="roi-reduction-input"
+                  type="range"
+                  min={10}
+                  max={60}
+                  step={5}
+                  value={reduction}
+                  onChange={(e) => setReduction(Number(e.target.value))}
+                  className="mt-3 w-full accent-[#3D43E8]"
+                  data-testid="roi-reduction-input"
+                />
+                <p className="mt-3 text-sm leading-relaxed text-ink-soft" data-testid="roi-saved-output">
+                  Roughly <span className="font-semibold text-ink">{fmt(saved)} hours a year</span> stay with the
+                  team—choose your own percentage; nothing here is a promised result.
+                </p>
               </div>
-              <input
-                id="roi-reduction-input"
-                type="range"
-                min={10}
-                max={60}
-                step={5}
-                value={reduction}
-                onChange={(e) => setReduction(Number(e.target.value))}
-                className="mt-4 w-full accent-[#3D43E8]"
-                data-testid="roi-reduction-input"
-              />
-              <p className="mt-4 text-sm leading-relaxed text-ink-soft" data-testid="roi-saved-output">
-                At that rate, roughly <span className="font-semibold text-ink">{fmt(saved)} hours a year</span> stay
-                with the team—choose your own percentage; nothing here is a promised result.
-              </p>
             </div>
 
             <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink-soft/80">

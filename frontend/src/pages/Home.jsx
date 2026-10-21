@@ -18,10 +18,12 @@ import Faq from "@/components/Faq";
 import FinalCta from "@/components/FinalCta";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
+import Seo from "@/components/Seo";
 
 export default function Home() {
   return (
     <>
+      <Seo path="/" />
       <Navbar />
       <main>
         <Hero />
