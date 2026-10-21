@@ -1,17 +1,50 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { Check, HelpCircle, MessageSquare, Minus, Plug, RefreshCw, Repeat, Send, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Check, HelpCircle, LayoutTemplate, MessageSquare, Minus, Plug, RefreshCw, Repeat, Send, SlidersHorizontal, Sparkles, Users } from "lucide-react";
 import { IsoTile, IsoWire, IsoBillboard, PLANE } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 
 const ROWS = [
-  ["Connect to the agency’s live accounts", "Depends on available connectors, permissions, and setup", "Designed around supported advertising and analytics integrations"],
-  ["Use consistent metric definitions", "Requires explicit definitions and checking", "Can centralize definitions in the product workflow, if implemented"],
-  ["Repeat the same report each cycle", "Usually requires additional instructions or automation", "Designed for a repeatable reporting process"],
-  ["Preserve a consistent agency report format", "Requires templates and manual checks or extra tooling", "White-label report workflow, where supported"],
-  ["Keep client data and access separated", "Depends on the tools, configuration, and permissions used", "Must be enforced by Fluxvex’s actual access-control design"],
-  ["Review, correct, and deliver a report", "Depends on the process wrapped around the AI tool", "Report review and delivery process can be built into the workflow"],
+  { icon: Plug, need: "Connect to the agency's live accounts", ai: "Depends on available connectors, permissions, and setup", fx: "Designed around supported advertising and analytics integrations" },
+  { icon: SlidersHorizontal, need: "Use consistent metric definitions", ai: "Requires explicit definitions and checking", fx: "Can centralize definitions in the product workflow, if implemented" },
+  { icon: Repeat, need: "Repeat the same report each cycle", ai: "Usually requires additional instructions or automation", fx: "Designed for a repeatable reporting process" },
+  { icon: LayoutTemplate, need: "Preserve a consistent agency report format", ai: "Requires templates and manual checks or extra tooling", fx: "White-label report workflow, where supported" },
+  { icon: Users, need: "Keep client data and access separated", ai: "Depends on the tools, configuration, and permissions used", fx: "Must be enforced by Fluxvex's actual access-control design" },
+  { icon: Send, need: "Review, correct, and deliver a report", ai: "Depends on the process wrapped around the AI tool", fx: "Report review and delivery process can be built into the workflow" },
 ];
+
+/* A drawn-circle check — the "verified" micro-badge for the Fluxvex column */
+function DrawnCheck() {
+  const reduce = useReducedMotion();
+  return (
+    <svg viewBox="0 0 22 22" className="mt-0.5 h-[18px] w-[18px] shrink-0" aria-hidden="true">
+      <motion.circle
+        cx="11"
+        cy="11"
+        r="9.5"
+        fill="none"
+        stroke="#3D43E8"
+        strokeWidth="2"
+        initial={reduce ? false : { pathLength: 0 }}
+        whileInView={reduce ? {} : { pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+      />
+      <motion.path
+        d="M6.6 11.3 L9.7 14.2 15.4 8.2"
+        fill="none"
+        stroke="#3D43E8"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={reduce ? false : { pathLength: 0 }}
+        whileInView={reduce ? {} : { pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.35, delay: 0.45, ease: "easeOut" }}
+      />
+    </svg>
+  );
+}
 
 /* Prompt scene — a question answered, then a manual loop that never ends */
 function PromptVisual() {
@@ -56,7 +89,7 @@ function PromptVisual() {
             {/* the question, floating above the loop */}
             <IsoBillboard x={115} y={112}>
               <span className="block max-w-[190px] whitespace-normal text-center text-[11.5px] font-medium leading-snug text-ink">
-                “Claude, how did the client’s ads do in June?”
+                "Claude, how did the client's ads do in June?"
               </span>
               <span className="mt-1.5 flex items-center justify-center gap-1.5 rounded-2xl rounded-bl-sm border border-line bg-surface px-3 py-2">
                 {[0, 1, 2].map((i) => (
@@ -135,7 +168,7 @@ export default function AiComparison() {
   return (
     <SectionShell id="why">
       <SectionHeader
-        overline="Why a prompt isn’t a reporting system"
+        overline="Why a prompt isn't a reporting system"
         title="Claude and ChatGPT can help explain the numbers. Fluxvex is built to run the reporting workflow."
         copy="General AI assistants—Claude, ChatGPT, and similar tools—can help draft summaries and explore data. An agency reporting workflow also needs dependable data connections, metric definitions, client separation, consistent branding, repeatable schedules, and a delivery process people can trust."
       />
@@ -150,52 +183,57 @@ export default function AiComparison() {
         </Reveal>
       </div>
 
-      <Reveal>
-        <div
-          className="mt-8 overflow-hidden rounded-xl border border-line bg-page shadow-[0_36px_80px_-40px_rgba(16,16,20,0.28)]"
-          data-testid="ai-comparison-table"
-        >
-          <table className="w-full min-w-[720px] border-collapse text-left">
-            <thead className="sticky top-0 z-10">
-              <tr className="border-b border-line bg-elevated shadow-[0_1px_0_rgba(16,16,20,0.04)]">
-                <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Workflow need</th>
-                <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">General AI assistant used by itself</th>
-                <th className="border-l border-accent-border bg-accent-tint px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
-                  A dedicated reporting workflow like Fluxvex
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map(([need, ai, fx], i) => (
-                <motion.tr
-                  key={need}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{ duration: 0.4, delay: i * 0.06 }}
-                  className={`group border-b border-hairline transition-colors last:border-b-0 hover:bg-surface/80 ${i % 2 ? "bg-surface/40" : "bg-page"}`}
-                >
-                  <td className="px-5 py-4 text-sm font-medium text-ink" data-testid={`comparison-need-${i + 1}`}>
-                    {need}
-                  </td>
-                  <td className="px-5 py-4 text-sm leading-relaxed text-ink-soft">
-                    <span className="flex items-start gap-2">
-                      <Minus className="mt-0.5 h-3.5 w-3.5 shrink-0 text-black/30" strokeWidth={2.2} />
-                      {ai}
-                    </span>
-                  </td>
-                  <td className="border-l border-accent-border/60 bg-accent-tint/50 px-5 py-4 text-sm leading-relaxed text-ink transition-colors group-hover:bg-accent-tint">
-                    <span className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={2.2} />
-                      {fx}
-                    </span>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
+      {/* versus cards — every workflow need, side by side */}
+      <div className="mt-10" data-testid="ai-comparison-table">
+        {/* column headers (desktop) */}
+        <div className="hidden gap-4 px-3 md:grid md:grid-cols-[1.05fr_1fr_1fr]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">The workflow needs</p>
+          <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">
+            <span className="h-1.5 w-1.5 rounded-full bg-black/25" /> A prompt by itself
+          </p>
+          <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" /> The Fluxvex workflow
+          </p>
         </div>
-      </Reveal>
+
+        <div className="mt-3 space-y-4">
+          {ROWS.map((row, i) => (
+            <Reveal key={row.need} delay={i * 0.05}>
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 280, damping: 24 }}
+                className="group grid gap-3 rounded-2xl border border-line bg-page p-4 shadow-[0_18px_40px_-28px_rgba(16,16,20,0.3)] md:grid-cols-[1.05fr_1fr_1fr] md:items-center md:gap-4 md:p-5"
+              >
+                {/* need */}
+                <div className="flex items-center gap-3.5" data-testid={`comparison-need-${i + 1}`}>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-surface text-ink-soft transition-colors duration-300 group-hover:border-accent/30 group-hover:text-accent">
+                    <row.icon className="h-[18px] w-[18px]" strokeWidth={1.8} />
+                  </span>
+                  <p className="text-sm font-semibold leading-snug text-ink">{row.need}</p>
+                </div>
+
+                {/* a prompt by itself */}
+                <div className="flex items-start gap-2.5 rounded-xl border border-black/[0.06] bg-surface/70 px-4 py-3.5">
+                  <Minus className="mt-0.5 h-4 w-4 shrink-0 text-black/30" strokeWidth={2.4} />
+                  <div>
+                    <p className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-black/35 md:hidden">A prompt by itself</p>
+                    <p className="text-[13px] leading-relaxed text-ink-soft">{row.ai}</p>
+                  </div>
+                </div>
+
+                {/* the Fluxvex workflow */}
+                <div className="relative flex items-start gap-2.5 overflow-hidden rounded-xl border border-accent/25 bg-accent-tint/70 px-4 py-3.5 transition-shadow duration-300 group-hover:shadow-[0_16px_36px_-18px_rgba(61,67,232,0.5)]">
+                  <DrawnCheck />
+                  <div>
+                    <p className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-accent md:hidden">The Fluxvex workflow</p>
+                    <p className="text-[13px] font-medium leading-relaxed text-ink">{row.fx}</p>
+                  </div>
+                </div>
+              </motion.div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
 
       <Reveal delay={0.1}>
         <p className="mt-10 max-w-2xl font-display text-xl font-medium leading-snug tracking-tight text-ink sm:text-2xl" data-testid="ai-comparison-close">

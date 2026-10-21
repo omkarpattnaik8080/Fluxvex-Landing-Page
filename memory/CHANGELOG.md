@@ -60,3 +60,6 @@
 - Waitlist modal: plan interest now preselects (Starter/Growth) via openWaitlist(from, {interest}).
 - ComplianceBadges redesigned as proper certification-seal SVG icons: GDPR EU-stars seal, HIPAA medical shield, DPDP tricolor+chakra seal, CCPA gold rosette.
 - Section order audit (UX conversion principles): verdict KEEP — current sequence already follows promise→proof→problem→solution→value→trust→pricing→objections→CTA.
+
+## 2026-10-21 (session 5 — AiComparison table → versus cards)
+- Rebuilt the comparison table in "Why a prompt isn't a reporting system" as 6 versus-cards: per-need icons, muted "A prompt by itself" cell vs accent-tinted "The Fluxvex workflow" cell with SVG drawn-circle check animation, column headers with pulse dot, hover lift + glow, mobile stacking with inline labels. Kept testids (comparison-need-1..6, ai-comparison-table). Verified: 6 cards render, no overflow.
