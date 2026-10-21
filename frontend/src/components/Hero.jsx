@@ -393,57 +393,6 @@ function HeadlineMarquee() {
   );
 }
 
-/* Isometric mini flow — sources feeding the Fluxvex engine (decorative, xl+ only) */
-function IsoMiniFlow() {
-  const reduce = useReducedMotion();
-  const marks = [<GoogleAdsMark size={13} key="g" />, <MetaMark size={13} key="m" />, <GA4Mark size={13} key="a" />];
-  const wire = (from, to, delay) => {
-    const dx = to[0] - from[0];
-    const dy = to[1] - from[1];
-    const len = Math.round(Math.hypot(dx, dy));
-    const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
-    return (
-      <div className="absolute" style={{ left: from[0], top: from[1], width: len, transform: `rotate(${ang}deg)`, transformOrigin: "0 0" }} aria-hidden="true">
-        <div className="h-0 w-full border-t border-dashed border-black/25" />
-        {!reduce && (
-          <motion.span
-            className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
-            style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
-            animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
-            transition={{ duration: 1.1, repeat: Infinity, delay, ease: "easeInOut" }}
-          />
-        )}
-      </div>
-    );
-  };
-  return (
-    <motion.div
-      animate={reduce ? {} : { y: [0, -9, 0] }}
-      transition={{ duration: 6.5, repeat: Infinity, delay: 1.6, ease: "easeInOut" }}
-      className="pointer-events-none absolute left-[3%] top-[22%] hidden xl:block"
-      aria-hidden="true"
-      data-testid="hero-iso-flow"
-    >
-      <div className="relative h-[150px] w-[160px]">
-        <div className="relative h-full w-full" style={{ transform: "rotateX(55deg) rotateZ(-45deg)", transformStyle: "preserve-3d" }}>
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="absolute flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-[0_10px_20px_-8px_rgba(16,16,20,0.4)] ring-1 ring-black/[0.06]" style={{ left: 6, top: 10 + i * 38 }}>
-              {marks[i]}
-            </div>
-          ))}
-          {wire([42, 28], [92, 74], 0)}
-          {wire([42, 66], [92, 74], 0.35)}
-          {wire([42, 104], [92, 74], 0.7)}
-          <div className="absolute flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-[0_16px_30px_-10px_rgba(61,67,232,0.55)] ring-1 ring-accent/25" style={{ left: 92, top: 53 }}>
-            <span className="absolute inset-0 rounded-xl bg-accent/20 blur-md" aria-hidden="true" />
-            <FluxvexMark size={24} className="relative rounded-lg" />
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function Hero() {
   const { openWaitlist } = useWaitlist();
   const ref = useRef(null);
@@ -474,9 +423,7 @@ export default function Hero() {
         <CornerFastener className="bottom-3 left-3" />
         <CornerFastener className="bottom-3 right-3" />
 
-        {/* floating decorations — kept minimal: isometric flow (left) + report toast + AI insight (right) */}
-        <IsoMiniFlow />
-
+        {/* floating decorations — kept minimal: report toast + AI insight */}
         <motion.div
           {...float(2.4)}
           className="pointer-events-none absolute right-6 top-[63%] hidden w-52 rotate-2 items-center gap-3 rounded-xl bg-white p-3.5 shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] md:flex"
@@ -527,22 +474,34 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1.05 }}
             className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
-            <button
+            <motion.button
               onClick={() => openWaitlist("hero")}
-              className="group inline-flex h-11 items-center gap-2 rounded-full bg-white px-6 font-display text-sm font-semibold text-ink transition-all hover:gap-3 hover:bg-white/90"
+              whileHover={{ scale: 1.045, y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 24 }}
+              className="group relative inline-flex h-11 items-center gap-2 overflow-hidden rounded-full bg-white px-6 font-display text-sm font-semibold text-ink shadow-[0_18px_40px_-16px_rgba(0,0,0,0.55)]"
               data-testid="hero-join-waitlist-button"
             >
-              Join the waitlist
-              <ArrowRight className="h-4 w-4" />
-            </button>
-            <a
+              <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
+                <span className="absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-accent/25 to-transparent opacity-0 transition-[transform,opacity] duration-700 ease-out group-hover:translate-x-[340%] group-hover:opacity-100" />
+              </span>
+              <span className="relative">Join the waitlist</span>
+              <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </motion.button>
+            <motion.a
               href="#workflow"
-              className="inline-flex h-11 items-center gap-2 rounded-full border border-white/35 bg-white/10 px-6 font-display text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+              whileHover={{ scale: 1.045, y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 24 }}
+              className="group relative inline-flex h-11 items-center gap-2 overflow-hidden rounded-full border border-white/35 bg-white/10 px-6 font-display text-sm font-semibold text-white backdrop-blur-sm"
               data-testid="hero-see-how-it-works-link"
             >
-              See how it works
-              <ArrowDown className="h-4 w-4" />
-            </a>
+              <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
+                <span className="absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 transition-[transform,opacity] duration-700 ease-out group-hover:translate-x-[340%] group-hover:opacity-100" />
+              </span>
+              <span className="relative">See how it works</span>
+              <ArrowDown className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5" />
+            </motion.a>
           </motion.div>
           <motion.p
             initial={{ opacity: 0 }}

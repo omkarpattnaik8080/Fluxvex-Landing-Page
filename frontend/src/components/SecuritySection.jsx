@@ -5,6 +5,7 @@ import { ArrowRight, KeyRound, Lock, Users, Vault, Trash2, Siren, ListChecks, Fi
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
+import ComplianceBadges from "@/components/ComplianceBadges";
 
 const CONTROLS = [
   { icon: KeyRound, text: "OAuth-based connections and least-privilege scopes, where supported" },
@@ -69,6 +70,7 @@ export default function SecuritySection() {
               Fluxvex is pre-launch. Below is the control set we are building toward—each will carry its real
               status as it ships. Nothing on this page claims an audit or certification that has not happened.
             </p>
+            <ComplianceBadges className="mt-6" delay={0.1} />
             <div className="mt-7 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
               {CONTROLS.map((c, i) => (
                 <div
@@ -112,8 +114,8 @@ export default function SecuritySection() {
             </div>
             <div>
               <p className="text-sm leading-relaxed text-ink-soft">
-                Regulation-specific posture—GDPR, CCPA/CPRA, and India’s DPDP—is described on our security page
-                as processes, not badges.
+                Our controls are designed around GDPR, HIPAA, India’s DPDP, and CCPA/CPRA requirements—see how
+                on our security page.
               </p>
               <Link
                 to="/security"

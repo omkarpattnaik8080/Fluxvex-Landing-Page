@@ -13,6 +13,7 @@ const PRODUCT_LINKS = [
 const PAGE_LINKS = [
   ["Home", "/"],
   ["Pricing", "/pricing"],
+  ["Blog", "/blog"],
   ["FAQ", "/#faq"],
   ["Contact", "/contact"],
 ];

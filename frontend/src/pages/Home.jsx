@@ -17,6 +17,8 @@ import PricingPreview from "@/components/PricingPreview";
 import Faq from "@/components/Faq";
 import FinalCta from "@/components/FinalCta";
 import BackersBand from "@/components/BackersBand";
+import Vision from "@/components/Vision";
+import Affiliate from "@/components/Affiliate";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import Seo from "@/components/Seo";
@@ -40,9 +42,11 @@ export default function Home() {
         <Consistency />
         <RoiCalculator />
         <Testimonial />
+        <Vision />
         <SecuritySection />
         <PricingPreview />
         <Faq />
+        <Affiliate />
         <FinalCta />
         <BackersBand />
       </main>

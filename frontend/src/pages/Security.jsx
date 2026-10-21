@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import Seo from "@/components/Seo";
+import ComplianceBadges from "@/components/ComplianceBadges";
 import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
 
@@ -41,6 +42,8 @@ export default function Security() {
             </p>
           </Reveal>
 
+          <ComplianceBadges className="mt-8" delay={0.15} />
+
           <Reveal>
             <h2 className="mt-14 font-display text-2xl font-semibold tracking-tight text-ink">What we access, and why</h2>
             <p className="mt-4 text-[15px] leading-[1.75] text-ink-soft">
@@ -74,7 +77,12 @@ export default function Security() {
               <p>
                 <span className="font-semibold text-ink">GDPR:</span> we describe the privacy processes and
                 contractual terms that support applicable obligations—roles, purposes, rights requests, retention,
-                and processor arrangements—rather than displaying a generic badge as proof of compliance.
+                and processor arrangements—so our GDPR alignment is built into workflows, not just claimed.
+              </p>
+              <p>
+                <span className="font-semibold text-ink">HIPAA:</span> Fluxvex handles marketing performance data,
+                not protected health information. Where agencies operate in regulated spaces, we apply
+                HIPAA-aligned safeguards—access control, encryption, and subprocessor agreements where required.
               </p>
               <p>
                 <span className="font-semibold text-ink">CCPA/CPRA:</span> we explain applicable consumer rights

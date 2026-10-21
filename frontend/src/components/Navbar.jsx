@@ -7,6 +7,7 @@ import { useWaitlist } from "@/components/WaitlistContext";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Pricing", href: "/pricing" },
+  { label: "Blog", href: "/blog" },
   { label: "About", href: "/#why" },
   { label: "Resources", href: "/#faq" },
 ];
@@ -47,6 +48,7 @@ const ALL_PAGES = [
   { title: "Integrations", desc: "Initial channel focus", href: "/#integrations" },
   { title: "Security", desc: "Data handling and safeguards", href: "/security" },
   { title: "Pricing", desc: "Two plans, coming soon", href: "/pricing" },
+  { title: "Blog", desc: "Client reporting guides & AI essays", href: "/blog" },
   { title: "Contact", desc: "Talk to the team", href: "/contact" },
 ];
 
@@ -129,10 +131,12 @@ function SectionIcon({ name, className = "h-[18px] w-[18px]" }) {
   }
 }
 
-function MenuPanel({ onClose }) {
+function MenuPanel({ open, onClose }) {
   return (
     <div
-      className="menu-pop absolute inset-x-0 top-[calc(100%+10px)] hidden rounded-3xl border border-black/[0.06] bg-white p-4 shadow-[0_40px_90px_-24px_rgba(16,16,20,0.3)] lg:block"
+      className={`menu-panel absolute inset-x-0 top-[calc(100%+10px)] hidden rounded-3xl border border-black/[0.06] bg-white p-4 shadow-[0_40px_90px_-24px_rgba(16,16,20,0.3)] transition-[opacity,transform,visibility] duration-200 ease-out will-change-transform lg:block ${
+        open ? "visible translate-y-0 opacity-100" : "invisible pointer-events-none -translate-y-1.5 opacity-0"
+      }`}
       data-testid="mega-menu"
     >
       <div className="grid grid-cols-3 gap-1">
@@ -165,10 +169,12 @@ function MenuPanel({ onClose }) {
   );
 }
 
-function PagesPanel({ onClose }) {
+function PagesPanel({ open, onClose }) {
   return (
     <div
-      className="menu-pop absolute inset-x-0 top-[calc(100%+10px)] hidden rounded-3xl border border-black/[0.06] bg-white p-4 shadow-[0_40px_90px_-24px_rgba(16,16,20,0.3)] lg:block"
+      className={`menu-panel absolute inset-x-0 top-[calc(100%+10px)] hidden rounded-3xl border border-black/[0.06] bg-white p-4 shadow-[0_40px_90px_-24px_rgba(16,16,20,0.3)] transition-[opacity,transform,visibility] duration-200 ease-out will-change-transform lg:block ${
+        open ? "visible translate-y-0 opacity-100" : "invisible pointer-events-none -translate-y-1.5 opacity-0"
+      }`}
       data-testid="pages-menu"
     >
       <div className="grid grid-cols-3 gap-1">
@@ -199,6 +205,14 @@ export default function Navbar() {
   const { openWaitlist } = useWaitlist();
   const location = useLocation();
   const navRef = useRef(null);
+  const closeTimer = useRef(null);
+
+  const scheduleMenuClose = () => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 160);
+  };
+  const cancelMenuClose = () => clearTimeout(closeTimer.current);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   useEffect(() => {
     setOpenMenu(null);
@@ -272,7 +286,11 @@ export default function Navbar() {
 
   return (
     <header ref={navRef} className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-4" data-testid="site-navbar">
-      <div className="relative mx-auto max-w-[1340px]">
+      <div
+        className="relative mx-auto max-w-[1340px]"
+        onMouseLeave={scheduleMenuClose}
+        onMouseEnter={cancelMenuClose}
+      >
         <div
           className={`flex h-14 items-center justify-between gap-3 rounded-full bg-[#ECEBE7]/90 pl-5 pr-2 backdrop-blur-md transition-shadow duration-300 ${
             scrolled ? "shadow-[0_20px_45px_-18px_rgba(16,16,20,0.35)]" : "shadow-[0_12px_35px_-18px_rgba(16,16,20,0.25)]"
@@ -327,16 +345,11 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop dropdown panels */}
-        {openMenu && (
-          <div className="hidden lg:block" onMouseLeave={() => setOpenMenu(null)}>
-            {openMenu === "sections" ? (
-              <MenuPanel onClose={() => setOpenMenu(null)} />
-            ) : (
-              <PagesPanel onClose={() => setOpenMenu(null)} />
-            )}
-          </div>
-        )}
+        {/* Desktop dropdown panels — kept mounted, toggled with compositor-friendly transitions */}
+        <div className="hidden lg:block">
+          <MenuPanel open={openMenu === "sections"} onClose={() => setOpenMenu(null)} />
+          <PagesPanel open={openMenu === "pages"} onClose={() => setOpenMenu(null)} />
+        </div>
 
         {/* Mobile sheet */}
         {mobileOpen && (

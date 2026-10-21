@@ -16,3 +16,4 @@ Fluxvex is an automated client-reporting platform for digital marketing agencies
 - /contact — Short inquiry form for product and walkthrough questions.
 - /privacy-policy — Privacy Policy (draft pending final legal review; highlighted fields completed before final publication).
 - /terms — Terms of Service (draft pending final legal review).
+- /blog — Client reporting guides, tool comparisons, and AI-in-marketing essays for agency teams.

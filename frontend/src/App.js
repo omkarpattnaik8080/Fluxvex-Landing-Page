@@ -10,6 +10,8 @@ import Security from "@/pages/Security";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Terms from "@/pages/Terms";
 import NotFound from "@/pages/NotFound";
+import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -89,6 +91,8 @@ function App() {
             <Route path="/security" element={<Security />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </WaitlistProvider>

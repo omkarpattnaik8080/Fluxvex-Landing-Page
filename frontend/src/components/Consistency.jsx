@@ -128,7 +128,7 @@ export default function Consistency() {
                   {row.num}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-xl font-semibold text-ink sm:text-2xl">{row.title}</h3>
+                  <h3 className="font-display text-xl font-semibold tracking-tight text-ink sm:text-2xl">{row.title}</h3>
                   <p className="mt-2 max-w-lg text-[15px] leading-relaxed text-ink-soft">{row.desc}</p>
                 </div>
                 <div className="hidden h-28 w-44 shrink-0 md:block" aria-hidden="true">
