@@ -1,19 +1,27 @@
-import { Component, useEffect } from "react";
+import { Component, lazy, Suspense, useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import { WaitlistProvider } from "@/components/WaitlistContext";
 import Home from "@/pages/Home";
-import Pricing from "@/pages/Pricing";
-import Contact from "@/pages/Contact";
-import Security from "@/pages/Security";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import Terms from "@/pages/Terms";
-import NotFound from "@/pages/NotFound";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
-import Integration from "@/pages/Integration";
-import Careers from "@/pages/Careers";
+
+/* Route-level code splitting — keeps the landing page bundle lean */
+const Pricing = lazy(() => import("@/pages/Pricing"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Security = lazy(() => import("@/pages/Security"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const Terms = lazy(() => import("@/pages/Terms"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const Integration = lazy(() => import("@/pages/Integration"));
+const Careers = lazy(() => import("@/pages/Careers"));
+
+const PageLoader = () => (
+  <div className="flex min-h-[70vh] items-center justify-center bg-page" aria-label="Loading page">
+    <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-accent border-t-transparent" />
+  </div>
+);
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -86,19 +94,21 @@ function App() {
       <BrowserRouter>
         <ScrollManager />
         <WaitlistProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/security" element={<Security />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/integrations/:slug" element={<Integration />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/security" element={<Security />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/integrations/:slug" element={<Integration />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </WaitlistProvider>
       </BrowserRouter>
     </ErrorBoundary>

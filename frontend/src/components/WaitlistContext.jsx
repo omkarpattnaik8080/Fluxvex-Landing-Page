@@ -86,8 +86,8 @@ function SuccessBurst() {
   );
 }
 
-function WaitlistForm({ source }) {
-  const [form, setForm] = useState(INITIAL);
+function WaitlistForm({ source, interest }) {
+  const [form, setForm] = useState({ ...INITIAL, interest: interest || INITIAL.interest });
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [error, setError] = useState("");
 
@@ -278,9 +278,11 @@ function WaitlistForm({ source }) {
 export function WaitlistProvider({ children }) {
   const [open, setOpen] = useState(false);
   const [source, setSource] = useState("hero");
+  const [interest, setInterest] = useState("Not sure yet");
 
-  const openWaitlist = useCallback((from = "hero") => {
+  const openWaitlist = useCallback((from = "hero", overrides = {}) => {
     setSource(from);
+    setInterest(overrides && overrides.interest ? overrides.interest : "Not sure yet");
     setOpen(true);
   }, []);
 
@@ -299,7 +301,7 @@ export function WaitlistProvider({ children }) {
               Get product updates and early-access details.
             </DialogDescription>
           </DialogHeader>
-          <WaitlistForm source={source} />
+          <WaitlistForm source={source} interest={interest} />
         </DialogContent>
       </Dialog>
     </WaitlistContext.Provider>

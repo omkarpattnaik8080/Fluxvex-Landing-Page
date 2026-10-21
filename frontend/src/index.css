@@ -192,3 +192,8 @@ body {
 .range-light::-webkit-slider-thumb:hover { transform: scale(1.18); }
 .range-light::-moz-range-thumb { height: 18px; width: 18px; border-radius: 9999px; background: #ffffff; border: none; box-shadow: 0 0 0 5px rgba(61,67,232,0.18), 0 6px 14px rgba(16,16,20,0.25); cursor: pointer; }
 .range-light::-moz-range-track { background: transparent; }
+.range-dark { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; outline: none; cursor: pointer; }
+.range-dark::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 18px; width: 18px; border-radius: 9999px; background: #ffffff; border: none; box-shadow: 0 0 0 5px rgba(163,168,255,0.3), 0 6px 14px rgba(0,0,0,0.45); transition: transform 0.15s ease; cursor: pointer; }
+.range-dark::-webkit-slider-thumb:hover { transform: scale(1.18); }
+.range-dark::-moz-range-thumb { height: 18px; width: 18px; border-radius: 9999px; background: #ffffff; border: none; box-shadow: 0 0 0 5px rgba(163,168,255,0.3), 0 6px 14px rgba(0,0,0,0.45); cursor: pointer; }
+.range-dark::-moz-range-track { background: transparent; }

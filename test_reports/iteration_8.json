@@ -1,0 +1,28 @@
+{
+  "summary": "Iteration 8 covers the TapCTA sweep, new /careers page end-to-end, Vision 4-stage roadmap, and SEO regression. Backend pytest 17/17 pass (added TestCareers class with 4 cases: valid+persistence, short-message rejection, invalid email, honeypot). Frontend verified live: /careers renders hero, 4 culture cards (careers-culture-1..4), 3 role cards with correct testids (career-role-saas-sales-intern / -us-markets-intern / -uk-markets-intern) each showing 'Unpaid internship · 4 months' and correct PPO line; JSON-LD graph has 3 JobPostings + 1 FAQPage; canonical=https://www.fluxvex.com/careers; unique title. 'Text us to apply' on US role preselects careers-role-select to saas-sales-us-markets-intern and scrolls to apply section. Invalid short message triggers careers-error with backend copy 'Tell us a little more—why do you want to join Fluxvex? (at least 20 characters)'. Valid submission shows careers-success and persists in Mongo. TapCTA sweep: nav-join-waitlist-button, nav-join-waitlist-mobile-button, nav-contact-link, final-cta-join-waitlist-button, final-cta-explore-pricing-link, workflow-cta-button, platform-cta-button, affiliate-cta-button, vision-cta-button, plan-card-starter-cta, plan-card-growth-cta, integration-cta-button, integration-bottom-cta-button, blog-post-cta-button, security-page-contact-link, waitlist-submit-button, careers-submit-button, career-apply-<slug> — ALL resolve to real DOM elements (testid prop → data-testid attr via TapCTA works). Nav Contact navigates to /contact. Vision roadmap: all 4 cards present (reporting/proposals/invoicing/ai-account-manager); AI block has exactly 2 vision-ai-capability + 3 vision-ai-capability-future (correct for new 5-capability layout). Waitlist end-to-end: submit via navbar waitlist-submit-button (motion.button) → POST /api/waitlist → waitlist-success element with 'You're on the list.' Mongo-persisted. Sections mega menu opens on hover with mega-item-* children. SEO: /sitemap.xml = 21 <loc>s incl. /careers, 3 /integrations/*, 12 /blog/*; /llms.txt includes the SaaS sales careers line. Mobile 390px zero horizontal overflow on /, /careers, /integrations/google-ads, /blog. Zero console errors across /, /careers, /blog, /integrations/google-ads.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Pricing plan CTA → waitlist", "issue": "The spec claims 'plan CTA opens waitlist with interest preselected'. In practice openWaitlist() in WaitlistContext accepts only a `from` string and does NOT consume the plan's interest. The modal's Plan interest select stays at the default 'Not sure yet' regardless of which plan CTA was clicked. PricingPreview defines interest: 'Starter'/'Growth' on each plan but never forwards it. Minor UX gap, not a crash.", "affected_selectors": ["plan-card-starter-cta", "plan-card-growth-cta", "waitlist-interest-select"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "(OPTIONAL) Wire interest preselect through openWaitlist(source, { interest }) and have PricingPreview pass the plan's interest, so plan CTAs preselect waitlist-interest-select to 'Starter' or 'Growth'. Currently that review-stated behavior is not implemented but no error occurs."
+  ],
+  "critical_code_review_comments": [
+    "TapCTA correctly maps the custom `testid` prop onto data-testid; after conversion every CTA across Navbar/Footer/HowItWorks/Platform/PricingPreview/Affiliate/Vision/FinalCta/Integration/BlogPost/Security/SecuritySection/WaitlistContext/Careers still exposes its original testid. No regression here.",
+    "WaitlistContext.openWaitlist(from) signature doesn't accept preselect metadata — if plan interest preselect is a product requirement, extend to openWaitlist(from, overrides) and merge into initial form state.",
+    "Careers backend POST /api/careers correctly validates (name, EMAIL_RE, role length, message>=20 chars, <=5000), honeypot `trap` short-circuits, rate limiting shared with waitlist/contact. Response matches frontend error-copy expectation."
+  ],
+  "updated_files": ["/app/backend/tests/test_fluxvex_api.py (added TestCareers class — 4 cases)"],
+  "success_rate": {"backend": "100% (17/17 pytest)", "frontend": "100% on required checks; 1 non-blocking integration gap (plan interest preselect not implemented)"},
+  "test_credentials": "None required (public pages)",
+  "seed_data_creation": "TEST_ prefixed career_applications + waitlist UI records (one real careers application via UI with ui_test_<ts>@testflix.dev + one waitlist with test_wl_<ts>@testflix.dev + test_cta_<ts>@testflix.dev) persist in Mongo; pytest-created rows self-cleanup.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest now 17/17; sitemap expectation remains 21 URLs. Careers endpoint lives at POST /api/careers (name/email/role/portfolio/message/trap, message min 20 chars). Nav waitlist CTA testid is `nav-join-waitlist-button` (not `nav-waitlist-cta`). Plan CTA testids are `plan-card-{starter|growth}-cta` on the HOME page's PricingPreview — the standalone /pricing page uses different components. WaitlistContext success element testid is `waitlist-success`. The known gap: openWaitlist does not propagate plan interest to the modal.",
+  "rca of the issue": "N/A — no blocking defects found this iteration."
+}

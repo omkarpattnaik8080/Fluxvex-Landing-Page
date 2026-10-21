@@ -100,7 +100,7 @@ export function PlanCard({ plan, currency = "usd", highlighted = false, source =
         ))}
       </ul>
       <TapCTA
-        onClick={() => openWaitlist(source)}
+        onClick={() => openWaitlist(source, { interest: plan.interest })}
         className={`mt-8 h-11 w-full rounded-full font-display text-sm font-semibold transition-colors ${
           highlighted
             ? "bg-accent text-white hover:bg-accent-strong"

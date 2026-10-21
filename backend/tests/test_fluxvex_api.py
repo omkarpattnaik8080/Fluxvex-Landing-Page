@@ -90,6 +90,53 @@ class TestContact:
         assert r.status_code == 400
 
 
+# ------------- Careers -------------
+
+class TestCareers:
+    def test_valid_submission_persisted(self, client):
+        email = f"career_{uuid.uuid4().hex[:8]}@testflix.dev"
+        payload = {
+            "name": "TEST Careers User",
+            "email": email,
+            "role": "saas-sales-intern",
+            "portfolio": "https://example.com",
+            "message": "I would love to join Fluxvex because this is a legit test message over twenty chars.",
+        }
+        r = client.post(f"{BASE_URL}/api/careers", json=payload)
+        assert r.status_code == 200, r.text
+        assert r.json()["ok"] is True
+        doc = db.career_applications.find_one({"email": email})
+        assert doc is not None
+        assert doc["role"] == "saas-sales-intern"
+        assert doc["name"] == "TEST Careers User"
+        db.career_applications.delete_one({"email": email})
+
+    def test_short_message_rejected(self, client):
+        r = client.post(f"{BASE_URL}/api/careers", json={
+            "name": "TEST x", "email": f"short_{uuid.uuid4().hex[:6]}@testflix.dev",
+            "role": "saas-sales-intern", "message": "too short",
+        })
+        assert r.status_code == 400
+        assert "20" in r.json().get("detail", "") or "least" in r.json().get("detail", "").lower()
+
+    def test_invalid_email_rejected(self, client):
+        r = client.post(f"{BASE_URL}/api/careers", json={
+            "name": "x", "email": "bad", "role": "saas-sales-intern",
+            "message": "Valid long enough message here for test purposes.",
+        })
+        assert r.status_code == 400
+
+    def test_honeypot(self, client):
+        email = f"trap_{uuid.uuid4().hex[:8]}@testflix.dev"
+        r = client.post(f"{BASE_URL}/api/careers", json={
+            "name": "x", "email": email, "role": "saas-sales-intern",
+            "message": "Valid long enough message here for test purposes.",
+            "trap": "bot",
+        })
+        assert r.status_code == 200
+        assert db.career_applications.find_one({"email": email}) is None
+
+
 # ------------- SEO Static Assets -------------
 
 class TestSeo:

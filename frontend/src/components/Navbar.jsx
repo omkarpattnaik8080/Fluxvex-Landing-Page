@@ -209,6 +209,29 @@ export default function Navbar() {
   const navRef = useRef(null);
   const closeTimer = useRef(null);
   const openTimer = useRef(null);
+  const [activeSection, setActiveSection] = useState("");
+
+  /* Scroll-sync: highlight About (#why) / Resources (#faq) while their section is in view */
+  useEffect(() => {
+    setActiveSection("");
+    if (location.pathname !== "/") return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((en) => en.isIntersecting && setActiveSection(en.target.id)),
+      { rootMargin: "-35% 0px -60% 0px" }
+    );
+    ["why", "faq"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    const onScroll = () => {
+      if (window.scrollY < 240) setActiveSection("");
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [location.pathname]);
 
   const scheduleMenuClose = () => {
     clearTimeout(closeTimer.current);
@@ -257,8 +280,11 @@ export default function Navbar() {
   }, []);
 
   const isActive = (href) => {
-    if (href.startsWith("/#")) return false;
-    if (href === "/") return location.pathname === "/" && !location.hash;
+    if (href.startsWith("/#")) {
+      const id = href.slice(2);
+      return location.pathname === "/" && activeSection === id;
+    }
+    if (href === "/") return location.pathname === "/" && !location.hash && !activeSection;
     return location.pathname.startsWith(href);
   };
 
