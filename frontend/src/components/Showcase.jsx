@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Download, ChevronDown, Sparkles } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+import TapCTA from "@/components/ui/TapCTA";
 
 const PERIODS = {
   may: {
@@ -325,13 +326,13 @@ export default function Showcase() {
                   `Branded for Northbeam Media · fluxvex.app`
                 )}
               </span>
-              <button
+              <TapCTA
                 onClick={() => setExportNote(true)}
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-accent-strong"
-                data-testid="showcase-export-button"
+                testid="showcase-export-button"
               >
                 <Download className="h-3.5 w-3.5" /> Export branded PDF
-              </button>
+              </TapCTA>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
+import TapCTA from "@/components/ui/TapCTA";
 
 const KEY = "fluxvex-consent-v1";
 
@@ -61,15 +61,15 @@ export default function CookieConsent() {
             marketing cookies to understand usage and improve our outreach. You can change your choices at any time.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Button onClick={() => save({ essential: true, analytics: true, marketing: true })} className="h-9 rounded-full bg-accent px-4 text-xs font-semibold hover:bg-accent-strong" data-testid="cookie-accept-all-button">
+            <TapCTA onClick={() => save({ essential: true, analytics: true, marketing: true })} className="h-9 rounded-full bg-accent px-4 text-xs font-semibold text-white hover:bg-accent-strong" testid="cookie-accept-all-button">
               Accept all
-            </Button>
-            <Button onClick={() => save({ essential: true, analytics: false, marketing: false })} variant="outline" className="h-9 rounded-full border-line bg-page px-4 text-xs font-semibold text-ink hover:bg-surface hover:text-ink" data-testid="cookie-reject-optional-button">
+            </TapCTA>
+            <TapCTA onClick={() => save({ essential: true, analytics: false, marketing: false })} className="h-9 rounded-full border border-line bg-page px-4 text-xs font-semibold text-ink hover:bg-surface" testid="cookie-reject-optional-button">
               Reject optional
-            </Button>
-            <Button onClick={() => { setBannerOpen(false); setPrefsOpen(true); }} variant="ghost" className="h-9 rounded-full px-4 text-xs font-semibold text-ink-soft hover:bg-surface hover:text-ink" data-testid="cookie-customize-button">
+            </TapCTA>
+            <TapCTA onClick={() => { setBannerOpen(false); setPrefsOpen(true); }} className="h-9 rounded-full px-4 text-xs font-semibold text-ink-soft hover:bg-surface hover:text-ink" testid="cookie-customize-button">
               Customize
-            </Button>
+            </TapCTA>
           </div>
           <p className="mt-3 text-[11px] text-black/40">
             Read the{" "}
@@ -112,9 +112,9 @@ export default function CookieConsent() {
               </div>
             ))}
           </div>
-          <Button onClick={() => save(consent)} className="mt-5 h-11 w-full rounded-full bg-accent text-sm font-semibold hover:bg-accent-strong" data-testid="cookie-save-button">
+          <TapCTA onClick={() => save(consent)} className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-accent text-sm font-semibold text-white hover:bg-accent-strong" testid="cookie-save-button">
             Save choices
-          </Button>
+          </TapCTA>
         </DialogContent>
       </Dialog>
     </>

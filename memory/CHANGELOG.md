@@ -63,3 +63,8 @@
 
 ## 2026-10-21 (session 5 — AiComparison table → versus cards)
 - Rebuilt the comparison table in "Why a prompt isn't a reporting system" as 6 versus-cards: per-need icons, muted "A prompt by itself" cell vs accent-tinted "The Fluxvex workflow" cell with SVG drawn-circle check animation, column headers with pulse dot, hover lift + glow, mobile stacking with inline labels. Kept testids (comparison-need-1..6, ai-comparison-table). Verified: 6 cards render, no overflow.
+
+## 2026-10-21 (session 6 — 100% CTA coverage + premium hero eyebrow)
+- Hero eyebrow "Automated client reporting for agencies" rebuilt premium: glass pill, word-by-word spring entrance, mint "Pre-launch" chip that pops in with a pulsing dot + recurring shine sweep, periodic sheen across the whole pill.
+- Final CTA sweep completed: CookieConsent (accept/reject/customize/save), Showcase "Export branded PDF", IntegrationsStrip live cards, NotFound "Back to the homepage", Pricing page "Get pricing updates" — all now TapCTA spring-animated. CurrencyToggle already animates (layoutId spring pill). Every interactive CTA site-wide is now motion-animated.
+- Fixed compile regressions (duplicate Reveal import in IntegrationsStrip, duplicate ScrollManager import in App.js). Verified: clean compile, hero renders, no overflow.

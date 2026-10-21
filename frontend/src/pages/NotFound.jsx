@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import { FluxvexLogo } from "@/components/brand/FluxvexLogo";
 import Seo from "@/components/Seo";
+import TapCTA from "@/components/ui/TapCTA";
 
 export default function NotFound() {
   return (
@@ -12,9 +12,13 @@ export default function NotFound() {
       <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
         The link may be outdated. The full product story lives on the homepage.
       </p>
-      <Link to="/" className="mt-8 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-strong" data-testid="not-found-home-link">
+      <TapCTA
+        to="/"
+        className="mt-8 inline-flex items-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
+        testid="not-found-home-link"
+      >
         Back to the homepage
-      </Link>
+      </TapCTA>
     </div>
   );
 }

@@ -448,14 +448,45 @@ export default function Hero() {
 
         <div className="relative mx-auto max-w-5xl px-5 pb-14 pt-24 text-center sm:px-8 sm:pt-28 lg:pb-20">
           <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm"
+            initial="hidden"
+            animate="show"
+            variants={{ show: { transition: { staggerChildren: 0.055, delayChildren: 0.15 } } }}
+            className="group relative mx-auto inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm"
             data-testid="hero-eyebrow"
           >
-            Automated client reporting for agencies
-            <span className="rounded-full bg-mint px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">Pre-launch</span>
+            {"Automated client reporting for agencies".split(" ").map((w, i) => (
+              <motion.span
+                key={i}
+                className="inline-block"
+                variants={{
+                  hidden: { opacity: 0, y: 12 },
+                  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 340, damping: 24 } },
+                }}
+              >
+                {w}
+              </motion.span>
+            ))}
+            <motion.span
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.7 }}
+              className="relative inline-flex items-center gap-1 overflow-hidden rounded-full bg-mint px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white"
+            >
+              <span className="h-1 w-1 rounded-full bg-white animate-pulse-dot" aria-hidden="true" />
+              Pre-launch
+              <motion.span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/70 to-transparent"
+                animate={{ x: ["-160%", "380%"] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", repeatDelay: 2.6 }}
+              />
+            </motion.span>
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 w-1/4 bg-gradient-to-r from-transparent via-white/25 to-transparent"
+              animate={{ x: ["-140%", "440%"] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", repeatDelay: 4.2 }}
+            />
           </motion.p>
 
           <div className="mt-7">

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
+import TapCTA from "@/components/ui/TapCTA";
 import CinematicText from "@/components/ui/CinematicText";
 import { GoogleAdsMark, MetaMark, GA4Mark, LinkedInMark, TikTokMark } from "@/components/brand/IntegrationMarks";
 
@@ -81,9 +82,9 @@ function Card({ item, soon = false, i }) {
           {body}
         </div>
       ) : (
-        <Link to={item.href} className={cardClass} data-testid={testid}>
+        <TapCTA to={item.href} className={cardClass} testid={testid}>
           {body}
-        </Link>
+        </TapCTA>
       )}
     </Reveal>
   );

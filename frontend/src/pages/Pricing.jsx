@@ -10,6 +10,7 @@ import { Reveal } from "@/components/Reveal";
 import { PlanCard } from "@/components/PricingPreview";
 import { CurrencyToggle } from "@/components/CurrencyToggle";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const TABLE_ROWS = [
   ["Client limit", "Up to 5 clients", "More than 5 clients"],
@@ -176,14 +177,14 @@ export default function Pricing() {
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
                 Join the waitlist and pick your plan interest—we’ll email the announcement the moment it’s ready.
               </p>
-              <button
+              <TapCTA
                 onClick={() => openWaitlist("pricing-page-cta")}
-                className="group mt-7 inline-flex h-11 items-center gap-2 rounded-full bg-accent px-6 font-display text-sm font-semibold text-white transition-all hover:gap-3 hover:bg-accent-strong"
-                data-testid="pricing-page-cta-button"
+                className="group mt-7 inline-flex h-11 items-center gap-2 rounded-full bg-accent px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
+                testid="pricing-page-cta-button"
               >
                 Get pricing updates
-                <ArrowRight className="h-4 w-4" />
-              </button>
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </TapCTA>
               <p className="mt-4 text-xs text-ink-soft">
                 Questions first? <Link to="/contact" className="text-accent underline-offset-4 hover:underline">Contact the team</Link>.
               </p>
