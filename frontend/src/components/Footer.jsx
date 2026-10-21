@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Github, Linkedin, MapPin, Youtube } from "lucide-react";
 import { FluxvexLogo, FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const PRODUCT_LINKS = [
   ["Features", "/#features"],
@@ -14,6 +15,7 @@ const PAGE_LINKS = [
   ["Home", "/"],
   ["Pricing", "/pricing"],
   ["Blog", "/blog"],
+  ["Careers", "/careers"],
   ["FAQ", "/#faq"],
   ["Contact", "/contact"],
 ];
@@ -33,13 +35,13 @@ export default function Footer() {
             <p className="mt-4 max-w-[240px] text-sm leading-relaxed text-white/50">
               Automated client reporting for marketing agencies.
             </p>
-            <button
+            <TapCTA
               onClick={() => openWaitlist("footer")}
               className="mt-6 rounded-full bg-white px-5 py-2 font-display text-sm font-semibold text-ink transition-colors hover:bg-white/85"
-              data-testid="footer-join-waitlist-button"
+              testid="footer-join-waitlist-button"
             >
               Join waitlist
-            </button>
+            </TapCTA>
           </div>
 
           {/* product */}

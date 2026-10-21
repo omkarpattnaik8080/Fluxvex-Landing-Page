@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import TapCTA from "@/components/ui/TapCTA";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const WaitlistContext = createContext(null);
@@ -259,14 +260,14 @@ function WaitlistForm({ source }) {
           {error}
         </p>
       )}
-      <Button
+      <TapCTA
         type="submit"
         disabled={status === "loading"}
-        className="h-11 w-full rounded-full bg-accent font-display text-sm font-semibold text-white hover:bg-accent-strong"
-        data-testid="waitlist-submit-button"
+        className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-accent font-display text-sm font-semibold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
+        testid="waitlist-submit-button"
       >
         {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Join the waitlist"}
-      </Button>
+      </TapCTA>
       <p className="text-center text-xs leading-relaxed text-ink-soft/80">
         We’ll only email you about Fluxvex launch and early-access updates.
       </p>

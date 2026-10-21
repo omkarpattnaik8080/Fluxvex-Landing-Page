@@ -12,6 +12,7 @@ import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark, LinkedInMark, TikTokMark } from "@/components/brand/IntegrationMarks";
 import { INTEGRATIONS, getIntegration } from "@/data/integrations";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const MARKS = { googleAds: GoogleAdsMark, meta: MetaMark, ga4: GA4Mark, linkedin: LinkedInMark, tiktok: TikTokMark };
 const STEP_ICONS = { link: "M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5", wand: "M15 4V2m0 20v-2m5-15h2M2 9h2m13.5-4.5L19 3M4.5 19.5 3 21m14.5-2.5L19 20M4.5 4.5 3 3m9 6-6 6", clock: "M12 7.5V12l3 2M12 3a9 9 0 1 0 9 9 9 9 0 0 0-9-9Z", campaign: "M3 11h4l10-6v14l-10-6H3v8", target: "M12 12m-9 0a9 9 0 1 0 18 0 9 9 0 1 0-18 0M12 12m-5 0a5 5 0 1 0 10 0 5 5 0 1 0-10 0M12 12m-1 0a1 1 0 1 0 2 0 1 1 0 1 0-2 0", clicks: "M9 3v4a2 2 0 0 1-2 2H3m18 10v-4a2 2 0 0 0-2-2h-4M3 9v6a3 3 0 0 0 3 3h2m13-9V9a3 3 0 0 0-3-3h-2", globe: "M12 3a9 9 0 1 0 9 9M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z", gauge: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm4.5-7.5L14 10M12 21a9 9 0 1 1 9-9" };
@@ -105,14 +106,14 @@ export default function Integration() {
                 </Reveal>
                 <Reveal y={14} delay={0.15}>
                   <div className="mt-7 flex flex-wrap items-center gap-3">
-                    <button
+                    <TapCTA
                       onClick={() => openWaitlist(`integration-${config.slug}`)}
                       className="group inline-flex h-11 items-center gap-2 rounded-full bg-accent px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
-                      data-testid="integration-cta-button"
+                      testid="integration-cta-button"
                     >
                       Join the waitlist
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
+                    </TapCTA>
                     <Link
                       to="/#workflow"
                       className="inline-flex h-11 items-center rounded-full border border-black/10 bg-surface px-6 font-display text-sm font-semibold text-ink transition-colors hover:border-accent/40 hover:text-accent"
@@ -238,13 +239,13 @@ export default function Integration() {
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
                 Connect {config.name} once at launch—every report after that builds itself.
               </p>
-              <button
+              <TapCTA
                 onClick={() => openWaitlist(`integration-${config.slug}`)}
                 className="mt-6 inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
-                data-testid="integration-bottom-cta-button"
+                testid="integration-bottom-cta-button"
               >
                 Join the waitlist
-              </button>
+              </TapCTA>
             </div>
           </Reveal>
         </div>

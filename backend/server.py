@@ -98,6 +98,15 @@ class ContactCreate(BaseModel):
     trap: str = ""
 
 
+class CareerApplicationCreate(BaseModel):
+    name: str
+    email: str
+    role: str
+    portfolio: str = ""
+    message: str
+    trap: str = ""
+
+
 # ---------- Routes ----------
 
 @api_router.get("/")
@@ -186,6 +195,45 @@ async def submit_contact(input: ContactCreate, request: Request):
         "Contact",
         ["Timestamp", "Name", "Email", "Agency", "Message"],
         [doc["created_at"], name, email, doc["agency"], message[:500]],
+    )
+    return {"ok": True, "sheet_status": sheet_status}
+
+
+@api_router.post("/careers")
+async def submit_career_application(input: CareerApplicationCreate, request: Request):
+    if not _rate_ok(request.client.host if request.client else "unknown"):
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again shortly.")
+    if input.trap:
+        return {"ok": True, "sheet_status": "skipped"}
+    name = input.name.strip()
+    email = input.email.strip().lower()
+    role = input.role.strip()
+    message = input.message.strip()
+    if not name or len(name) > 120:
+        raise HTTPException(status_code=400, detail="Please enter your name.")
+    if not EMAIL_RE.match(email):
+        raise HTTPException(status_code=400, detail="Please enter a valid email.")
+    if not role or len(role) > 120:
+        raise HTTPException(status_code=400, detail="Please choose a role.")
+    if not message or len(message) < 20:
+        raise HTTPException(status_code=400, detail="Tell us a little more—why do you want to join Fluxvex? (at least 20 characters)")
+    if len(message) > 5000:
+        raise HTTPException(status_code=400, detail="Please keep your message under 5000 characters.")
+
+    doc = {
+        "name": name,
+        "email": email,
+        "role": role,
+        "portfolio": input.portfolio.strip()[:300],
+        "message": message,
+        "created_at": _now_iso(),
+    }
+    await db.career_applications.insert_one(doc)
+
+    sheet_status = await forward_to_sheets(
+        "Careers",
+        ["Timestamp", "Name", "Email", "Role", "Portfolio", "Message"],
+        [doc["created_at"], name, email, role, doc["portfolio"], message[:500]],
     )
     return {"ok": True, "sheet_status": sheet_status}
 

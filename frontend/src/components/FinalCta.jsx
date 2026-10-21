@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
+import TapCTA from "@/components/ui/TapCTA";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
 
@@ -105,21 +106,21 @@ export default function FinalCta() {
           </Reveal>
           <Reveal y={16} delay={0.28}>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <button
+              <TapCTA
                 onClick={() => openWaitlist("final-cta")}
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-white px-7 font-display text-sm font-semibold text-ink transition-all hover:gap-3"
-                data-testid="final-cta-join-waitlist-button"
+                className="group inline-flex h-12 items-center gap-2 rounded-full bg-white px-7 font-display text-sm font-semibold text-ink transition-colors hover:bg-white/90"
+                testid="final-cta-join-waitlist-button"
               >
                 Join the waitlist
-                <ArrowRight className="h-4 w-4" />
-              </button>
-              <Link
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </TapCTA>
+              <TapCTA
                 to="/pricing"
                 className="inline-flex h-12 items-center rounded-full border border-white/40 bg-white/10 px-7 font-display text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-                data-testid="final-cta-explore-pricing-link"
+                testid="final-cta-explore-pricing-link"
               >
                 Explore pricing
-              </Link>
+              </TapCTA>
             </div>
           </Reveal>
           <InsightTicker />

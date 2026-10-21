@@ -9,6 +9,7 @@ import Seo from "@/components/Seo";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 import { getPostBySlug, getRelatedPosts, AUTHORS, formatDate, authorInitial } from "@/data/blog";
 
 function ArticleBody({ body }) {
@@ -150,13 +151,13 @@ export default function BlogPost() {
                 Fluxvex turns Google Ads, Meta Ads, and GA4 data into branded client reports—drafted by AI,
                 approved by you, delivered on schedule.
               </p>
-              <button
+              <TapCTA
                 onClick={() => openWaitlist("blog-post")}
-                className="mt-6 inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
-                data-testid="blog-post-cta-button"
+                className="inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
+                testid="blog-post-cta-button"
               >
                 Join the waitlist
-              </button>
+              </TapCTA>
             </div>
           </Reveal>
 

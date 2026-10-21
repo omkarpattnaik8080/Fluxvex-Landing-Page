@@ -4,6 +4,7 @@ import { PadlockIllustration } from "@/components/hairline/Illustrations";
 import { ArrowRight, KeyRound, Lock, Users, Vault, Trash2, Siren, ListChecks, FileText, ShieldCheck } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+import TapCTA from "@/components/ui/TapCTA";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import ComplianceBadges from "@/components/ComplianceBadges";
 
@@ -117,14 +118,14 @@ export default function SecuritySection() {
                 Our controls are designed around GDPR, HIPAA, India’s DPDP, and CCPA/CPRA requirements—see how
                 on our security page.
               </p>
-              <Link
+              <TapCTA
                 to="/security"
                 className="group mt-6 inline-flex items-center gap-2 rounded-full border border-black/10 bg-page px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-accent/50 hover:text-accent"
-                data-testid="security-approach-link"
+                testid="security-approach-link"
               >
                 Read our security approach
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
+              </TapCTA>
             </div>
           </div>
         </Reveal>

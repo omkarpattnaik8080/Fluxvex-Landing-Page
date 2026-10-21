@@ -71,7 +71,8 @@ function Card({ item, soon = false, i }) {
   );
 
   const cardClass = `flex h-full flex-col gap-3 p-6 transition-colors duration-300 ${soon ? "opacity-80" : "group hover:bg-accent-tint/25"}`;
-  const testid = `integration-card-${slugOf(item.name)}`;
+  const hrefSlug = item.href ? item.href.split("/").pop() : slugOf(item.name);
+  const testid = soon ? `integration-card-${slugOf(item.name)}` : `integration-card-${hrefSlug}`;
 
   return (
     <Reveal delay={i * 0.08} className="bg-page h-full">

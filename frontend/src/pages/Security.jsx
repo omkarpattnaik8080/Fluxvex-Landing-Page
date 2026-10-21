@@ -6,6 +6,7 @@ import Seo from "@/components/Seo";
 import ComplianceBadges from "@/components/ComplianceBadges";
 import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
+import TapCTA from "@/components/ui/TapCTA";
 
 const CONTROLS = [
   ["OAuth-based connections", "Least-privilege scopes, requested only where the platform supports them."],
@@ -108,9 +109,13 @@ export default function Security() {
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
                 Privacy questions, deletion requests, and disconnect help all start with a message.
               </p>
-              <Link to="/contact" className="mt-6 inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong" data-testid="security-page-contact-link">
+              <TapCTA
+                to="/contact"
+                className="mt-6 inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
+                testid="security-page-contact-link"
+              >
                 Contact the team
-              </Link>
+              </TapCTA>
             </div>
           </Reveal>
         </div>

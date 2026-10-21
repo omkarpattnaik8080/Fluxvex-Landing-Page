@@ -123,11 +123,12 @@ class TestSeo:
         ct = r.headers.get("content-type", "")
         assert "xml" in ct
         urls = re.findall(r'<loc>([^<]+)</loc>', r.text)
-        # Iteration 7: 4 pages + 3 integration pages + /blog + 12 blog posts = 20
-        assert len(urls) == 20
+        # Iteration 8: 4 pages + /careers + 3 integration pages + /blog + 12 blog posts = 21
+        assert len(urls) == 21
         for u in urls:
             assert u.startswith("https://www.fluxvex.com")
         assert any(u.endswith("/blog") for u in urls)
+        assert any(u.endswith("/careers") for u in urls)
         blog_posts = [u for u in urls if "/blog/" in u]
         assert len(blog_posts) == 12
         integration_pages = [u for u in urls if "/integrations/" in u]

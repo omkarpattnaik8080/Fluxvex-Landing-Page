@@ -5,6 +5,7 @@ import { Link2, Share2, BadgePercent, ArrowRight } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const STEPS = [
   {
@@ -116,14 +117,14 @@ export default function Affiliate() {
           ))}
           <Reveal delay={0.2}>
             <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:gap-6">
-              <button
+              <TapCTA
                 onClick={() => openWaitlist("affiliate")}
                 className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-ink px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-black/80"
-                data-testid="affiliate-cta-button"
+                testid="affiliate-cta-button"
               >
                 Join the partner waitlist
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
+              </TapCTA>
               <Link
                 to="/contact"
                 className="text-sm font-medium text-ink-soft underline-offset-4 transition-colors hover:text-accent hover:underline"

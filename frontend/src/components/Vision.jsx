@@ -1,8 +1,10 @@
+import { motion, useReducedMotion } from "framer-motion";
 import { Plug, Sparkles, CalendarClock, ArrowRight, FileText, PenLine, Receipt, Zap } from "lucide-react";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import ComplianceBadges from "@/components/ComplianceBadges";
+import TapCTA from "@/components/ui/TapCTA";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { useWaitlist } from "@/components/WaitlistContext";
@@ -31,6 +33,7 @@ const STAGES = [
     icon: FileText,
     chip: "Building now",
     chipStyle: "border-mint/40 bg-mint/10 text-[#0E8A3E]",
+    highlight: true,
     title: "Client reporting",
     desc: "The launch focus. Automated, branded client reports from Google Ads, Meta Ads, and GA4—AI-drafted summaries, approved by your team, delivered on schedule.",
     testid: "vision-roadmap-reporting",
@@ -51,6 +54,14 @@ const STAGES = [
     desc: "Invoices generated from delivered work—retainers, reporting cycles, and ad spend—closing the loop from proposal to payment in one system.",
     testid: "vision-roadmap-invoicing",
   },
+  {
+    icon: Sparkles,
+    chip: "Future plan",
+    chipStyle: "border-accent/30 bg-accent-tint/60 text-accent",
+    title: "AI account manager",
+    desc: "An AI account manager that runs day-to-day client communication—status updates, answers, and reporting calls—replacing a role most agencies pay lakhs for every year.",
+    testid: "vision-roadmap-ai-account-manager",
+  },
 ];
 
 /* State-of-the-art AI capabilities — some at launch, some on the roadmap */
@@ -59,6 +70,7 @@ const AI_CAPABILITIES = [
   { text: "Answers questions about any reporting period in plain language", plan: false },
   { text: "Drafts proposals scoped from real client performance", plan: true },
   { text: "Turns delivered work into ready-to-send invoices", plan: true },
+  { text: "An AI account manager that runs day-to-day client communication—saving what a full-time manager costs", plan: true },
 ];
 
 function VisionScene() {
@@ -101,12 +113,13 @@ function VisionScene() {
 
 export default function Vision() {
   const { openWaitlist } = useWaitlist();
+  const reduce = useReducedMotion();
   return (
     <SectionShell id="vision">
       <SectionHeader
         overline="Our vision"
         title="Not just reporting. The operating system for agencies."
-        copy="Fluxvex starts with the work agencies feel every month—client reporting. The plan is to expand into the full agency loop, from proposal making to invoicing, with state-of-the-art AI at the core of every step."
+        copy="Fluxvex starts with the work agencies feel every month—client reporting. The plan is to expand into the full agency loop, from proposal making to invoicing—all the way to an AI account manager—with state-of-the-art AI at the core of every step."
       />
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
@@ -147,37 +160,78 @@ export default function Vision() {
             </p>
           </div>
         </Reveal>
-        <div className="relative mt-10 grid gap-5 lg:grid-cols-3 lg:gap-8">
+
+        {/* animated progress line (desktop) */}
+        <div className="relative mx-auto mt-10 hidden h-px max-w-3xl lg:block" aria-hidden="true">
+          <motion.div
+            className="absolute inset-x-0 top-0 h-px origin-left bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+            initial={reduce ? false : { scaleX: 0 }}
+            whileInView={reduce ? {} : { scaleX: 1 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 1.1, ease: [0.19, 1, 0.22, 1] }}
+          />
+          {!reduce && (
+            <motion.span
+              className="absolute -top-[3px] h-[7px] w-[7px] rounded-full bg-accent shadow-[0_0_10px_2px_rgba(61,67,232,0.45)]"
+              initial={{ left: "0%", opacity: 0 }}
+              whileInView={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.6, ease: "easeInOut" }}
+            />
+          )}
+        </div>
+
+        <div className="relative mt-8 grid gap-5 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4 lg:gap-6">
           {STAGES.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.1} className="h-full">
-              <div className="relative h-full">
+            <Reveal key={s.title} delay={i * 0.1} className="relative h-full">
+              <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="h-full">
                 <div
-                  className="flex h-full flex-col rounded-2xl border border-line bg-page p-7 shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]"
+                  className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-7 ${
+                    s.highlight
+                      ? "border-accent/40 bg-page shadow-[0_32px_64px_-28px_rgba(61,67,232,0.45)]"
+                      : "border-line bg-page shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]"
+                  }`}
                   data-testid={s.testid}
                 >
+                  {s.highlight && (
+                    <span
+                      className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(60%_50%_at_50%_0%,rgba(61,67,232,0.08),transparent_75%)]"
+                      aria-hidden="true"
+                    />
+                  )}
                   <div className="flex items-center justify-between gap-3">
                     <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-surface text-accent">
                       <s.icon className="h-5 w-5" strokeWidth={1.8} />
                     </span>
-                    <span className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${s.chipStyle}`}>
+                    <span
+                      className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${s.chipStyle}`}
+                    >
+                      {s.highlight && <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" />}
                       {s.chip}
                     </span>
                   </div>
                   <h4 className="mt-5 font-display text-xl font-semibold tracking-tight text-ink">
-                    <span className="mr-2 text-sm font-bold text-black/30">0{i + 1}</span>
+                    <span className="mr-2 text-sm font-bold text-black/30">{`0${i + 1}`}</span>
                     {s.title}
                   </h4>
                   <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink-soft">{s.desc}</p>
                 </div>
-                {i < STAGES.length - 1 && (
-                  <span
-                    className="absolute -right-[26px] top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-page text-accent shadow-[0_10px_20px_-8px_rgba(16,16,20,0.3)] lg:flex"
-                    aria-hidden="true"
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                )}
-              </div>
+              </motion.div>
+              {i < STAGES.length - 1 && (
+                <span
+                  className="absolute -right-[26px] top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-page text-accent shadow-[0_10px_20px_-8px_rgba(16,16,20,0.3)] lg:flex"
+                  aria-hidden="true"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                  {!reduce && (
+                    <motion.span
+                      className="absolute inset-0 rounded-full border border-accent/50"
+                      animate={{ scale: [1, 1.45], opacity: [0.8, 0] }}
+                      transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut", delay: i * 0.5 }}
+                    />
+                  )}
+                </span>
+              )}
             </Reveal>
           ))}
         </div>
@@ -197,8 +251,16 @@ export default function Vision() {
         >
           <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
             <div className="max-w-sm">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-white shadow-[0_16px_30px_-10px_rgba(61,67,232,0.6)]">
+              <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-white shadow-[0_16px_30px_-10px_rgba(61,67,232,0.6)]">
                 <Zap className="h-5 w-5" />
+                {!reduce && (
+                  <motion.span
+                    className="absolute inset-0 rounded-xl border-2 border-accent/50"
+                    animate={{ scale: [1, 1.3], opacity: [0.9, 0] }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+                    aria-hidden="true"
+                  />
+                )}
               </span>
               <h3 className="mt-5 font-display text-2xl font-semibold tracking-tight text-ink">
                 State-of-the-art AI at the core
@@ -208,10 +270,20 @@ export default function Vision() {
                 leaving every final call to your team.
               </p>
             </div>
-            <ul className="grid flex-1 gap-3 sm:grid-cols-2">
+            <motion.ul
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={{ show: { transition: { staggerChildren: 0.08 } } }}
+              className="grid flex-1 gap-3 sm:grid-cols-2"
+            >
               {AI_CAPABILITIES.map((c) => (
-                <li
+                <motion.li
                   key={c.text}
+                  variants={{
+                    hidden: { opacity: 0, y: 14 },
+                    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 26 } },
+                  }}
                   className="flex items-start gap-2.5 rounded-xl border border-accent/15 bg-page/80 p-4 text-[13.5px] font-medium leading-snug text-ink"
                   data-testid={`vision-ai-capability${c.plan ? "-future" : ""}`}
                 >
@@ -224,9 +296,9 @@ export default function Vision() {
                       </span>
                     )}
                   </span>
-                </li>
+                </motion.li>
               ))}
-            </ul>
+            </motion.ul>
           </div>
         </div>
       </Reveal>
@@ -251,14 +323,14 @@ export default function Vision() {
             We are building toward a launch where an agency connects its accounts once—and never rebuilds a
             client report by hand again. The proposal and invoicing modules follow on the same foundation.
           </p>
-          <button
+          <TapCTA
             onClick={() => openWaitlist("vision")}
             className="group inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-accent px-6 font-display text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
-            data-testid="vision-cta-button"
+            testid="vision-cta-button"
           >
             Be part of the vision
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </button>
+          </TapCTA>
         </div>
       </Reveal>
     </SectionShell>

@@ -7,6 +7,7 @@ import { Reveal } from "@/components/Reveal";
 import Countdown from "@/components/Countdown";
 import { CurrencyToggle } from "@/components/CurrencyToggle";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const PLANS = [
   {
@@ -98,17 +99,17 @@ export function PlanCard({ plan, currency = "usd", highlighted = false, source =
           </li>
         ))}
       </ul>
-      <button
+      <TapCTA
         onClick={() => openWaitlist(source)}
         className={`mt-8 h-11 w-full rounded-full font-display text-sm font-semibold transition-colors ${
           highlighted
             ? "bg-accent text-white hover:bg-accent-strong"
             : "border border-black/10 bg-page text-ink hover:border-accent/40 hover:text-accent"
         }`}
-        data-testid={`${plan.testid}-cta`}
+        testid={`${plan.testid}-cta`}
       >
         {plan.cta}
-      </button>
+      </TapCTA>
     </div>
   );
 }

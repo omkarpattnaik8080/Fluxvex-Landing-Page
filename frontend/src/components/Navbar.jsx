@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { FluxvexLogo } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -49,6 +50,7 @@ const ALL_PAGES = [
   { title: "Security", desc: "Data handling and safeguards", href: "/security" },
   { title: "Pricing", desc: "Two plans, coming soon", href: "/pricing" },
   { title: "Blog", desc: "Client reporting guides & AI essays", href: "/blog" },
+  { title: "Careers", desc: "Internships with guaranteed PPOs", href: "/careers" },
   { title: "Contact", desc: "Talk to the team", href: "/contact" },
 ];
 
@@ -322,31 +324,31 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden shrink-0 items-center gap-2 lg:flex">
-            <Link
+            <TapCTA
               to="/contact"
-              className="rounded-full bg-white px-4.5 px-5 py-2.5 font-display text-sm font-medium text-ink shadow-sm transition-colors hover:bg-white/80"
-              data-testid="nav-contact-link"
+              className="rounded-full bg-white px-5 py-2.5 font-display text-sm font-medium text-ink shadow-sm transition-colors hover:bg-white/80"
+              testid="nav-contact-link"
             >
               Contact Us
-            </Link>
-            <button
+            </TapCTA>
+            <TapCTA
               onClick={() => openWaitlist("navbar")}
               className="rounded-full bg-ink px-5 py-2.5 font-display text-sm font-medium text-white transition-colors hover:bg-black/80"
-              data-testid="nav-join-waitlist-button"
+              testid="nav-join-waitlist-button"
             >
               Join the Waitlist
-            </button>
+            </TapCTA>
           </div>
 
           {/* Mobile */}
           <div className="flex shrink-0 items-center gap-2 lg:hidden">
-            <button
+            <TapCTA
               onClick={() => openWaitlist("navbar-mobile")}
               className="rounded-full bg-white px-4 py-2 font-display text-sm font-medium text-ink shadow-sm"
-              data-testid="nav-join-waitlist-mobile-button"
+              testid="nav-join-waitlist-mobile-button"
             >
               Join Waitlist
-            </button>
+            </TapCTA>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-expanded={mobileOpen}

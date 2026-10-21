@@ -36,7 +36,7 @@ function VisualInputs() {
         <IsoTile x={104} y={82} w={44} h={44} active>
           <FluxvexMark size={22} className="rounded-lg" />
         </IsoTile>
-        <IsoBillboard x={158} y={24}>
+        <IsoBillboard x={154} y={24}>
           <div className="w-44 space-y-1.5 whitespace-normal">
             {[
               { icon: BarChart3, label: "Campaign metrics", count: "12", hot: false },

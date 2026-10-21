@@ -7,6 +7,7 @@ import CinematicText from "@/components/ui/CinematicText";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const STEPS = [
   { icon: Plug, tab: "Connect", title: "Connect supported platforms", desc: "Authorize the integrations the product supports.", testid: "workflow-step-1" },
@@ -242,14 +243,14 @@ export default function HowItWorks() {
                   {STEPS[active].title}
                 </h3>
                 <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-ink-soft">{STEPS[active].desc}</p>
-                <button
+                <TapCTA
                   onClick={() => openWaitlist("workflow")}
                   className="mt-8 inline-flex h-10 items-center rounded-full border border-black/10 bg-page px-5 text-sm font-medium text-ink shadow-sm transition-colors hover:border-accent/40 hover:text-accent"
-                  data-testid="workflow-cta-button"
+                  testid="workflow-cta-button"
                 >
                   Join the waitlist
                   <ChevronRight className="ml-1 h-4 w-4" />
-                </button>
+                </TapCTA>
               </motion.div>
             </AnimatePresence>
             <div className="mt-10 flex items-center gap-2" aria-hidden="true">

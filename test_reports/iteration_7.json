@@ -1,0 +1,28 @@
+{
+  "summary": "Iteration 7 full regression on new features. Backend pytest 13/13 pass (sitemap now 20 URLs incl. 3 integrations + 12 blog posts + /blog + 4 core, llms.txt has /blog, canonical/og intact, JSON-LD valid, no price in llms, FAQ JSON-LD matches on-page). Frontend verified: Hero dashboard width 896px (max-w-4xl) with blue glow + waitlist CTA opens modal, no horizontal overflow 1440 or 390. FeatureGrid cards 1/2/3 render with scenes (card-1 has 1 billboard chip grazing boundary by <1px — cosmetic). Navbar: Sections mega-menu opens with ~60ms delay on hover, has divide-line hairline dividers, swap to All Pages works. RoiCalculator roi-eyebrow testid present. Countdown testid countdown-timer rendered on home pricing preview AND /pricing (count=2), secs value ticked 39→36 across 2.2s (ticking confirmed). Integration subpages /integrations/google-ads, /integrations/meta-ads, /integrations/ga4 all render with unique titles, canonicals, h1 'Name + Fluxvex', 4 stats + 3 steps + 2 FAQs + diagram + CTA opening waitlist modal; cross-links navigate between them; /integrations/unknown renders clean 404. IntegrationsStrip: initially integration-card-ga4 testid was MISSING (slug derived from name 'Google Analytics 4' → 'google-analytics-4'); FIXED by deriving slug from href. Vision section complete: vision-roadmap + 3 stage cards (reporting/proposals/invoicing), vision-ai-block with exactly 2 future + 2 normal capabilities, 4 compliance badges (gdpr/hipaa/dpdp/ccpa), vision-cta-button opens modal. Zero page/console errors on home, /pricing, /integrations/google-ads. Mobile 390px: 0 overflow on /, /pricing, /integrations/google-ads.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "FeatureGrid (home)", "issues": ["feature-card-1 has 1 billboard chip whose bounding box exceeds card boundary by ~1px (cosmetic, barely visible). Cards 2 & 3 fully contained."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "(FIXED by T1) IntegrationsStrip derived testid from name — GA4 card ended up as integration-card-google-analytics-4 instead of integration-card-ga4. Fixed by using the last href segment to build the testid for live cards."
+  ],
+  "critical_code_review_comments": [
+    "IntegrationsStrip.Card slug derivation originally used slugOf(item.name) which broke the GA4 testid contract; now uses href segment. Consider adding an explicit `slug` field to the LIVE config to avoid the mismatch recurring.",
+    "Integration.jsx: for /integrations/unknown it returns <NotFound/> inside the Integration page — fine, but note the SSR'd index.html briefly shows home content before hydration (expected for CRA)."
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/IntegrationsStrip.jsx (derive live card testid from href segment so ga4 slug matches)"
+  ],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "100% (all requested checks pass post-fix)"},
+  "test_credentials": "None required (public pages)",
+  "seed_data_creation": "TEST_ prefixed waitlist/contact entries created+deleted during pytest",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "backend_test.py expects sitemap=20 URLs (4 core + 3 integrations + /blog + 12 posts). Integration subpage flow uses /integrations/:slug with slugs google-ads/meta-ads/ga4. Live IntegrationsStrip card testids are integration-card-<lastHrefSegment>. Mega-menu testids: mega-menu / pages-menu / mega-item-<slug>. Countdown testid: countdown-timer with children countdown-days/hours/mins/secs (ticks every 1s). Vision testids: vision-roadmap, vision-roadmap-reporting/proposals/invoicing, vision-ai-block, vision-ai-capability (×2) + vision-ai-capability-future (×2), compliance-badge-gdpr/hipaa/dpdp/ccpa, vision-cta-button."
+}

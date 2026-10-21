@@ -1,0 +1,73 @@
+/* Careers data — roles, culture, and FAQ for /careers (user-confirmed program details) */
+export const ROLES = [
+  {
+    slug: "saas-sales-intern",
+    title: "SaaS Sales Intern",
+    team: "Growth",
+    location: "Remote + Hybrid · Bengaluru, India",
+    type: "Unpaid internship · 4 months",
+    ppo: "Guaranteed PPO conversion chances—with a package up to ₹6 LPA",
+    ppoShort: "Up to ₹6 LPA on conversion",
+    desc: "Learn B2B SaaS sales on a product agencies genuinely need. Work the waitlist with the founding team, talk to agency owners, run demos, and turn interest into launch-day customers.",
+    wants: [
+      "Clear, confident conversations—in English, on calls and in text",
+      "Curiosity about how marketing agencies actually operate",
+      "A bias for following up without being reminded",
+    ],
+    testid: "career-role-saas-sales-intern",
+  },
+  {
+    slug: "saas-sales-us-markets-intern",
+    title: "SaaS Sales US Markets Intern",
+    team: "Growth",
+    location: "Remote · USA",
+    type: "Unpaid internship · 4 months",
+    ppo: "Guaranteed PPO conversion chances—with a package above market standards",
+    ppoShort: "Above-market package on conversion",
+    desc: "Own US-market conversations for a pre-launch SaaS: prospect agencies across US time zones, run discovery texts and calls, and feed real objections straight into the product.",
+    wants: [
+      "Comfort selling into US time zones, text-first and call-ready",
+      "Talent for turning a cold reply into a real conversation",
+      "Interest in agencies, ad platforms, and reporting pain",
+    ],
+    testid: "career-role-saas-sales-us-markets-intern",
+  },
+  {
+    slug: "saas-sales-uk-markets-intern",
+    title: "SaaS Sales UK Markets Intern",
+    team: "Growth",
+    location: "Remote · UK",
+    type: "Unpaid internship · 4 months",
+    ppo: "Guaranteed PPO conversion chances—with a package above market standards",
+    ppoShort: "Above-market package on conversion",
+    desc: "Open up the UK market for Fluxvex: prospect and qualify UK agencies, run demos with the founding team, and build the playbook the whole company will use post-launch.",
+    wants: [
+      "Fluent, professional communication tuned to UK business culture",
+      "Self-directed outreach—you plan the week, you hit the targets",
+      "Genuine interest in SaaS and the agency reporting workflow",
+    ],
+    testid: "career-role-saas-sales-uk-markets-intern",
+  },
+];
+
+export const CULTURE = [
+  { icon: "ship", title: "Ship weekly, learn monthly", desc: "Real work goes live every week—with your name on it, not busywork." },
+  { icon: "ai", title: "AI-native by default", desc: "You sell and build with state-of-the-art AI tools the way future teams will actually work." },
+  { icon: "founders", title: "Work directly with founders", desc: "No layers. Your ideas reach the people who decide—same day." },
+  { icon: "grow", title: "A PPO you can point at", desc: "Months of proof, then a guaranteed performance-based PPO conversion chance tied to your results." },
+];
+
+export const CAREER_FAQS = [
+  [
+    "Are the internships paid?",
+    "The internships are unpaid, four-month programs, and every role carries a guaranteed PPO conversion chance on completion—with packages up to ₹6 LPA in India and above market standards in the US and UK.",
+  ],
+  [
+    "What does “text us to apply” mean?",
+    "No portals and no cover letters into the void. You send one direct message—who you are, where you can contribute, and why you want to build with Fluxvex—and it lands straight with the founding team.",
+  ],
+  [
+    "What happens after I send my message?",
+    "We read every message. If the fit is real, we reply to schedule a short working session so you can show how you sell and think, not just what your résumé says.",
+  ],
+];

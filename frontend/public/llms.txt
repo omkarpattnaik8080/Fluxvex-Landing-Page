@@ -20,3 +20,4 @@ Fluxvex is an automated client-reporting platform for digital marketing agencies
 - /integrations/google-ads — Google Ads integration: what Fluxvex pulls, how the connection works, and how reports are delivered.
 - /integrations/meta-ads — Meta Ads integration: placement and creative results in one branded client report.
 - /integrations/ga4 — GA4 integration: acquisition, engagement and conversions translated into client language.
+- /careers — SaaS sales internship openings for India, US, and UK markets; four-month unpaid programs with guaranteed PPO conversion chances; apply by texting the founding team directly.

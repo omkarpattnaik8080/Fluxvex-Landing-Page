@@ -8,6 +8,7 @@ import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { useWaitlist } from "@/components/WaitlistContext";
+import TapCTA from "@/components/ui/TapCTA";
 
 const ACCORDION = [
   { icon: Link2, title: "Seamless integrations", desc: "Connect reporting sources without workflow interruptions.", mini: "integrations" },
@@ -148,14 +149,14 @@ export default function Platform() {
               <p className="mt-4 max-w-sm text-[15px] leading-[1.7] text-ink-soft">
                 Connect reporting sources and manage every client report across one workflow.
               </p>
-              <button
+              <TapCTA
                 onClick={() => openWaitlist("platform")}
-                className="group mt-7 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-display text-sm font-medium text-white transition-all hover:gap-3"
-                data-testid="platform-cta-button"
+                className="group mt-7 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-display text-sm font-medium text-white transition-colors hover:bg-black/80"
+                testid="platform-cta-button"
               >
                 Join the waitlist
-                <ChevronRight className="h-4 w-4" />
-              </button>
+                <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </TapCTA>
             </Reveal>
 
             <div className="mt-10 border-t border-line" data-testid="platform-accordion">

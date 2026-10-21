@@ -13,6 +13,7 @@ import NotFound from "@/pages/NotFound";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import Integration from "@/pages/Integration";
+import Careers from "@/pages/Careers";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -95,6 +96,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/integrations/:slug" element={<Integration />} />
+            <Route path="/careers" element={<Careers />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </WaitlistProvider>
