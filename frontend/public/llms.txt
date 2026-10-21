@@ -6,6 +6,7 @@ Fluxvex is an automated client-reporting platform for digital marketing agencies
 - Initial integration focus: Google Ads, Meta Ads, and Google Analytics 4.
 - Status: pre-launch. The site currently collects waitlist signups and contact inquiries.
 - Programs displayed on the site: Product Hunt, StartupBase, Meta Tech Partner, AWS Startups, Microsoft Azure Startups, and Sarvam.
+- Social profiles: LinkedIn (linkedin.com/company/fluxvex), GitHub (github.com/fluxvex), YouTube (@FluxvexHQ).
 
 ## Pages
 

@@ -1,5 +1,10 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 5)
+- Social channels added: footer LinkedIn/GitHub/YouTube buttons (user-provided URLs), JSON-LD sameAs + llms.txt social line.
+- Hero final audit: new isometric mini-flow illustration (3 source tiles → dashed wires with traveling packets → glowing Fluxvex hub, xl+), "Free to join — no credit card needed" trust line under CTAs.
+- Verified: hero at 1440/390 no overflow, social hrefs correct, marquee moving, zero console errors.
+
 ## 2026-10-21 (session 4)
 - Legal published as drafts: /privacy-policy + /terms (user-provided docs, mini markdown renderer, draft banner, fill-in chips for unresolved fields, noindex until finalized, footer + cookie-banner + security-section links).
 - Hero: H1 → GSAP marquee ("Client reporting, on autopilot." with FluxvexMark separators, aria-label + sr-only, reduced-motion static); subheading → Inter Tight; dashboard gained a Fluxvex AI summary strip; new floating "12 client reports" stat card; AI insight card now visible from lg.

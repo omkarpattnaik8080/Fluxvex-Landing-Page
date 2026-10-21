@@ -365,6 +365,57 @@ function HeadlineMarquee() {
   );
 }
 
+/* Isometric mini flow — sources feeding the Fluxvex engine (decorative, xl+ only) */
+function IsoMiniFlow() {
+  const reduce = useReducedMotion();
+  const marks = [<GoogleAdsMark size={13} key="g" />, <MetaMark size={13} key="m" />, <GA4Mark size={13} key="a" />];
+  const wire = (from, to, delay) => {
+    const dx = to[0] - from[0];
+    const dy = to[1] - from[1];
+    const len = Math.round(Math.hypot(dx, dy));
+    const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
+    return (
+      <div className="absolute" style={{ left: from[0], top: from[1], width: len, transform: `rotate(${ang}deg)`, transformOrigin: "0 0" }} aria-hidden="true">
+        <div className="h-0 w-full border-t border-dashed border-black/25" />
+        {!reduce && (
+          <motion.span
+            className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
+            style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
+            animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 1.1, repeat: Infinity, delay, ease: "easeInOut" }}
+          />
+        )}
+      </div>
+    );
+  };
+  return (
+    <motion.div
+      animate={reduce ? {} : { y: [0, -9, 0] }}
+      transition={{ duration: 6.5, repeat: Infinity, delay: 1.6, ease: "easeInOut" }}
+      className="pointer-events-none absolute left-[3%] top-[22%] hidden xl:block"
+      aria-hidden="true"
+      data-testid="hero-iso-flow"
+    >
+      <div className="relative h-[150px] w-[160px]">
+        <div className="relative h-full w-full" style={{ transform: "rotateX(55deg) rotateZ(-45deg)", transformStyle: "preserve-3d" }}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="absolute flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-[0_10px_20px_-8px_rgba(16,16,20,0.4)] ring-1 ring-black/[0.06]" style={{ left: 6, top: 10 + i * 38 }}>
+              {marks[i]}
+            </div>
+          ))}
+          {wire([42, 28], [92, 74], 0)}
+          {wire([42, 66], [92, 74], 0.35)}
+          {wire([42, 104], [92, 74], 0.7)}
+          <div className="absolute flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-[0_16px_30px_-10px_rgba(61,67,232,0.55)] ring-1 ring-accent/25" style={{ left: 92, top: 53 }}>
+            <span className="absolute inset-0 rounded-xl bg-accent/20 blur-md" aria-hidden="true" />
+            <FluxvexMark size={24} className="relative rounded-lg" />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Hero() {
   const { openWaitlist } = useWaitlist();
   const ref = useRef(null);
@@ -413,6 +464,8 @@ export default function Hero() {
         >
           <p className="font-hand text-xl leading-tight text-ink">reports assemble themselves—reporting day, automated.</p>
         </motion.div>
+
+        <IsoMiniFlow />
 
         <motion.div
           {...float(2.0)}
@@ -502,6 +555,10 @@ export default function Hero() {
             className="mt-4 text-xs text-white/60"
           >
             Get product updates and early-access details.
+            <span className="mt-1.5 flex items-center justify-center gap-1.5 text-[13px] font-medium text-white/75">
+              <Check className="h-3.5 w-3.5 text-mint" strokeWidth={2.6} />
+              Free to join — no credit card needed
+            </span>
           </motion.p>
 
           <motion.div

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin } from "lucide-react";
+import { Github, Linkedin, MapPin, Youtube } from "lucide-react";
 import { FluxvexLogo, FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
 
@@ -73,8 +73,27 @@ export default function Footer() {
           <div className="border-t border-white/[0.08] py-12 lg:border-l lg:border-t-0 lg:pl-10">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">Follow Fluxvex</p>
             <p className="mt-5 text-sm leading-relaxed text-white/50">
-              We’re pre-launch—launch updates go through the waitlist. Social channels will be listed here once they exist.
+              Follow along for build updates and launch news.
             </p>
+            <div className="mt-5 flex items-center gap-2.5">
+              {[
+                { icon: Linkedin, href: "https://www.linkedin.com/company/fluxvex/", label: "Fluxvex on LinkedIn", testid: "footer-social-linkedin" },
+                { icon: Github, href: "https://github.com/fluxvex", label: "Fluxvex on GitHub", testid: "footer-social-github" },
+                { icon: Youtube, href: "https://www.youtube.com/@FluxvexHQ", label: "Fluxvex on YouTube", testid: "footer-social-youtube" },
+              ].map((s) => (
+                <a
+                  key={s.testid}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white/70 transition-[transform,border-color,color] duration-200 hover:-translate-y-0.5 hover:border-white/40 hover:text-white"
+                  data-testid={s.testid}
+                >
+                  <s.icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
             <div className="mt-8 border-t border-white/[0.08] pt-6">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">Office</p>
               <p className="mt-3 flex items-start gap-2 text-sm leading-relaxed text-white/65" data-testid="footer-office-address">
