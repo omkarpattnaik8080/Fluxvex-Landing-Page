@@ -1,0 +1,31 @@
+{
+  "summary": "Iteration 2 — Regression + new-feature e2e for Fluxvex. Backend: 12/12 pytest pass (waitlist valid/duplicate/invalid/honeypot with Mongo persistence; contact valid/invalid with Mongo persistence; SEO canonical/og/twitter_summary_large_image; sitemap=4 URLs application/xml; robots text/plain ending with Sitemap:; llms.txt text/plain contains 'locked' + 'waitlist' and no $49/$149/₹3,999/₹11,999; JSON-LD valid JSON with NO price numbers; NEW: JSON-LD pricing FAQ answer text equals Faq.jsx on-page answer exactly). Frontend: locked-pricing masks correct on both home PricingPreview (plan-card-starter-price='$••/mo', plan-card-growth-price='$•••/mo') and /pricing (pricing-page-card-starter-price='$••/mo', pricing-page-card-growth-price='$•••/mo'); currency toggle to INR flips masks to ₹ •,••• / ₹ ••,••• and comparison table first row 'Launch price (per month)' reads '$ •• — locked' / '$ ••• — locked' in USD and '₹ •,••• — locked' / '₹ ••,••• — locked' in INR; no real price strings (49, 149, 3,999, 11,999) found anywhere in /pricing rendered text; hover peek on blurred price doesn't crash. BackersBand present on home with all 6 testids (backer-product-hunt, backer-startupbase, backer-meta-tech-partner, backer-aws-startups, backer-microsoft-azure-startups, backer-sarvam — each appears 2x due to marquee duplication for seamless scroll, expected). Footer office address shows exactly 'House No. 288, Arunodaya, HSR Layout Sector-1, Bengaluru' (testid footer-office-address). Workflow iso-stage tabs workflow-step-1..4 all switch Step 01→04 headings; step 2 billboard contains 'Northbeam Media · Client', step 3 contains 'Fluxvex is assembling…' + 'Campaign metrics · Channel results · Summary', step 4 contains 'Export PDF' + 'Schedule send' — zero console errors across tab switches. ROI calculator reactive (clients 10→20 flipped roi-monthly-output 48→120 via tween); reduction slider set to 60 flips roi-reduction-value to '60%' and roi-saved-output updates accordingly. Waitlist e2e from home hero works end-to-end (waitlist-success-animation shown) and invalid email surfaces waitlist-error 'Please enter a valid work email.' with no success animation (POST returns 400 as expected). Contact form e2e succeeds and persists in db.contact_messages. Home + /pricing: 1 h1 each, no horizontal overflow at 1440 or 390. No page JS errors, no console errors (only a single expected 400 from the invalid-email waitlist negative test).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/app/test_reports/step3_isostage.png"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Review-request testid naming mismatch (informational, not a bug): the request names 'plan-card-starter-price' for /pricing but on /pricing the PlanCard is rendered with testid='pricing-page-card-starter' (→ ...-price). On home it's 'plan-card-starter' (→ plan-card-starter-price). Both work; just worth aligning docs/tests. Tested both.",
+    "Iteration 1 items still open and should remain on the main agent's radar: in-memory rate-limit keyed by request.client.host behind ingress sees a shared IP; consider X-Forwarded-For. Pydantic EmailStr would simplify validation in server.py.",
+    "No new leaks of real price numbers in rendered HTML, JSON-LD, llms.txt, pricing page copy, or comparison table — curiosity-locked design is fully consistent."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_fluxvex_api.py (added TestSeo.test_jsonld_faq_matches_onpage_faq; extended test_llms_txt to assert 'locked' + 'waitlist' present)",
+    "/app/test_reports/pytest/pytest_results.xml (regenerated — 12 passed)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "N/A — no auth",
+  "seed_data_creation": "Pytest cleans its own TEST_/dup_/trap_/contact_ docs. UI flow docs (ui_iter2_*@test.com in waitlist, contact_ui_iter2_*@test.com in contact_messages) deleted after the run.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Reuse /app/backend/tests/test_fluxvex_api.py — now 12 cases incl. JSON-LD↔Faq.jsx answer-equality check. On /pricing the plan card price testids are 'pricing-page-card-starter-price' and 'pricing-page-card-growth-price' (NOT 'plan-card-...-price' as review hinted — that's home only). BackersBand testids appear 2x in DOM due to marquee duplication; use .count() ≥ 1 or .first. The invalid-email waitlist test will log a single 400 response in console — not a bug. Cookie banner must be dismissed first (data-testid=cookie-accept-all-button). Workflow iso-stage uses CSS 3D transforms — assert via text in [data-testid=workflow-iso-stage].",
+  "rca of the issue": "No open bugs. All iteration-2 features (locked masks, backers band, Bengaluru footer address, isometric 4-step workflow with per-step billboards, dark RoiCalculator with tween + reduction slider, rewritten locked-preview FAQ story in JSON-LD + llms.txt + /pricing + home FAQ) verified working, and the two iteration-1 minor warnings (Navbar key, DialogDescription on waitlist + cookie-preferences dialogs) are no longer surfaced in the console."
+}

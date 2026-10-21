@@ -141,3 +141,32 @@ class TestSeo:
         body = r.text.lower()
         for p in ['$49', '$149', '3,999', '11,999']:
             assert p.lower() not in body, f"price {p} found in llms.txt"
+        # locked story mentioned
+        assert 'locked' in body and 'waitlist' in body
+
+    def test_jsonld_faq_matches_onpage_faq(self, client):
+        """JSON-LD pricing FAQ answer must equal Faq.jsx on-page text exactly."""
+        # Read Faq.jsx source answer
+        faq_src = Path("/app/frontend/src/components/Faq.jsx").read_text()
+        m = re.search(r'"When will pricing be available\?",\s*"([^"]+)"', faq_src)
+        assert m, "pricing FAQ Q/A not found in Faq.jsx"
+        onpage = m.group(1)
+        # Fetch index.html JSON-LD
+        html = client.get(f"{BASE_URL}/").text
+        blocks = re.findall(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', html, re.DOTALL)
+        found = False
+        for b in blocks:
+            data = json.loads(b)
+            items = data if isinstance(data, list) else [data]
+            # expand @graph
+            expanded = []
+            for d in items:
+                expanded.append(d)
+                expanded.extend(d.get("@graph") or [])
+            for d in expanded:
+                for q in (d.get("mainEntity") or []):
+                    if q.get("name") == "When will pricing be available?":
+                        ans = q["acceptedAnswer"]["text"]
+                        assert ans == onpage, f"JSON-LD mismatch: {ans!r} vs {onpage!r}"
+                        found = True
+        assert found, "pricing FAQ not found in JSON-LD"
