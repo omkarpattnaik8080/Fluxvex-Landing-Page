@@ -96,7 +96,15 @@ export default function Footer() {
             <button onClick={openCookiePrefs} className="text-xs text-white/55 underline-offset-4 transition-colors hover:text-white hover:underline" data-testid="footer-cookie-preferences-button">
               Cookie preferences
             </button>
-            <span className="text-xs text-white/30">Privacy Policy & Terms — published at launch</span>
+            <span className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-white/30">
+              <Link to="/privacy-policy" className="transition-colors hover:text-white/70" data-testid="footer-privacy-link">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="transition-colors hover:text-white/70" data-testid="footer-terms-link">
+                Terms of Service
+              </Link>
+              <span>— draft pending final legal review</span>
+            </span>
           </div>
         </div>
       </div>

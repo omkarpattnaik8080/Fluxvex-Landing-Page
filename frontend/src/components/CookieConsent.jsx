@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,13 @@ export default function CookieConsent() {
               Customize
             </Button>
           </div>
+          <p className="mt-3 text-[11px] text-black/40">
+            Read the{" "}
+            <Link to="/privacy-policy" className="font-medium text-accent underline-offset-2 hover:underline" data-testid="cookie-privacy-link">
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
       )}
 

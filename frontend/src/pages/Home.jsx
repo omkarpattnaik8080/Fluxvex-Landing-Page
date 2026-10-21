@@ -30,16 +30,16 @@ export default function Home() {
         <Hero />
         <Marquee />
         <IntegrationsStrip />
-        <Testimonial />
         <Problem />
         <Outcome />
         <HowItWorks />
-        <FeatureGrid />
         <Showcase />
         <Platform />
+        <FeatureGrid />
         <AiComparison />
-        <RoiCalculator />
         <Consistency />
+        <RoiCalculator />
+        <Testimonial />
         <SecuritySection />
         <PricingPreview />
         <Faq />

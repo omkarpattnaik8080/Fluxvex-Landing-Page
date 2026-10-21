@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, Check } from "lucide-react";
 import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
@@ -17,12 +18,47 @@ function Fastener({ className }) {
   );
 }
 
+const TICKER = [
+  "June summary drafted for Northbeam Media",
+  "Budget pacing flagged before overspend",
+  "Q2 report scheduled for Friday, 9:00",
+  "Channel results synced across 3 sources",
+];
+
+/* Insight ticker — the product quietly working while you read */
+function InsightTicker() {
+  const reduce = useReducedMotion();
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (reduce) return undefined;
+    const t = setInterval(() => setI((v) => (v + 1) % TICKER.length), 2600);
+    return () => clearInterval(t);
+  }, [reduce]);
+  return (
+    <div className="mt-9 flex h-9 items-center justify-center overflow-hidden" data-testid="final-cta-insight-ticker" aria-live="polite">
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={i}
+          initial={reduce ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduce ? {} : { opacity: 0, y: -14 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur-sm"
+        >
+          <Check className="h-3.5 w-3.5 text-mint" strokeWidth={2.6} />
+          {TICKER[i]}
+        </motion.span>
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function FinalCta() {
   const { openWaitlist } = useWaitlist();
   const reduce = useReducedMotion();
   return (
     <section className="border-t border-line bg-elevated px-2 py-14 sm:px-2.5 sm:py-20" data-testid="section-final-cta">
-      <div className="grain relative overflow-hidden rounded-2xl bg-accent px-6 py-20 text-center sm:py-28">
+      <div className="grain relative overflow-hidden rounded-2xl bg-accent px-6 py-20 text-center sm:py-24">
         <motion.div
           className="pixel-blocks absolute inset-0"
           animate={reduce ? {} : { y: [0, -16, 0] }}
@@ -36,10 +72,22 @@ export default function FinalCta() {
         <Fastener className="bottom-3 right-3" />
 
         <div className="relative mx-auto max-w-3xl">
+          {/* orbiting brand marks around the mark */}
           <Reveal y={16}>
-            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-white/25 bg-white/10 backdrop-blur-sm">
-              <FluxvexMark size={24} tone="white" />
-            </span>
+            <div className="relative mx-auto flex h-16 w-16 items-center justify-center" aria-hidden="true">
+              <span className="absolute inset-0 rounded-2xl border border-dashed border-white/40 motion-safe:animate-[spin_16s_linear_infinite]" />
+              {["-top-1.5 -left-1.5", "-top-1.5 -right-1.5", "-bottom-1.5 -left-1.5", "-bottom-1.5 -right-1.5"].map((pos, i) => (
+                <motion.span
+                  key={pos}
+                  className={`absolute ${pos} flex h-3 w-3 items-center justify-center rounded-full bg-white/90`}
+                  animate={reduce ? {} : { scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2.2, delay: i * 0.35, repeat: Infinity, ease: "easeInOut" }}
+                />
+              ))}
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/25 bg-white/10 backdrop-blur-sm">
+                <FluxvexMark size={24} tone="white" />
+              </span>
+            </div>
           </Reveal>
           <Reveal y={16} delay={0.08}>
             <p className="mt-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/80">Start today</p>
@@ -74,6 +122,7 @@ export default function FinalCta() {
               </Link>
             </div>
           </Reveal>
+          <InsightTicker />
         </div>
       </div>
     </section>

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import { MetaMark } from "@/components/brand/IntegrationMarks";
 
 function ProductHuntMark() {
@@ -59,14 +61,39 @@ const BACKERS = [
 ];
 
 export default function BackersBand() {
+  const trackRef = useRef(null);
+  const tweenRef = useRef(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    gsap.set(track, { force3D: true });
+    const tween = gsap.to(track, { xPercent: -50, duration: 32, ease: "none", repeat: -1 });
+    tweenRef.current = tween;
+    return () => {
+      tween.kill();
+      gsap.set(track, { clearProps: "transform" });
+    };
+  }, []);
+
+  const slow = () => tweenRef.current && gsap.to(tweenRef.current, { timeScale: 0.18, duration: 0.5, overwrite: true });
+  const resume = () => tweenRef.current && gsap.to(tweenRef.current, { timeScale: 1, duration: 0.5, overwrite: true });
+
   return (
-    <section className="border-y border-line bg-page" data-testid="backers-band" aria-label="Programs and platforms Fluxvex is part of">
+    <section
+      className="border-y border-line bg-page"
+      data-testid="backers-band"
+      aria-label="Programs and platforms Fluxvex is part of"
+      onMouseEnter={slow}
+      onMouseLeave={resume}
+    >
       <div className="mx-auto flex max-w-[1280px] flex-col gap-6 px-5 py-8 sm:px-8 lg:flex-row lg:items-center lg:gap-10">
         <p className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-black/45 lg:w-48">
           Backed by industry leaders
         </p>
         <div className="relative flex-1 overflow-hidden">
-          <div className="marquee-track items-center">
+          <div ref={trackRef} className="flex w-max items-center will-change-transform">
             {[0, 1].map((dup) => (
               <div key={dup} aria-hidden={dup === 1} className="flex shrink-0 items-center">
                 {BACKERS.map((b) => (

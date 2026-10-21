@@ -1,5 +1,6 @@
-import { useRef } from "react";
-import { Download, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Download, ChevronDown, Sparkles } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 
@@ -9,8 +10,48 @@ const CHANNELS = [
   ["GA4 sessions", "—", "13%"],
 ];
 
+const AI_SUMMARY =
+  "June delivered the strongest conversion month so far—spend held near plan while Meta efficiency improved for the third week running.";
+const AI_CHIPS = ["Spend pacing above plan", "Meta ROAS improving", "Conversions +14.9% vs May"];
+
+/* Typewriter that re-types whenever the text changes (reduced-motion safe) */
+function useTypewriter(text, { speed = 20, pause = 3600, reduce = false } = {}) {
+  const [n, setN] = useState(reduce ? text.length : 0);
+  useEffect(() => {
+    if (reduce) {
+      setN(text.length);
+      return undefined;
+    }
+    setN(0);
+    let i = 0;
+    let t;
+    const tick = () => {
+      i += 1;
+      setN(i);
+      if (i < text.length) t = setTimeout(tick, speed);
+    };
+    t = setTimeout(tick, speed);
+    return () => clearTimeout(t);
+  }, [text, speed, reduce]);
+  useEffect(() => {
+    if (reduce || n < text.length) return undefined;
+    const t = setTimeout(() => setN(0), pause);
+    return () => clearTimeout(t);
+  }, [n, text, pause, reduce]);
+  return text.slice(0, n);
+}
+
 export default function Showcase() {
   const ref = useRef(null);
+  const reduce = useReducedMotion();
+  const typed = useTypewriter(AI_SUMMARY, { reduce });
+  const [chipIdx, setChipIdx] = useState(0);
+
+  useEffect(() => {
+    if (reduce) return undefined;
+    const t = setInterval(() => setChipIdx((v) => (v + 1) % AI_CHIPS.length), 2200);
+    return () => clearInterval(t);
+  }, [reduce]);
 
   const onMove = (e) => {
     const el = ref.current;
@@ -121,11 +162,36 @@ export default function Showcase() {
                     ))}
                   </div>
                 </div>
-                <div className="rounded-xl border border-dashed border-line bg-surface p-5">
-                  <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-black/45">Insight area</p>
-                  <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">
-                    A short written summary sits beside the charts, so the client never has to interpret numbers alone.
+                <div className="rounded-xl border border-accent-border bg-accent-tint/60 p-5" data-testid="showcase-ai-insights">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-accent">
+                      <Sparkles className="h-3 w-3" /> Fluxvex AI insights
+                    </p>
+                    <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-black/40">
+                      Illustrative
+                    </span>
+                  </div>
+                  <p className="mt-2.5 min-h-[63px] text-[13px] leading-relaxed text-ink">
+                    {typed}
+                    <motion.span
+                      animate={reduce ? {} : { opacity: [1, 0, 1] }}
+                      transition={{ duration: 0.9, repeat: Infinity }}
+                      className="ml-0.5 inline-block h-3.5 w-[2px] translate-y-0.5 bg-accent"
+                      aria-hidden="true"
+                    />
                   </p>
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {AI_CHIPS.map((chip, i) => (
+                      <span
+                        key={chip}
+                        className={`rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors duration-300 ${
+                          i === chipIdx ? "bg-accent text-white" : "bg-white text-ink-soft ring-1 ring-black/[0.06]"
+                        }`}
+                      >
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

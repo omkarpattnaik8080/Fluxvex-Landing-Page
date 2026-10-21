@@ -52,8 +52,16 @@ function VisualInputs() {
           </Bob>
         </div>
       </div>
-      {/* dashed connector */}
-      <div className="h-9 w-px border-l border-dashed border-black/25" aria-hidden="true" />
+      {/* dashed connector with traveling packet */}
+      <div className="relative h-9 w-px" aria-hidden="true">
+        <div className="absolute inset-0 border-l border-dashed border-black/25" />
+        <motion.span
+          className="absolute -left-[3px] h-1.5 w-1.5 rounded-full bg-accent"
+          style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
+          animate={{ top: ["-4%", "96%"], opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
       {/* section list */}
       <div className="w-56 space-y-1.5">
         {[
@@ -211,7 +219,7 @@ export default function FeatureGrid() {
           {CARDS.map((card, i) => (
             <Reveal key={card.title} delay={i * 0.12} className="h-full">
               <div
-                className={`flex h-full flex-col border-line max-lg:border-b lg:[&:not(:last-child)]:border-r ${
+                className={`flex h-full flex-col border-line transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_32px_64px_-30px_rgba(16,16,20,0.35)] max-lg:border-b lg:[&:not(:last-child)]:border-r ${
                   i === 1 ? "max-lg:bg-[#FBFAF6]" : ""
                 }`}
                 data-testid={`feature-card-${i + 1}`}

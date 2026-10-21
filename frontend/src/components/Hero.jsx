@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowDown, CalendarDays, CalendarClock, Lock, Plus, Check, Trophy } from "lucide-react";
+import { ArrowRight, ArrowDown, CalendarDays, CalendarClock, Lock, Plus, Check, Trophy, Sparkles } from "lucide-react";
 import CinematicText from "@/components/ui/CinematicText";
 import { useWaitlist } from "@/components/WaitlistContext";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
@@ -245,6 +245,61 @@ function ReportPreview() {
   );
 }
 
+/* Floating AI insight stream — typewriter cycling through analysis notes */
+const AI_INSIGHTS = [
+  "Drafting June performance summary…",
+  "Spend pacing 12% above plan — flagged.",
+  "Meta ROAS improving 3 weeks in a row.",
+  "GA4 conversions +14.9% vs May.",
+];
+
+function AiInsightStream() {
+  const reduce = useReducedMotion();
+  const [idx, setIdx] = useState(0);
+  const [chars, setChars] = useState(0);
+
+  useEffect(() => {
+    if (reduce) return undefined;
+    const full = AI_INSIGHTS[idx];
+    if (chars < full.length) {
+      const t = setTimeout(() => setChars((c) => c + 1), 32);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => {
+      setChars(0);
+      setIdx((i) => (i + 1) % AI_INSIGHTS.length);
+    }, 2200);
+    return () => clearTimeout(t);
+  }, [chars, idx, reduce]);
+
+  const text = reduce ? AI_INSIGHTS[idx] : AI_INSIGHTS[idx].slice(0, chars);
+
+  return (
+    <motion.div
+      animate={reduce ? {} : { y: [0, -8, 0] }}
+      transition={{ duration: 6, repeat: Infinity, delay: 0.9, ease: "easeInOut" }}
+      className="pointer-events-none absolute right-6 top-[42%] z-20 hidden w-64 rounded-xl bg-white p-3.5 text-left shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] xl:block"
+      data-testid="hero-ai-insight"
+    >
+      <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
+        <Sparkles className="h-3 w-3" /> Fluxvex AI insight
+      </span>
+      <p className="mt-1.5 min-h-[32px] text-[12px] leading-snug text-ink">
+        {text}
+        <motion.span
+          animate={reduce ? {} : { opacity: [1, 0, 1] }}
+          transition={{ duration: 0.9, repeat: Infinity }}
+          className="ml-0.5 inline-block h-3 w-[2px] translate-y-[2px] bg-accent"
+          aria-hidden="true"
+        />
+      </p>
+      <span className="mt-1.5 flex items-center gap-1.5 text-[10px] text-black/45">
+        <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Analyzing connected accounts
+      </span>
+    </motion.div>
+  );
+}
+
 export default function Hero() {
   const { openWaitlist } = useWaitlist();
   const ref = useRef(null);
@@ -308,6 +363,8 @@ export default function Hero() {
             <Check className="h-3 w-3 text-white" strokeWidth={3} />
           </span>
         </motion.div>
+
+        <AiInsightStream />
 
         <div className="relative mx-auto max-w-5xl px-5 pb-14 pt-24 text-center sm:px-8 sm:pt-28 lg:pb-20">
           <motion.p

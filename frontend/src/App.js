@@ -7,6 +7,8 @@ import Home from "@/pages/Home";
 import Pricing from "@/pages/Pricing";
 import Contact from "@/pages/Contact";
 import Security from "@/pages/Security";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import Terms from "@/pages/Terms";
 import NotFound from "@/pages/NotFound";
 
 class ErrorBoundary extends Component {
@@ -48,7 +50,6 @@ function ScrollManager() {
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
-
     const onClick = (e) => {
       const a = e.target.closest && e.target.closest('a[href*="#"]');
       if (!a) return;
@@ -86,6 +87,8 @@ function App() {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/security" element={<Security />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </WaitlistProvider>

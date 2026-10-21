@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Check, ChevronDown, ChevronRight, Link2, ShieldCheck, SlidersHorizontal } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Link2, Lock, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
@@ -8,10 +8,71 @@ import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/Integration
 import { useWaitlist } from "@/components/WaitlistContext";
 
 const ACCORDION = [
-  { icon: Link2, title: "Seamless integrations", desc: "Connect reporting sources without workflow interruptions." },
-  { icon: ShieldCheck, title: "Privacy-first architecture", desc: "Access is authorized with least-privilege scopes where supported, kept separated per client, and revocable at any time." },
-  { icon: SlidersHorizontal, title: "Advanced filters", desc: "Scope every report by client, channel, and reporting period." },
+  { icon: Link2, title: "Seamless integrations", desc: "Connect reporting sources without workflow interruptions.", mini: "integrations" },
+  { icon: ShieldCheck, title: "Privacy-first architecture", desc: "Access is authorized with least-privilege scopes where supported, kept separated per client, and revocable at any time.", mini: "privacy" },
+  { icon: SlidersHorizontal, title: "Advanced filters", desc: "Scope every report by client, channel, and reporting period.", mini: "filters" },
 ];
+
+/* Mini animated visuals shown when an accordion row expands */
+function MiniVisual({ kind }) {
+  if (kind === "integrations") {
+    return (
+      <div className="flex items-center gap-2" aria-hidden="true">
+        <GoogleAdsMark size={14} />
+        <span className="relative h-px w-9 border-t border-dashed border-black/25">
+          <motion.span
+            className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
+            style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
+            animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </span>
+        <MetaMark size={14} />
+        <span className="relative h-px w-9 border-t border-dashed border-black/25">
+          <motion.span
+            className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
+            style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
+            animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 1.3, delay: 0.4, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </span>
+        <GA4Mark size={14} />
+      </div>
+    );
+  }
+  if (kind === "privacy") {
+    return (
+      <div className="flex items-center gap-2" aria-hidden="true">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-tint ring-1 ring-accent/25"
+            animate={{ scale: [1, 1.14, 1] }}
+            transition={{ duration: 2.2, delay: i * 0.35, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Lock className="h-3 w-3 text-accent" />
+          </motion.span>
+        ))}
+        <span className="text-[10px] font-medium text-ink-soft">isolated per client</span>
+      </div>
+    );
+  }
+  return (
+    <div className="flex w-44 flex-col gap-2" aria-hidden="true">
+      {[68, 38, 84].map((w, i) => (
+        <div key={i} className="relative h-1.5 rounded-full bg-black/[0.08]">
+          <motion.span
+            className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full bg-white shadow ring-1 ring-black/10"
+            initial={{ left: "4%" }}
+            whileInView={{ left: `${w}%` }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.15 + i * 0.18, ease: [0.19, 1, 0.22, 1] }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const STATS = [
   { value: 3, label: "Reporting sources connected", suffix: "" },
@@ -208,7 +269,10 @@ export default function Platform() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                         className="overflow-hidden"
                       >
-                        <p className="pb-4 pl-7 text-sm leading-relaxed text-ink-soft">{item.desc}</p>
+                        <div className="pb-4 pl-7">
+                          <MiniVisual kind={item.mini} />
+                          <p className="mt-2.5 text-sm leading-relaxed text-ink-soft">{item.desc}</p>
+                        </div>
                       </motion.div>
                     )}
                   </div>
