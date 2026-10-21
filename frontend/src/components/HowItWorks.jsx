@@ -5,6 +5,7 @@ import { SectionShell } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
+import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
 
 const STEPS = [
@@ -14,99 +15,157 @@ const STEPS = [
   { icon: Send, tab: "Deliver", title: "Brand and deliver", desc: "Apply the agency’s presentation style and export or schedule delivery as supported.", testid: "workflow-step-4" },
 ];
 
-function FloatCard({ children, className = "" }) {
+/* ---------- isometric stage ---------- */
+const PLANE = "rotateX(55deg) rotateZ(-45deg)";
+const BILLBOARD = "rotateZ(45deg) rotateX(-55deg)";
+
+function Tile({ x, y, w = 64, h = 64, dim, active, children, testid }) {
   return (
-    <div className={`flex items-center gap-3 rounded-xl border border-black/[0.05] bg-white p-3.5 shadow-[0_20px_45px_-18px_rgba(16,16,20,0.25)] ${className}`}>
-      {children}
-      <span className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-ink text-white">
-        <span className="text-sm leading-none">+</span>
+    <div
+      className={`absolute transition-all duration-500 ${dim ? "opacity-25 saturate-0" : "opacity-100"}`}
+      style={{ left: x, top: y, width: w, height: h }}
+      data-testid={testid}
+    >
+      <motion.div
+        animate={{ scale: active ? 1.07 : 1 }}
+        transition={{ type: "spring", stiffness: 220, damping: 20 }}
+        className={`relative flex h-full w-full items-center justify-center rounded-2xl bg-white ring-1 ${
+          active ? "ring-2 ring-accent/60 shadow-[0_30px_50px_-18px_rgba(61,67,232,0.55)]" : "ring-black/[0.06] shadow-[0_18px_30px_-14px_rgba(16,16,20,0.35)]"
+        }`}
+      >
+        {active && <span className="absolute inset-0 rounded-2xl bg-accent/20 blur-md" aria-hidden="true" />}
+        <span className="relative">{children}</span>
+      </motion.div>
+    </div>
+  );
+}
+
+function Billboard({ x, y, children }) {
+  return (
+    <div className="pointer-events-none absolute z-10" style={{ left: x, top: y, transform: BILLBOARD, transformOrigin: "50% 100%" }}>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: [0, -4, 0] }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ opacity: { duration: 0.3 }, y: { duration: 3.4, repeat: Infinity, ease: "easeInOut" } }}
+        className="whitespace-nowrap rounded-xl border border-black/[0.06] bg-white px-3.5 py-2 shadow-[0_24px_45px_-16px_rgba(16,16,20,0.4)]"
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+function Wire({ from, to, active, delay = 0 }) {
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
+  const len = Math.round(Math.hypot(dx, dy));
+  const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
+  return (
+    <div className="absolute" style={{ left: from[0], top: from[1], width: len, transform: `rotate(${ang}deg)`, transformOrigin: "0 0" }} aria-hidden="true">
+      <div className={`h-0 w-full border-t border-dashed transition-colors duration-500 ${active ? "border-accent/60" : "border-black/15"}`} />
+      {active && (
+        <motion.span
+          className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
+          style={{ boxShadow: "0 0 10px 2px rgba(61,67,232,0.45)" }}
+          animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut", delay }}
+        />
+      )}
+    </div>
+  );
+}
+
+function DocSheet() {
+  return (
+    <div className="flex h-[72px] w-[52px] flex-col gap-1 rounded-lg bg-white p-1.5 ring-1 ring-black/[0.06]">
+      <span className="h-1.5 w-full rounded-sm bg-accent/70" />
+      <span className="mt-1 h-1 w-4/5 rounded-sm bg-black/15" />
+      <span className="h-1 w-3/5 rounded-sm bg-black/10" />
+      <span className="mt-auto flex items-center gap-1">
+        <span className="flex h-3.5 w-3.5 items-center justify-center rounded-sm bg-ink font-display text-[6px] font-bold text-white">N</span>
+        <span className="h-1 w-6 rounded-sm bg-black/10" />
       </span>
     </div>
   );
 }
 
-function StepVisual({ step }) {
-  const variants = {
-    0: (
-      <div className="space-y-3">
-        {[
-          { mark: <GoogleAdsMark size={16} />, name: "Google Ads", sub: "Campaign performance", done: true },
-          { mark: <MetaMark size={16} />, name: "Meta Ads", sub: "Delivery results", done: true },
-          { mark: <GA4Mark size={16} />, name: "Google Analytics 4", sub: "Engagement & conversions", done: false },
-        ].map((p) => (
-          <FloatCard key={p.name}>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface ring-1 ring-black/5">{p.mark}</span>
-            <span>
-              <span className="block text-[13px] font-semibold text-ink">{p.name}</span>
-              <span className="block text-[11px] text-ink-soft">{p.sub}</span>
-            </span>
-            {p.done ? (
-              <span className="ml-auto mr-10 flex items-center gap-1 text-[11px] font-semibold text-[#0E8A3E]">
-                <Check className="h-3.5 w-3.5" /> Authorized
-              </span>
-            ) : (
-              <span className="ml-auto mr-10 rounded-full border border-accent-border bg-accent-tint px-3 py-1 text-[11px] font-semibold text-accent">Authorize</span>
-            )}
-          </FloatCard>
-        ))}
-      </div>
-    ),
-    1: (
-      <div className="space-y-3">
-        <FloatCard>
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink font-display text-[11px] font-bold text-white">N</span>
-          <span>
-            <span className="block text-[13px] font-semibold text-ink">Northbeam Media</span>
-            <span className="block text-[11px] text-ink-soft">Client · selected</span>
-          </span>
-        </FloatCard>
-        <div className="flex gap-2.5">
-          {["May 2025", "June 2025", "Q2 2025"].map((p, i) => (
-            <span
-              key={p}
-              className={`rounded-full px-4 py-2 text-[12px] font-medium shadow-sm ${
-                i === 1 ? "bg-accent text-white shadow-[0_14px_30px_-10px_rgba(61,67,232,0.5)]" : "border border-black/[0.06] bg-white text-ink-soft"
-              }`}
-            >
-              {p}
-            </span>
+function IsoStage({ step }) {
+  const sources = [
+    { mark: <GoogleAdsMark size={17} />, key: "g" },
+    { mark: <MetaMark size={17} />, key: "m" },
+    { mark: <GA4Mark size={17} />, key: "a" },
+  ];
+  const srcPos = [52, 122, 192];
+  const engineActive = step === 1 || step === 2 || step === 3;
+  return (
+    <div className="flex h-[460px] items-center justify-center overflow-hidden" data-testid="workflow-iso-stage">
+      <div className="relative scale-[0.78] sm:scale-95 lg:scale-110">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-80 -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-black/[0.05] blur-2xl" aria-hidden="true" />
+        <div className="relative h-[280px] w-[280px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
+          {/* wires */}
+          <Wire from={[70, 84]} to={[118, 150]} active={step === 0} delay={0} />
+          <Wire from={[70, 154]} to={[118, 154]} active={step === 0} delay={0.35} />
+          <Wire from={[70, 224]} to={[118, 158]} active={step === 0} delay={0.7} />
+          <Wire from={[204, 154]} to={[234, 154]} active={step === 3} />
+
+          {/* source tiles */}
+          {srcPos.map((y, i) => (
+            <Tile key={sources[i].key} x={6} y={y} dim={step !== 0} active={step === 0}>
+              {sources[i].mark}
+            </Tile>
           ))}
+
+          {/* engine tile */}
+          <Tile x={118} y={116} w={86} h={86} dim={step === 0} active={engineActive}>
+            <FluxvexMark size={34} className="rounded-xl" />
+          </Tile>
+
+          {/* report tile */}
+          <Tile x={234} y={112} w={56} h={88} dim={step !== 3} active={step === 3}>
+            <DocSheet />
+          </Tile>
+
+          {/* billboards (direct conditional render — entrance handled by motion.div inside) */}
+          {step === 0 &&
+            srcPos.map((y, i) => (
+              <Billboard key={`auth-${i}`} x={80} y={y + 40}>
+                <span className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0E8A3E]">
+                  <Check className="h-3 w-3" /> Authorized
+                </span>
+              </Billboard>
+            ))}
+          {step === 1 && (
+            <Billboard x={104} y={108}>
+              <span className="block text-[11px] font-semibold text-ink">Northbeam Media · Client</span>
+              <span className="mt-1.5 flex gap-1.5">
+                {["May", "June", "Q2"].map((p) => (
+                  <span key={p} className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${p === "June" ? "bg-accent text-white" : "bg-black/[0.06] text-ink-soft"}`}>{p}</span>
+                ))}
+              </span>
+            </Billboard>
+          )}
+          {step === 2 && (
+            <Billboard x={104} y={108}>
+              <span className="block text-[11px] font-semibold text-ink">Fluxvex is assembling…</span>
+              <span className="mt-1.5 block h-1 w-36 overflow-hidden rounded-full bg-black/[0.08]">
+                <motion.span className="block h-full rounded-full bg-accent" initial={{ width: "10%" }} animate={{ width: "100%" }} transition={{ duration: 1.6, ease: "easeOut" }} />
+              </span>
+              <span className="mt-1.5 flex items-center gap-1 text-[10px] text-[#0E8A3E]"><Check className="h-2.5 w-2.5" /> Campaign metrics · Channel results · Summary</span>
+            </Billboard>
+          )}
+          {step === 3 && (
+            <Billboard x={176} y={104}>
+              <span className="flex gap-1.5">
+                <span className="rounded-full bg-accent px-2.5 py-1 text-[10px] font-semibold text-white">Export PDF</span>
+                <span className="rounded-full border border-black/[0.08] px-2.5 py-1 text-[10px] font-semibold text-ink-soft">Schedule send</span>
+              </span>
+            </Billboard>
+          )}
         </div>
       </div>
-    ),
-    2: (
-      <div className="space-y-3">
-        {["Spend & pacing", "Channel results", "Written summary"].map((s, i) => (
-          <FloatCard key={s} className={i === 1 ? "ml-6" : i === 2 ? "ml-12" : ""}>
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-tint">
-              <Check className="h-4 w-4 text-accent" />
-            </span>
-            <span className="text-[13px] font-semibold text-ink">{s}</span>
-          </FloatCard>
-        ))}
-        <div className="ml-12 h-1.5 overflow-hidden rounded-full bg-black/[0.06]">
-          <motion.div initial={{ width: "12%" }} animate={{ width: "100%" }} transition={{ duration: 1.4, ease: "easeOut" }} className="h-full rounded-full bg-accent" />
-        </div>
-      </div>
-    ),
-    3: (
-      <div className="space-y-3">
-        <FloatCard>
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent font-display text-[11px] font-bold text-white">N</span>
-          <span>
-            <span className="block text-[13px] font-semibold text-ink">Northbeam Media — June 2025</span>
-            <span className="block text-[11px] text-ink-soft">Agency-branded · client-ready</span>
-          </span>
-        </FloatCard>
-        <div className="ml-6 flex gap-2.5">
-          <span className="rounded-full bg-accent px-5 py-2 text-[12px] font-semibold text-white shadow-[0_14px_30px_-10px_rgba(61,67,232,0.5)]">Export PDF</span>
-          <span className="rounded-full border border-black/[0.08] bg-white px-5 py-2 text-[12px] font-semibold text-ink-soft">Schedule send</span>
-        </div>
-        <p className="ml-6 text-[11px] text-ink-soft/70">Scheduling appears as supported at launch.</p>
-      </div>
-    ),
-  };
-  return variants[step];
+    </div>
+  );
 }
 
 export default function HowItWorks() {
@@ -183,6 +242,7 @@ export default function HowItWorks() {
                   data-testid="workflow-cta-button"
                 >
                   Join the waitlist
+                  <ChevronRight className="ml-1 h-4 w-4" />
                 </button>
               </motion.div>
             </AnimatePresence>
@@ -193,19 +253,8 @@ export default function HowItWorks() {
             </div>
           </div>
 
-          <div className="fine-grid relative overflow-hidden border-t border-line bg-[#F7F6F2] px-6 py-12 sm:px-12 lg:border-l lg:border-t-0 lg:py-16">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`v-${active}`}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
-                className="mx-auto max-w-sm"
-              >
-                <StepVisual step={active} />
-              </motion.div>
-            </AnimatePresence>
+          <div className="fine-grid relative overflow-hidden border-t border-line bg-[#F7F6F2] max-lg:border-t lg:border-l lg:border-t-0">
+            <IsoStage step={active} />
           </div>
         </div>
       </div>

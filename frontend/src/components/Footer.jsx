@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { MapPin } from "lucide-react";
 import { FluxvexLogo, FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
 
@@ -74,6 +75,17 @@ export default function Footer() {
             <p className="mt-5 text-sm leading-relaxed text-white/50">
               We’re pre-launch—launch updates go through the waitlist. Social channels will be listed here once they exist.
             </p>
+            <div className="mt-8 border-t border-white/[0.08] pt-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">Office</p>
+              <p className="mt-3 flex items-start gap-2 text-sm leading-relaxed text-white/65" data-testid="footer-office-address">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-white/40" aria-hidden="true" />
+                <span>
+                  House No. 288, Arunodaya,
+                  <br />
+                  HSR Layout Sector-1, Bengaluru
+                </span>
+              </p>
+            </div>
           </div>
         </div>
 

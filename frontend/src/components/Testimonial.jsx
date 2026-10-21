@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/Reveal";
+import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 
 function PressTile({ children, className = "" }) {
@@ -29,9 +30,17 @@ export default function Testimonial() {
             {/* quote */}
             <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-14">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">Our promise</p>
-              <blockquote className="mt-6 font-display text-xl font-medium leading-[1.45] tracking-tight text-ink sm:text-2xl">
-                “Reporting shouldn’t be the heaviest lift of the month. Fluxvex assembles the
-                numbers and the structure—your team keeps the judgment calls.”
+              <blockquote className="mt-6">
+                <CinematicText
+                  as="p"
+                  className="font-display text-xl font-medium leading-[1.45] tracking-tight text-ink sm:text-2xl"
+                >
+                  {[
+                    "Reporting shouldn’t be the heaviest lift of the month.",
+                    "Fluxvex assembles the numbers and the structure—",
+                    "your team keeps the judgment calls.",
+                  ]}
+                </CinematicText>
               </blockquote>
               <div className="mt-8 flex items-center gap-3">
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-tint">

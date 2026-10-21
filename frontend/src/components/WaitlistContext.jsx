@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 import axios from "axios";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check, Loader2 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -294,9 +294,9 @@ export function WaitlistProvider({ children }) {
             <DialogTitle className="font-display text-2xl font-semibold tracking-tight text-ink">
               Join the waitlist
             </DialogTitle>
-            <p className="mt-1 text-sm text-ink-soft">
+            <DialogDescription className="mt-1 text-sm text-ink-soft">
               Get product updates and early-access details.
-            </p>
+            </DialogDescription>
           </DialogHeader>
           <WaitlistForm source={source} />
         </DialogContent>

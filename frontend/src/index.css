@@ -178,3 +178,10 @@ body {
 }
 .nav-underline[data-active='true']::after { transform: scaleX(1); }
 .nav-underline:hover::after { transform: scaleX(1); }
+
+/* Premium range slider (dark ROI calculator) */
+.range-premium { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; outline: none; cursor: pointer; }
+.range-premium::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 18px; width: 18px; border-radius: 9999px; background: #ffffff; border: none; box-shadow: 0 0 0 5px rgba(110,116,255,0.25), 0 6px 14px rgba(0,0,0,0.45); transition: transform 0.15s ease; cursor: pointer; }
+.range-premium::-webkit-slider-thumb:hover { transform: scale(1.18); }
+.range-premium::-moz-range-thumb { height: 18px; width: 18px; border-radius: 9999px; background: #ffffff; border: none; box-shadow: 0 0 0 5px rgba(110,116,255,0.25), 0 6px 14px rgba(0,0,0,0.45); cursor: pointer; }
+.range-premium::-moz-range-track { background: transparent; }

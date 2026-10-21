@@ -5,17 +5,18 @@ import IntegrationsStrip from "@/components/IntegrationsStrip";
 import Testimonial from "@/components/Testimonial";
 import Problem from "@/components/Problem";
 import Outcome from "@/components/Outcome";
+import HowItWorks from "@/components/HowItWorks";
 import FeatureGrid from "@/components/FeatureGrid";
 import Showcase from "@/components/Showcase";
 import Platform from "@/components/Platform";
 import AiComparison from "@/components/AiComparison";
-import HowItWorks from "@/components/HowItWorks";
 import RoiCalculator from "@/components/RoiCalculator";
 import Consistency from "@/components/Consistency";
 import SecuritySection from "@/components/SecuritySection";
 import PricingPreview from "@/components/PricingPreview";
 import Faq from "@/components/Faq";
 import FinalCta from "@/components/FinalCta";
+import BackersBand from "@/components/BackersBand";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import Seo from "@/components/Seo";
@@ -32,17 +33,18 @@ export default function Home() {
         <Testimonial />
         <Problem />
         <Outcome />
+        <HowItWorks />
         <FeatureGrid />
         <Showcase />
         <Platform />
         <AiComparison />
-        <HowItWorks />
         <RoiCalculator />
         <Consistency />
         <SecuritySection />
         <PricingPreview />
         <Faq />
         <FinalCta />
+        <BackersBand />
       </main>
       <Footer />
       <CookieConsent />

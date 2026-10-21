@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
@@ -22,13 +22,13 @@ const TABLE_ROWS = [
 ];
 
 const COMPARISON_ROWS = (currency) => [
-  ["Indicative price (per month)", currency === "usd" ? "$49" : "₹3,999", currency === "usd" ? "$149" : "₹11,999"],
+  ["Launch price (per month)", currency === "usd" ? "$ •• — locked" : "₹ •,••• — locked", currency === "usd" ? "$ ••• — locked" : "₹ ••,••• — locked"],
   ...TABLE_ROWS,
 ];
 
 const PRICING_FAQS = [
-  ["When will pricing be announced?", "Indicative pricing in USD and INR is shown above as a guide—final pricing will be announced before launch. Join the waitlist and you’ll get the announcement by email."],
-  ["Why do USD and INR prices differ?", "The INR amounts are rounded conversions of the USD guide amounts for readability. The final announcement will confirm exact billing currencies, taxes, and terms."],
+  ["When will pricing be announced?", "Pricing is still under wraps—it appears as a locked preview today. Final pricing will be announced before launch, and waitlist members see it first."],
+  ["Why is the price hidden?", "We’re finalizing plan limits, billing currencies, and taxes before publishing numbers. The locked preview shows the shape of each plan; the numbers land with the launch announcement."],
   ["Will early-access users receive launch updates?", "Yes. Waitlist members receive meaningful launch and early-access updates by email."],
   ["What counts as a client?", "We’re finalizing whether a client means one connected brand or one reporting workspace. The definition will be published with pricing."],
   ["Can I move from Starter to Growth?", "Yes—the plan structure is designed around client count, so you move when your portfolio does. Details will be announced with pricing."],
@@ -42,7 +42,7 @@ export default function Pricing() {
     <>
       <Seo
         title="Pricing — Two Plans for Agency Reporting | Fluxvex"
-        description="Starter and Growth plans with indicative launch pricing in USD and INR. Fluxvex final pricing will be announced before launch—join the waitlist for updates."
+        description="Starter and Growth plans for agency reporting, previewable in USD and INR. Fluxvex pricing is not disclosed yet—join the waitlist to see it first."
         path="/pricing"
       />
       <Navbar />
@@ -60,8 +60,8 @@ export default function Pricing() {
             </CinematicText>
             <Reveal y={16} delay={0.15}>
               <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-ink-soft sm:text-base">
-                Two plans are taking shape around your client portfolio. Indicative launch pricing is shown below—final
-                pricing will be announced before launch.
+                Two plans are taking shape around your client portfolio. Pricing stays under wraps until launch—waitlist
+                members see it first.
               </p>
             </Reveal>
             <Reveal y={16} delay={0.25}>
@@ -78,7 +78,7 @@ export default function Pricing() {
                 plan={{
                   name: "Starter",
                   tag: "For focused portfolios",
-                  prices: { usd: "$49", inr: "₹3,999" },
+                  mask: { usd: "$••", inr: "₹ •,•••" },
                   bullets: [
                     "For agencies managing up to 5 clients",
                     "Core reporting workflow for the initial supported integrations",
@@ -98,7 +98,7 @@ export default function Pricing() {
                 plan={{
                   name: "Growth",
                   tag: "For scaling agencies",
-                  prices: { usd: "$149", inr: "₹11,999" },
+                  mask: { usd: "$•••", inr: "₹ ••,•••" },
                   bullets: [
                     "For agencies managing more than 5 clients",
                     "Designed for a larger client portfolio",
@@ -113,9 +113,9 @@ export default function Pricing() {
               />
             </Reveal>
           </div>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-ink-soft/80" data-testid="pricing-indicative-note">
-            Indicative launch pricing in the selected currency—final pricing and billing terms will be announced before
-            launch.
+          <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-ink-soft/80" data-testid="pricing-price-note">
+            <Lock className="mr-1 inline h-3 w-3 align-[-2px]" />
+            Final pricing and billing terms will be announced before launch—waitlist members see it first.
           </p>
 
           {/* comparison */}
@@ -171,7 +171,7 @@ export default function Pricing() {
           <Reveal>
             <div className="mx-auto mt-16 max-w-4xl rounded-2xl border border-accent-border bg-accent-tint p-8 text-center sm:p-12">
               <CinematicText as="h2" className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-                Get pricing updates
+                Be first to see pricing
               </CinematicText>
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
                 Join the waitlist and pick your plan interest—we’ll email the announcement the moment it’s ready.

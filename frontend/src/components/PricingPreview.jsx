@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
@@ -11,7 +11,7 @@ const PLANS = [
   {
     name: "Starter",
     tag: "For focused portfolios",
-    prices: { usd: "$49", inr: "₹3,999" },
+    mask: { usd: "$••", inr: "₹ •,•••" },
     bullets: [
       "For agencies managing up to 5 clients",
       "Core reporting workflow for the initial supported integrations",
@@ -25,7 +25,7 @@ const PLANS = [
   {
     name: "Growth",
     tag: "For scaling agencies",
-    prices: { usd: "$149", inr: "₹11,999" },
+    mask: { usd: "$•••", inr: "₹ ••,•••" },
     bullets: [
       "For agencies managing more than 5 clients",
       "Designed for a larger client portfolio",
@@ -52,19 +52,40 @@ export function PlanCard({ plan, currency = "usd", highlighted = false, source =
           {plan.tag}
         </span>
       </div>
-      <p className="mt-6 font-display text-4xl font-semibold tracking-tight text-ink" data-testid={`${plan.testid}-price`}>
+
+      {/* locked price — blurred with a peek-on-hover curiosity effect */}
+      <div
+        className="group/price relative mt-6 w-fit cursor-pointer overflow-hidden rounded-lg px-1 py-0.5"
+        data-testid={`${plan.testid}-price`}
+        title="Pricing announced before launch"
+      >
         <motion.span
           key={currency}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="inline-block"
+          className="inline-flex items-center"
         >
-          {plan.prices[currency]}
+          <span
+            aria-hidden="true"
+            className="inline-block font-display text-4xl font-semibold tracking-tight text-ink/85 blur-[7px] transition-all duration-300 select-none group-hover/price:blur-[3px]"
+          >
+            {plan.mask[currency]}
+          </span>
+          <span className="ml-1 text-sm font-medium text-ink-soft">/mo</span>
         </motion.span>
-        <span className="ml-1 text-sm font-medium text-ink-soft">/mo</span>
-      </p>
-      <p className="mt-1 text-xs text-ink-soft">Indicative launch pricing—final pricing announced before launch.</p>
+        <motion.span
+          className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/80 to-transparent"
+          animate={{ x: ["-140%", "360%"] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.6 }}
+          aria-hidden="true"
+        />
+        <span className="absolute left-1/2 top-1/2 z-10 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-ink text-white shadow-[0_10px_20px_-6px_rgba(16,16,20,0.6)]">
+          <Lock className="h-3 w-3" />
+        </span>
+      </div>
+      <p className="mt-2 text-xs text-ink-soft">Launch pricing announced soon—waitlist members see it first.</p>
+
       <ul className="mt-7 flex-1 space-y-3 border-t border-hairline pt-7">
         {plan.bullets.map((b) => (
           <li key={b} className="flex items-start gap-3 text-sm leading-relaxed text-ink/80">
@@ -94,8 +115,8 @@ export default function PricingPreview() {
     <SectionShell id="pricing">
       <SectionHeader
         overline="Pricing"
-        title="Straightforward plans. Indicative launch pricing."
-        copy="Two plans shaped around your client portfolio. Indicative launch pricing is shown below in USD and INR—final pricing will be announced before launch. Join the waitlist to get the announcement."
+        title="Straightforward plans. Pricing landing soon."
+        copy="Two plans shaped around your client portfolio. Pricing stays under wraps until launch—waitlist members see it first. Preview the plans in USD or INR."
       />
       <div className="flex justify-center">
         <CurrencyToggle value={currency} onChange={setCurrency} />
@@ -108,7 +129,7 @@ export default function PricingPreview() {
         ))}
       </div>
       <p className="mt-6 text-center text-xs leading-relaxed text-ink-soft/80" data-testid="home-pricing-indicative-note">
-        Indicative launch pricing in the selected currency—final pricing and billing terms will be announced before launch.
+        Final pricing and billing terms will be announced before launch—waitlist members see it first.
       </p>
       <Reveal delay={0.15}>
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-line bg-page px-6 py-5">

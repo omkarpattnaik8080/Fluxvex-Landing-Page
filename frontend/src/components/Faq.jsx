@@ -13,7 +13,7 @@ export const FAQS = [
   ["How can I disconnect an account or request deletion?", "You will be able to disconnect connected platforms from inside the product at any time. For data deletion requests, contact us through the contact page and we will confirm what is removed and when."],
   ["Is Fluxvex GDPR, CCPA/CPRA, or DPDP compliant?", "We do not publish blanket compliance claims. We are building Fluxvex with privacy as a product requirement, and our security page describes the current status of the controls and processes that support applicable obligations."],
   ["Is Fluxvex ISO/IEC 27001 certified or SOC 2 audited?", "No. We do not claim certification or audit status that has not been completed and documented. If that changes, we will state it explicitly, with scope."],
-  ["When will pricing be available?", "Indicative pricing in USD and INR is shown on the pricing page as a guide. Final pricing will be announced before launch—join the waitlist to get the announcement by email."],
+  ["When will pricing be available?", "Pricing is not disclosed yet—it appears as a locked, blurred preview on the pricing page. Final pricing will be announced before launch—waitlist members see it first."],
   ["How do I join the waitlist?", "Use the Join the waitlist form on this site. You will need a work email; agency name and client count are optional. We will email you when there is a meaningful launch or early-access update."],
 ];
 

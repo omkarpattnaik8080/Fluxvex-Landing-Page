@@ -241,6 +241,7 @@ export default function Navbar() {
 
   const pillLink = (item) => (
     <Link
+      key={item.label}
       to={item.href}
       className={`rounded-full px-3 py-1.5 font-display text-[15px] font-medium tracking-[-0.01em] transition-colors ${
         isActive(item.href) ? "bg-black/[0.07] text-ink" : "text-black/65 hover:bg-black/[0.05] hover:text-ink"

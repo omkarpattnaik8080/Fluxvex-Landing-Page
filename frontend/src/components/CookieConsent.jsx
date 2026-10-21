@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 
@@ -79,6 +79,9 @@ export default function CookieConsent() {
             <DialogTitle className="font-display text-2xl font-semibold tracking-tight text-ink">
               Cookie preferences
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              Manage which cookies Fluxvex may use.
+            </DialogDescription>
           </DialogHeader>
           <div className="mt-2 space-y-4">
             {[

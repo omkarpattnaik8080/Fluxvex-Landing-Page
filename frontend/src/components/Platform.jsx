@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, ChevronRight, Link2, ShieldCheck, SlidersHorizontal } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Link2, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
@@ -58,6 +58,18 @@ function CountUp({ value }) {
 }
 
 function CloudVisual() {
+  const LABELS = ["Google Ads", "Meta Ads", "Fluxvex", "Google Analytics 4", "Report exports"];
+  const reduceRings = false;
+  const ICONS = [
+    <GoogleAdsMark size={17} key="g" />,
+    <MetaMark size={17} key="m" />,
+    <FluxvexMark size={17} key="f" className="rounded-md" />,
+    <GA4Mark size={17} key="a" />,
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" key="p" aria-hidden="true">
+      <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke="#101014" strokeWidth="1.8" />
+      <path d="M9 13h6M9 17h4" stroke="#101014" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>,
+  ];
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -67,39 +79,76 @@ function CloudVisual() {
       className="flex flex-col items-center"
       data-testid="platform-cloud-visual"
     >
-      <div className="bob-slow relative flex h-40 w-72 items-center justify-center sm:w-80" aria-hidden="true">
+      <motion.div
+        animate={{ y: [0, -7, 0] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+        className="relative flex h-40 w-72 items-center justify-center sm:w-80"
+        aria-hidden="true"
+      >
         {/* cloud puffs */}
         <div className="absolute left-10 top-0 h-24 w-24 rounded-full bg-white shadow-[0_30px_60px_-20px_rgba(16,16,20,0.25),inset_0_-10px_24px_rgba(16,16,20,0.05)]" />
         <div className="absolute right-10 top-3 h-20 w-24 rounded-full bg-white shadow-[0_30px_60px_-20px_rgba(16,16,20,0.25),inset_0_-10px_24px_rgba(16,16,20,0.05)]" />
         <div className="absolute bottom-0 left-0 right-0 h-24 rounded-[40px] bg-white shadow-[0_40px_70px_-24px_rgba(16,16,20,0.3),inset_0_-14px_28px_rgba(16,16,20,0.06)]" />
-        {/* integration icons */}
+        {/* integration icons — floating, with hover name chips */}
         <div className="relative flex items-center gap-2.5" data-testid="platform-cloud-icons">
-          {[
-            <GoogleAdsMark size={17} key="g" />,
-            <MetaMark size={17} key="m" />,
-            <FluxvexMark size={17} key="f" className="rounded-md" />,
-            <GA4Mark size={17} key="a" />,
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" key="p" aria-hidden="true">
-              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" stroke="#101014" strokeWidth="1.8" />
-              <path d="M9 13h6M9 17h4" stroke="#101014" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>,
-          ].map((mark, i) => (
-            <span
+          {ICONS.map((mark, i) => (
+            <motion.span
               key={i}
-              className={`flex h-11 w-11 items-center justify-center rounded-full shadow-[0_14px_30px_-10px_rgba(16,16,20,0.3)] ring-1 ring-black/5 transition-transform hover:-translate-y-1 ${
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3.4, delay: i * 0.45, repeat: Infinity, ease: "easeInOut" }}
+              className={`group relative flex h-11 w-11 cursor-default items-center justify-center rounded-full shadow-[0_14px_30px_-10px_rgba(16,16,20,0.3)] ring-1 ring-black/5 transition-transform duration-200 hover:-translate-y-1.5 ${
                 i === 2 ? "bg-accent-tint ring-accent/25" : "bg-[#FAFAF7]"
               }`}
             >
               {mark}
-            </span>
+              <span className="pointer-events-none absolute -top-9 left-1/2 z-10 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-full bg-ink px-2.5 py-1 text-[10px] font-semibold text-white opacity-0 shadow-lg transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+                {LABELS[i]}
+              </span>
+            </motion.span>
           ))}
         </div>
+      </motion.div>
+      {/* dashed connector with a traveling data packet */}
+      <div className="relative h-12 w-px" aria-hidden="true">
+        <div className="absolute inset-0 border-l border-dashed border-black/25" />
+        {!reduceRings && (
+          <motion.span
+            className="absolute -left-[3.5px] h-1.5 w-1.5 rounded-full bg-accent"
+            style={{ boxShadow: "0 0 10px 2px rgba(61,67,232,0.45)" }}
+            animate={{ top: ["-4%", "96%"], opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 1.7, repeat: Infinity, ease: "easeInOut", times: [0, 0.15, 0.85, 1] }}
+          />
+        )}
       </div>
-      <div className="h-12 w-px border-l border-dashed border-black/25" aria-hidden="true" />
-      <div className="relative rounded-2xl bg-white p-2.5 shadow-[0_24px_50px_-18px_rgba(16,16,20,0.4)] ring-1 ring-accent/25" data-testid="platform-cloud-badge">
-        <span className="absolute inset-0 rounded-2xl bg-accent/25 blur-lg" aria-hidden="true" />
-        <FluxvexMark size={40} className="relative rounded-xl" />
-      </div>
+      {/* Fluxvex badge — pulse rings + periodic report-ready toast */}
+      <motion.div
+        className="relative"
+        whileHover={{ scale: 1.07 }}
+        transition={{ type: "spring", stiffness: 300, damping: 18 }}
+        data-testid="platform-cloud-badge"
+      >
+        {!reduceRings &&
+          [0, 1].map((i) => (
+            <motion.span
+              key={i}
+              className="absolute inset-0 rounded-2xl border-2 border-accent/40"
+              animate={{ scale: [1, 1.55], opacity: [0.7, 0] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut", delay: i * 1.1 }}
+              aria-hidden="true"
+            />
+          ))}
+        <div className="relative rounded-2xl bg-white p-2.5 shadow-[0_24px_50px_-18px_rgba(16,16,20,0.4)] ring-1 ring-accent/25">
+          <span className="absolute inset-0 rounded-2xl bg-accent/25 blur-lg" aria-hidden="true" />
+          <FluxvexMark size={40} className="relative rounded-xl" />
+        </div>
+        <motion.span
+          className="absolute -right-8 top-1/2 hidden w-max -translate-y-1/2 items-center gap-1.5 rounded-full border border-mint/40 bg-mint/10 px-3 py-1 text-[11px] font-semibold text-[#0E8A3E] shadow-sm sm:flex"
+          animate={{ opacity: [0, 0, 1, 1, 0], x: [6, 6, 0, 0, 6] }}
+          transition={{ duration: 5.2, repeat: Infinity, times: [0, 0.45, 0.6, 0.9, 1] }}
+        >
+          <Check className="h-3 w-3" /> Client report ready
+        </motion.span>
+      </motion.div>
     </motion.div>
   );
 }

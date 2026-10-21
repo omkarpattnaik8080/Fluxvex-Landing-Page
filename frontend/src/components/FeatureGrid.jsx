@@ -1,4 +1,5 @@
-import { Database, FileText, Bell } from "lucide-react";
+import { motion } from "framer-motion";
+import { Database, Sparkles, Bell, BarChart3, TrendingUp, Users, Zap } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
@@ -12,68 +13,96 @@ function Cursor() {
   );
 }
 
+function Bob({ children, delay = 0 }) {
+  return (
+    <motion.span
+      animate={{ y: [0, -5, 0] }}
+      transition={{ duration: 3.2, delay, repeat: Infinity, ease: "easeInOut" }}
+      className="inline-block"
+      aria-hidden="false"
+    >
+      {children}
+    </motion.span>
+  );
+}
+
+/* Card 1 — dish of sources, dashed drop, section list (exact reference diagram) */
 function VisualInputs() {
   return (
-    <div className="flex h-full flex-col items-center justify-center p-6">
-      <div className="w-64 rounded-xl border border-black/[0.05] bg-white p-3 shadow-[0_20px_45px_-20px_rgba(16,16,20,0.3)]">
-        <div className="flex gap-1.5 px-1 pb-2" aria-hidden="true">
-          <span className="h-1.5 w-1.5 rounded-full bg-black/15" />
-          <span className="h-1.5 w-1.5 rounded-full bg-black/15" />
-          <span className="h-1.5 w-1.5 rounded-full bg-black/15" />
+    <div className="flex h-full flex-col items-center justify-center p-6" data-testid="feature-visual-inputs">
+      {/* dish holding the source icons */}
+      <div className="relative flex h-[86px] w-56 items-end justify-center">
+        <div className="absolute bottom-0 h-14 w-56 rounded-[50%] bg-white shadow-[inset_0_8px_16px_rgba(16,16,20,0.09),0_26px_45px_-18px_rgba(16,16,20,0.35)]" />
+        <div className="relative bottom-3 flex items-end gap-3">
+          <Bob>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_12px_24px_-10px_rgba(16,16,20,0.3)] ring-1 ring-black/5">
+              <GoogleAdsMark size={16} />
+            </span>
+          </Bob>
+          <Bob delay={0.5}>
+            <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-[0_16px_32px_-8px_rgba(61,67,232,0.5)] ring-1 ring-accent/25">
+              <span className="absolute inset-0 rounded-2xl bg-accent/25 blur-md" aria-hidden="true" />
+              <FluxvexMark size={26} className="relative rounded-lg" />
+            </span>
+          </Bob>
+          <Bob delay={1}>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_12px_24px_-10px_rgba(16,16,20,0.3)] ring-1 ring-black/5">
+              <MetaMark size={16} />
+            </span>
+          </Bob>
         </div>
-        <div className="relative mt-1 flex items-center justify-center gap-8 border-b border-hairline pb-3">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface ring-1 ring-black/5"><GoogleAdsMark size={15} /></span>
-          <span className="relative -mt-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-[0_14px_30px_-8px_rgba(61,67,232,0.45)] ring-1 ring-accent/20">
-            <span className="absolute inset-0 rounded-2xl bg-accent/25 blur-md" aria-hidden="true" />
-            <FluxvexMark size={26} className="relative rounded-lg" />
-          </span>
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-surface ring-1 ring-black/5"><MetaMark size={15} /></span>
-        </div>
-        <p className="px-2 pt-3 text-[10px] font-medium uppercase tracking-wide text-black/40">Report sections</p>
-        <div className="mt-2 space-y-1.5">
-          {[
-            ["Campaign metrics", "12", false],
-            ["Client summary", "+24", true],
-            ["GA4 sessions", "8", false],
-          ].map(([label, count, hot]) => (
-            <div
-              key={label}
-              className={`relative flex items-center justify-between rounded-lg px-3 py-2 text-[12px] font-medium ${
-                hot ? "border border-accent/30 bg-accent-tint text-ink" : "border border-hairline bg-page text-ink-soft"
-              }`}
-            >
-              {label}
-              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${hot ? "bg-accent text-white" : "bg-surface text-ink-soft ring-1 ring-black/5"}`}>
-                {count}
-              </span>
-              {hot && <Cursor />}
-            </div>
-          ))}
-        </div>
+      </div>
+      {/* dashed connector */}
+      <div className="h-9 w-px border-l border-dashed border-black/25" aria-hidden="true" />
+      {/* section list */}
+      <div className="w-56 space-y-1.5">
+        {[
+          { icon: BarChart3, label: "Campaign metrics", count: "12", hot: false },
+          { icon: TrendingUp, label: "Channel results", count: "+24", hot: true },
+          { icon: Users, label: "Audience insights", count: "8", hot: false },
+        ].map((row) => (
+          <div
+            key={row.label}
+            className={`relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-medium ${
+              row.hot ? "border border-accent/30 bg-white text-ink shadow-[0_14px_30px_-14px_rgba(61,67,232,0.45)]" : "text-ink-soft"
+            }`}
+          >
+            <row.icon className={`h-3.5 w-3.5 ${row.hot ? "text-accent" : "text-black/35"}`} strokeWidth={1.9} />
+            {row.label}
+            <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold ${row.hot ? "bg-accent text-white" : "bg-black/[0.06] text-ink-soft"}`}>
+              {row.count}
+            </span>
+            {row.hot && <Cursor />}
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-function VisualReports() {
-  const rows = [
-    { mark: <MetaMark size={14} />, title: "Northbeam Media", sub: "June report is ready", cls: "" },
-    { mark: <GA4Mark size={14} />, title: "Q2 review", sub: "Drafting summary…", cls: "ml-8" },
-    { mark: <GoogleAdsMark size={14} />, title: "Weekly snapshot", sub: "Delivered Monday", cls: "ml-4" },
-    { mark: <FluxvexMark size={14} className="rounded-md" />, title: "Branded export", sub: "Client-ready PDF", cls: "ml-12" },
+/* Card 2 — cascading message bubbles (exact reference diagram) */
+function VisualSummaries() {
+  const bubbles = [
+    { mark: <GoogleAdsMark size={14} />, title: "Northbeam Media", text: "June spend synced—$48,210", cls: "" },
+    { mark: <MetaMark size={14} />, title: "Meta Ads", text: "ROAS 2.4x this month", cls: "ml-7" },
+    { mark: <GA4Mark size={14} />, title: "GA4", text: "Sessions +18% vs May", cls: "ml-12" },
+    { mark: <FluxvexMark size={14} className="rounded-md" />, title: "Fluxvex AI", text: "Drafting the client summary…", cls: "ml-4", ai: true },
   ];
   return (
-    <div className="flex h-full flex-col justify-center gap-2.5 p-6">
-      {rows.map((r, i) => (
+    <div className="flex h-full flex-col justify-center gap-3 p-6" data-testid="feature-visual-summaries">
+      {bubbles.map((b, i) => (
         <div
-          key={r.title}
-          className={`flex items-center gap-3 rounded-xl border border-black/[0.05] bg-white px-4 py-3 shadow-[0_18px_40px_-18px_rgba(16,16,20,0.28)] bob ${r.cls}`}
+          key={b.title}
+          className={`flex w-fit items-center gap-3 rounded-xl border border-black/[0.05] bg-white px-4 py-3 shadow-[0_18px_40px_-18px_rgba(16,16,20,0.28)] bob ${b.ai ? "ring-1 ring-accent/25" : ""} ${b.cls}`}
           style={{ animationDelay: `${i * 0.55}s` }}
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface ring-1 ring-black/5">{r.mark}</span>
+          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-black/5 ${b.ai ? "bg-accent-tint" : "bg-surface"}`}>{b.mark}</span>
           <span className="min-w-0">
-            <span className="block truncate text-[12px] font-semibold text-ink">{r.title}</span>
-            <span className="block truncate text-[11px] text-ink-soft">{r.sub}</span>
+            <span className="flex items-center gap-1.5 text-[12px] font-semibold text-ink">
+              {b.title}
+              {b.ai && <Sparkles className="h-3 w-3 text-accent" />}
+            </span>
+            <span className="block truncate text-[11px] text-ink-soft">{b.text}</span>
           </span>
         </div>
       ))}
@@ -81,22 +110,28 @@ function VisualReports() {
   );
 }
 
+/* Card 3 — report request card → generating pill → countdown dial (exact reference diagram) */
 function VisualDelivery() {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 p-6">
+    <div className="flex h-full flex-col items-center justify-center gap-2.5 p-6" data-testid="feature-visual-delivery">
       <div className="flex w-60 items-center gap-3 rounded-xl border border-black/[0.05] bg-white px-4 py-3 shadow-[0_18px_40px_-18px_rgba(16,16,20,0.28)]">
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink font-display text-[10px] font-bold text-white">N</span>
         <span>
           <span className="block text-[12px] font-semibold text-ink">northbeam.client</span>
-          <span className="block text-[11px] text-ink-soft">June 2025 report</span>
+          <span className="block text-[11px] text-ink-soft">June 2025 report—due Friday</span>
         </span>
       </div>
-      <div className="flex w-64 items-center gap-2.5 rounded-full bg-white px-4 py-2.5 shadow-[0_20px_45px_-16px_rgba(16,16,20,0.3)] ring-1 ring-accent/15">
+      <div className="h-4 w-px border-l border-dashed border-black/25" aria-hidden="true" />
+      <div className="relative flex w-64 items-center gap-2.5 rounded-full bg-white px-4 py-2.5 shadow-[0_20px_45px_-16px_rgba(16,16,20,0.3)] ring-1 ring-accent/15">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="animate-spin" style={{ animationDuration: "2.4s" }} aria-hidden="true">
           <path d="M12 3a9 9 0 1 0 9 9" stroke="#3D43E8" strokeWidth="2.4" strokeLinecap="round" />
         </svg>
-        <span className="text-[12px] font-medium text-ink">Fluxvex generating report…</span>
+        <span className="text-[12px] font-medium text-ink">Fluxvex generating fast report…</span>
+        <span className="absolute -bottom-2.5 right-3 flex items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[9px] font-semibold text-white">
+          <Zap className="h-2.5 w-2.5 text-[#F5D748]" /> 3 Integrations
+        </span>
       </div>
+      <div className="h-4 w-px border-l border-dashed border-black/25" aria-hidden="true" />
       <div className="relative mt-1 flex h-32 w-32 items-center justify-center rounded-full bg-white shadow-[0_24px_50px_-18px_rgba(16,16,20,0.35)] ring-1 ring-black/5">
         <svg viewBox="0 0 120 120" className="absolute inset-0 h-full w-full" aria-hidden="true">
           {Array.from({ length: 48 }).map((_, i) => {
@@ -115,11 +150,7 @@ function VisualDelivery() {
             );
           })}
         </svg>
-        <svg
-          viewBox="0 0 120 120"
-          className="absolute inset-0 h-full w-full motion-safe:animate-[spin_3.2s_linear_infinite]"
-          aria-hidden="true"
-        >
+        <svg viewBox="0 0 120 120" className="absolute inset-0 h-full w-full motion-safe:animate-[spin_3.2s_linear_infinite]" aria-hidden="true">
           <circle cx="60" cy="60" r="56" fill="none" stroke="#3D43E8" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="88 264" />
         </svg>
         <span className="font-display text-2xl font-semibold tracking-tight text-ink">00:03</span>
@@ -133,21 +164,21 @@ const CARDS = [
   {
     icon: Database,
     category: "Sources",
-    title: "Unified inputs",
+    title: "Unified data hub",
     desc: "Bring supported advertising and analytics data into one repeatable reporting workflow.",
     visual: <VisualInputs />,
   },
   {
-    icon: FileText,
-    category: "Reporting",
-    title: "White-label reports",
-    desc: "Make the report feel like an extension of your agency, not a disconnected tool.",
-    visual: <VisualReports />,
+    icon: Sparkles,
+    category: "Fluxvex AI",
+    title: "AI-written summaries",
+    desc: "Fluxvex AI drafts consistent, client-ready summaries from every connected channel.",
+    visual: <VisualSummaries />,
   },
   {
     icon: Bell,
     category: "Delivery",
-    title: "Repeatable delivery",
+    title: "Quick response delivery",
     desc: "Reduce the recurring setup and formatting work required for every reporting cycle.",
     visual: <VisualDelivery />,
   },
@@ -170,7 +201,7 @@ export default function FeatureGrid() {
               </CinematicText>
             </div>
             <p className="max-w-xs pb-1 text-[15px] leading-[1.7] text-ink-soft">
-              Automate data collection, formatting, and delivery across your client accounts.
+              Automate data collection, AI summaries, formatting, and delivery across your client accounts.
             </p>
           </div>
         </Reveal>

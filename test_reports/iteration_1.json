@@ -1,0 +1,38 @@
+{
+  "summary": "Iteration 1 — Full e2e test of Fluxvex landing page. Backend: 11/11 pytest cases pass (waitlist valid/duplicate/invalid/honeypot with Mongo persistence verification, contact form valid/invalid with Mongo persistence, SEO static assets canonical/og/twitter/sitemap/robots/llms.txt/JSON-LD-no-price). Frontend: waitlist e2e works (axios import bug fix confirmed — submission succeeds, duplicate succeeds, invalid email shows waitlist-error 'Please enter a valid work email.'); contact form submits and shows contact-success; currency toggle on /pricing and home #pricing both correctly swap between $49/$149 and ₹3,999/₹11,999 and comparison table reflects INR; per-route canonical and og:url correctly set to https://www.fluxvex.com/<path> on /, /pricing, /contact, /security; 404 page sets robots 'noindex, nofollow'. One caveat: a stale CRA dev-server HTML cache was serving the OLD static <head> (missing canonical, og:url, og:image, with twitter:card=summary); after `supervisorctl restart frontend` the new head is served correctly. Main agent should ensure frontend is restarted after public/index.html changes.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Navbar", "issues": ["React warning: 'Each child in a list should have a unique key prop' in Navbar render. Add key to the mapped list."]},
+      {"screen": "Waitlist/Cookie DialogContent", "issues": ["A11y warning: Missing Description or aria-describedby for DialogContent (shadcn Dialog). Add DialogDescription or aria-describedby."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Minor: fix missing React 'key' prop in Navbar list render.",
+    "Minor: add DialogDescription / aria-describedby to the Waitlist and CookieConsent DialogContent to clear a11y warning.",
+    "Operational note: CRA dev server was serving stale index.html until frontend was restarted — not a code bug but worth noting."
+  ],
+  "critical_code_review_comments": [
+    "server.py uses in-memory rate-limit bucket keyed by request.client.host — behind the Kubernetes ingress this will see a shared/proxy IP and either over- or under-limit; consider using X-Forwarded-For or a shared store if abuse becomes a concern.",
+    "WaitlistCreate/ContactCreate use plain str for email instead of EmailStr; Pydantic validation would simplify server.py.",
+    "Navbar unique-key React warning should be fixed to avoid reconciliation issues.",
+    "DialogContent components (Waitlist modal, cookie-consent modal) emit a11y warnings — add DialogDescription."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_fluxvex_api.py (new)",
+    "/app/test_reports/pytest/pytest_results.xml (new)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "N/A — no auth",
+  "seed_data_creation": "Tests create & then delete their own TEST_ docs in db.waitlist and db.contact_messages. No persistent seed data left behind by pytest. UI test flows left 2 docs in db.waitlist (ui_*@test.com) and 1 in db.contact_messages (contact_ui_*@test.com) — safe to delete.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest file at /app/backend/tests/test_fluxvex_api.py covers waitlist/contact + all SEO static assets. Run with `pytest backend/tests/test_fluxvex_api.py -v`. Note: if public/index.html is edited, restart frontend via supervisor to clear CRA dev HTML cache before SEO tests. Per-route canonical/og:url are set at runtime by components/Seo.jsx — verify via DOM in Playwright, not just view-source. Cookie consent modal must be dismissed first in every fresh context (data-testid=cookie-accept-all-button).",
+  "rca of the issue": "No open bugs. The reported axios-missing-import regression in WaitlistContext.jsx is fully resolved — waitlist submission completes end-to-end and new documents appear in MongoDB `waitlist` collection; duplicate submissions correctly upsert (exactly one doc per email) and return `duplicate: true`."
+}
