@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowDown, CalendarDays, CalendarClock, Lock, Plus, Check, Trophy, Sparkles } from "lucide-react";
-import CinematicText from "@/components/ui/CinematicText";
+import { ArrowRight, ArrowDown, BarChart3, CalendarDays, CalendarClock, Lock, Plus, Check, Trophy, Sparkles } from "lucide-react";
 import { useWaitlist } from "@/components/WaitlistContext";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
@@ -195,6 +195,21 @@ function ReportPreview() {
             </div>
           </div>
 
+          {/* AI summary strip */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={reduce ? {} : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 2.15 }}
+            className="mt-2.5 flex items-start gap-2.5 rounded-lg border border-accent/20 bg-accent-tint/60 px-3 py-2.5"
+            data-testid="hero-ai-summary"
+          >
+            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+            <p className="text-[11.5px] leading-relaxed text-ink/80">
+              <span className="font-semibold text-accent">Fluxvex AI ·</span> Conversions hit a monthly high while spend
+              stayed near plan—Meta ROAS is trending up three weeks in a row.
+            </p>
+          </motion.div>
+
           {/* top campaign */}
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 10 }}
@@ -278,7 +293,7 @@ function AiInsightStream() {
     <motion.div
       animate={reduce ? {} : { y: [0, -8, 0] }}
       transition={{ duration: 6, repeat: Infinity, delay: 0.9, ease: "easeInOut" }}
-      className="pointer-events-none absolute right-6 top-[42%] z-20 hidden w-64 rounded-xl bg-white p-3.5 text-left shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] xl:block"
+      className="pointer-events-none absolute right-6 top-[42%] z-20 hidden w-64 rounded-xl bg-white p-3.5 text-left shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] lg:block"
       data-testid="hero-ai-insight"
     >
       <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
@@ -297,6 +312,56 @@ function AiInsightStream() {
         <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Analyzing connected accounts
       </span>
     </motion.div>
+  );
+}
+
+/* GSAP marquee headline — the same continuous motion as the backers band */
+function HeadlineMarquee() {
+  const trackRef = useRef(null);
+  const tweenRef = useRef(null);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || reduce) return undefined;
+    gsap.set(track, { force3D: true });
+    const tween = gsap.to(track, { xPercent: -50, duration: 24, ease: "none", repeat: -1 });
+    tweenRef.current = tween;
+    return () => {
+      tween.kill();
+      gsap.set(track, { clearProps: "transform" });
+    };
+  }, [reduce]);
+
+  const phrase = (k) => (
+    <span key={k} className="flex shrink-0 items-center font-display text-[44px] font-semibold leading-[1.05] tracking-tightest text-white sm:text-6xl lg:text-7xl">
+      <span className="whitespace-nowrap px-4 sm:px-6">Client reporting,</span>
+      <FluxvexMark size={36} className="shrink-0 rounded-xl" />
+      <span className="whitespace-nowrap px-4 sm:px-6">on autopilot.</span>
+      <FluxvexMark size={36} className="shrink-0 rounded-xl" />
+    </span>
+  );
+
+  return (
+    <h1 className="relative overflow-hidden" aria-label="Client reporting, on autopilot" data-testid="hero-headline">
+      {reduce ? (
+        <span className="block text-center font-display text-[44px] font-semibold leading-[1.02] tracking-tightest text-white sm:text-6xl lg:text-7xl">
+          Client reporting, on autopilot.
+        </span>
+      ) : (
+        <>
+          <span className="sr-only">Client reporting, on autopilot.</span>
+          <div ref={trackRef} className="flex w-max items-center will-change-transform">
+            {[0, 1].map((half) => (
+              <div key={half} aria-hidden={half === 1} className="flex shrink-0 items-center">
+                {phrase(`${half}-a`)}
+                {phrase(`${half}-b`)}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </h1>
   );
 }
 
@@ -350,6 +415,20 @@ export default function Hero() {
         </motion.div>
 
         <motion.div
+          {...float(2.0)}
+          className="pointer-events-none absolute left-6 top-[40%] hidden items-center gap-2.5 rounded-xl bg-white px-3.5 py-3 shadow-[0_20px_45px_-14px_rgba(0,0,0,0.45)] xl:flex"
+          aria-hidden="true"
+        >
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-tint">
+            <BarChart3 className="h-4 w-4 text-accent" />
+          </span>
+          <span>
+            <span className="block text-[12.5px] font-semibold text-ink">12 client reports</span>
+            <span className="block text-[10.5px] text-black/50">assembled this cycle</span>
+          </span>
+        </motion.div>
+
+        <motion.div
           {...float(2.4)}
           className="pointer-events-none absolute right-6 top-[63%] hidden w-52 rotate-2 items-center gap-3 rounded-xl bg-white p-3.5 shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] md:flex"
           aria-hidden="true"
@@ -378,18 +457,15 @@ export default function Hero() {
             <span className="rounded-full bg-mint px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">Pre-launch</span>
           </motion.p>
 
-          <CinematicText
-            as="h1"
-            className="mx-auto mt-7 max-w-4xl font-display text-[44px] font-semibold leading-[0.98] tracking-tightest text-white sm:text-6xl lg:text-[72px]"
-          >
-            {["Client reporting,", "on autopilot."]}
-          </CinematicText>
+          <div className="mt-7">
+            <HeadlineMarquee />
+          </div>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="mx-auto mt-6 max-w-xl text-[17px] leading-[1.65] text-white/85 sm:text-lg sm:leading-7"
+            className="mx-auto mt-6 max-w-xl font-display text-[17px] font-normal leading-[1.6] tracking-[-0.005em] text-white/85 sm:text-xl sm:leading-[1.6]"
             data-testid="hero-subcopy"
           >
             Turn Google Ads, Meta Ads, and GA4 data into polished, on-brand client

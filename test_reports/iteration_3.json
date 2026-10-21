@@ -1,0 +1,34 @@
+{
+  "summary": "Iteration 3 — Fluxvex redesign + GSAP + legal pages. Backend: 13/13 pytest pass (12 regression + new TestSeo.test_sitemap_excludes_legal_drafts; extended test_llms_txt to assert /privacy-policy, /terms, 'draft' listed in llms.txt). Sitemap confirmed exactly 4 URLs (legal excluded). Frontend verified end-to-end: Hero AI insight (data-testid=hero-ai-insight) renders with 'Fluxvex AI insight' label and typewriter advances between 2 captures (text grew from 'Drafting June perfor' → 'Drafting June performance summary… Analyzing connected accounts'); hero-join-waitlist-button intact. Showcase (showcase-ai-insights) shows ILLUSTRATIVE label and inner HTML changes between captures (chips cycling). AiComparison: comparison-prompt-visual and comparison-workflow-visual rendered equal height (323.25px vs 323.25px), non-empty; ai-comparison-table present once; comparison-need-1..6 all present. BackersBand GSAP: 6 backer testids (product-hunt, startupbase, meta-tech-partner, aws-startups, microsoft-azure-startups, sarvam) present (2x each due to marquee duplication); track transform animated between captures (matrix(1,0,0,1,-103.155,0) → matrix(1,0,0,1,-147.555,0)) proving GSAP xPercent timeline runs; zero console errors on home. FinalCta ticker (final-cta-insight-ticker) cycles ('Channel results synced across 3 sources' → 'June summary drafted for Northbeam Media'). Security control 8 link (security-policy-link) href=/privacy-policy. Workflow tabs 1-4 clickable (regression). ROI slider testid is roi-reduction-input / roi-clients input — iteration 2 already verified reactivity, re-verified via workflow regression. Legal /privacy-policy: legal-draft-notice present; exactly 1 h1; robots='noindex, nofollow'; canonical=https://www.fluxvex.com/privacy-policy; 12 span[title] fill-in chips; HTML <table> with exactly 9 tbody rows; NO leakage of 'Internal pre-publication checklist' / 'remove this section from the public page' / 'have counsel'. Legal /terms: legal-draft-notice present; 1 h1; noindex,nofollow robots; canonical=https://www.fluxvex.com/terms; chips=7 (post-fix); no checklist leakage after regex fix. Footer footer-privacy-link=/privacy-policy, footer-terms-link=/terms; cookie-privacy-link=/privacy-policy. Locked pricing regression: no $49/$149/3,999/11,999 on home or /pricing. No horizontal overflow on home / privacy / terms at 1440 OR 390. Zero JS console/pageerrors across all three pages.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Testing agent already applied a fix to /app/frontend/src/components/legal/LegalDoc.jsx (chip regex upper bound 110 → 200). Main agent should sanity-check and keep this change. Rationale below in critical_code_review_comments."
+  ],
+  "critical_code_review_comments": [
+    "FIXED by testing agent: LegalDoc.jsx renderInline() regex /(\\*\\*[^*]+\\*\\*)|(\\[[^\\][]{3,110}\\])/g only matched bracketed fill-in fields up to 110 chars. The Terms doc section 17 contains '[have counsel define any agreed carve-outs, such as fraud, wilful misconduct, payment obligations, confidentiality, or indemnification]' (~131 chars) which was leaking as plain visible text — exposing the string 'have counsel' that the review-request explicitly flagged as internal-only checklist leakage. Bumped the upper bound to 200. After fix: chip now rendered correctly (haveCounselInChip=True, total chips 6→7); no other brackets exceed the new limit.",
+    "Iteration-1 open items still worth main-agent attention (unchanged): in-memory rate-limit keyed by request.client.host behind ingress sees a shared IP; consider X-Forwarded-For. Pydantic EmailStr would simplify validation in server.py.",
+    "BackersBand GSAP: scroll_into_view_if_needed times out on the moving element because the marquee is permanently animating — this is cosmetic to the test only, not a bug. Verified via computedStyle(transform) deltas instead.",
+    "No real price numbers found on home, /pricing, llms.txt, JSON-LD, or sitemap. Legal pages correctly noindex,nofollow and excluded from sitemap while listed in llms.txt as drafts — matches checklist intent."
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/legal/LegalDoc.jsx (regex upper bound 110 → 200 so the long carve-outs bracket renders as a fill-in chip instead of raw text)",
+    "/app/backend/tests/test_fluxvex_api.py (extended test_llms_txt + added test_sitemap_excludes_legal_drafts)",
+    "/app/test_reports/pytest/pytest_results.xml (regenerated — 13 passed)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "N/A — no auth",
+  "seed_data_creation": "Pytest cleans its own TEST_/dup_/trap_/contact_ docs via per-test teardown.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Reuse /app/backend/tests/test_fluxvex_api.py (now 13 cases). BackersBand GSAP: never call scroll_into_view_if_needed on the moving track — use JS evaluate with scrollTo({behavior:'instant'}) and read getComputedStyle(parent).transform at two timestamps. backer-* testids appear 2x due to marquee duplication (expected). Legal chips are span[title]; privacy=12 chips, terms=7 chips post-fix. Legal pages noindex,nofollow is INTENTIONAL (draft); sitemap excluding them is INTENTIONAL; llms.txt listing them as drafts is INTENTIONAL. Only flag if banner/chips disappear OR checklist leakage returns. Cookie banner must be dismissed first via data-testid=cookie-accept-all-button except when testing cookie-privacy-link itself (which lives inside the banner).",
+  "rca of the issue": "Single minor leak found & fixed. RCA: LegalDoc.jsx fill-in-chip regex upper bound was 110 chars but termsDoc section 17 contains a 131-char bracketed drafter instruction '[have counsel define any agreed carve-outs...]'. Repro: GET /terms, document.body.innerText.includes('have counsel') returned true pre-fix. Fix: raised regex upper bound to 200 so all current bracketed fields render as chips. Post-fix verified: that bracket is now a span[title] chip and body text no longer leaks the phrase outside of a chip."
+}

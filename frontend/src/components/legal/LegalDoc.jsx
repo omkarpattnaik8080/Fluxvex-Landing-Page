@@ -2,7 +2,7 @@
 
 function renderInline(text, keyBase) {
   const nodes = [];
-  const regex = /(\*\*[^*]+\*\*)|(\[[^\][]{3,110}\])/g;
+  const regex = /(\*\*[^*]+\*\*)|(\[[^\][]{3,200}\])/g;
   let last = 0;
   let m;
   let k = 0;

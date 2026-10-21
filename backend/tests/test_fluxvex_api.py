@@ -143,6 +143,16 @@ class TestSeo:
             assert p.lower() not in body, f"price {p} found in llms.txt"
         # locked story mentioned
         assert 'locked' in body and 'waitlist' in body
+        # Iteration 3: 6 pages listed incl. legal drafts
+        assert '/privacy-policy' in body
+        assert '/terms' in body
+        assert 'draft' in body
+
+    def test_sitemap_excludes_legal_drafts(self, client):
+        r = client.get(f"{BASE_URL}/sitemap.xml")
+        body = r.text
+        assert '/privacy-policy' not in body
+        assert '/terms' not in body
 
     def test_jsonld_faq_matches_onpage_faq(self, client):
         """JSON-LD pricing FAQ answer must equal Faq.jsx on-page text exactly."""

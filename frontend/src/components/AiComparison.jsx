@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { Check, HelpCircle, MessageSquare, Minus, Plug, Repeat, RefreshCw, Send, SlidersHorizontal, Sparkles } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Check, HelpCircle, MessageSquare, Minus, Plug, RefreshCw, Repeat, Send, SlidersHorizontal, Sparkles } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 
@@ -12,16 +12,59 @@ const ROWS = [
   ["Review, correct, and deliver a report", "Depends on the process wrapped around the AI tool", "Report review and delivery process can be built into the workflow"],
 ];
 
-/* Prompt visual — a question answered, then a manual loop, every cycle */
+/* ---- isometric primitives (same technique as the workflow stage) ---- */
+const PLANE = "rotateX(55deg) rotateZ(-45deg)";
+const BILLBOARD = "rotateZ(45deg) rotateX(-55deg)";
+
+function IsoTile({ x, y, s = 36, children }) {
+  return (
+    <div className="absolute" style={{ left: x, top: y, width: s, height: s }}>
+      <div className="flex h-full w-full items-center justify-center rounded-lg bg-white shadow-[0_14px_26px_-12px_rgba(16,16,20,0.4)] ring-1 ring-black/[0.06]">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function IsoBillboard({ x, y, children }) {
+  return (
+    <div className="pointer-events-none absolute z-10" style={{ left: x, top: y, transform: BILLBOARD, transformOrigin: "50% 100%" }}>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: [0, -4, 0] }}
+        viewport={{ once: true }}
+        transition={{ opacity: { duration: 0.35 }, y: { duration: 3.6, repeat: Infinity, ease: "easeInOut" } }}
+        className="rounded-xl border border-black/[0.06] bg-white px-3.5 py-2 shadow-[0_22px_44px_-16px_rgba(16,16,20,0.4)]"
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+function IsoWire({ from, to, delay = 0 }) {
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
+  const len = Math.round(Math.hypot(dx, dy));
+  const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
+  return (
+    <div className="absolute" style={{ left: from[0], top: from[1], width: len, transform: `rotate(${ang}deg)`, transformOrigin: "0 0" }} aria-hidden="true">
+      <div className="h-0 w-full border-t border-dashed border-accent/50" />
+      <motion.span
+        className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
+        style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
+        animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay }}
+      />
+    </div>
+  );
+}
+
+/* Prompt scene — a question answered, then a manual loop that never ends */
 function PromptVisual() {
-  const loop = [
-    { icon: HelpCircle, label: "Re-ask with context" },
-    { icon: MessageSquare, label: "Re-explain the setup" },
-    { icon: Repeat, label: "Re-check the output" },
-  ];
   return (
     <div
-      className="relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-xl border border-line bg-page p-6"
+      className="relative flex h-full min-h-[340px] flex-col overflow-hidden rounded-xl border border-line bg-page p-6"
       data-testid="comparison-prompt-visual"
     >
       <div className="fine-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
@@ -34,53 +77,52 @@ function PromptVisual() {
         </span>
       </div>
 
-      {/* chat exchange */}
-      <div className="relative mt-6 space-y-2.5">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45, delay: 0.15 }}
-          className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-ink px-4 py-2.5 text-[12.5px] font-medium text-white shadow-[0_16px_30px_-14px_rgba(16,16,20,0.5)]"
-        >
-          “How did the client’s ads do in June?”
-        </motion.div>
-        <div className="flex w-fit items-center gap-1.5 rounded-2xl rounded-bl-sm border border-line bg-surface px-4 py-3.5">
-          {[0, 1, 2].map((i) => (
-            <motion.span
-              key={i}
-              className="typing-dot h-1.5 w-1.5 rounded-full bg-black/50"
-              style={{ animationDelay: `${i * 0.18}s` }}
-            />
-          ))}
+      <div className="relative flex flex-1 items-center justify-center">
+        <div className="scale-[0.85] sm:scale-100">
+          <div className="relative h-[230px] w-[230px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
+            {/* dashed loop on the plane with an orbiting packet */}
+            <div className="absolute left-[45px] top-[45px] h-[140px] w-[140px] rounded-full border border-dashed border-black/25" aria-hidden="true" />
+            <motion.div
+              className="absolute left-[45px] top-[45px] h-[140px] w-[140px]"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
+              aria-hidden="true"
+            >
+              <span className="absolute -top-[3px] left-1/2 -ml-[3px] h-1.5 w-1.5 rounded-full bg-ink/70" />
+            </motion.div>
+            {/* loop step tiles */}
+            <IsoTile x={97} y={27}>
+              <HelpCircle className="h-4 w-4 text-ink-soft" strokeWidth={1.8} />
+            </IsoTile>
+            <IsoTile x={160} y={132}>
+              <MessageSquare className="h-4 w-4 text-ink-soft" strokeWidth={1.8} />
+            </IsoTile>
+            <IsoTile x={34} y={132}>
+              <Repeat className="h-4 w-4 text-ink-soft" strokeWidth={1.8} />
+            </IsoTile>
+            {/* the question, floating above the loop */}
+            <IsoBillboard x={115} y={112}>
+              <span className="block max-w-[190px] whitespace-normal text-center text-[11.5px] font-medium leading-snug text-ink">
+                “How did the client’s ads do in June?”
+              </span>
+              <span className="mt-1.5 flex items-center justify-center gap-1.5 rounded-2xl rounded-bl-sm border border-line bg-surface px-3 py-2">
+                {[0, 1, 2].map((i) => (
+                  <span key={i} className="typing-dot h-1.5 w-1.5 rounded-full bg-black/50" style={{ animationDelay: `${i * 0.18}s` }} />
+                ))}
+              </span>
+            </IsoBillboard>
+          </div>
         </div>
       </div>
 
-      {/* the manual loop */}
-      <div className="relative mt-6 grid grid-cols-3 gap-2">
-        {loop.map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.35 + i * 0.14 }}
-            className="rounded-lg border border-hairline bg-surface p-2.5 text-center"
-          >
-            <s.icon className="mx-auto h-4 w-4 text-black/40" strokeWidth={1.8} />
-            <p className="mt-1.5 text-[10px] font-medium leading-tight text-ink-soft">{s.label}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      <p className="relative mt-5 max-w-[280px] text-[12px] leading-relaxed text-ink-soft">
+      <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
         Answers the question—then waits for the next instruction, every cycle.
       </p>
     </div>
   );
 }
 
-/* Workflow visual — one dependable loop with data packets */
+/* Workflow scene — one dependable diagonal pipeline with packets */
 function WorkflowVisual() {
   const nodes = [
     { icon: Plug, label: "Connect" },
@@ -90,7 +132,7 @@ function WorkflowVisual() {
   ];
   return (
     <div
-      className="relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-xl border border-accent-border bg-accent-tint/60 p-6"
+      className="relative flex h-full min-h-[340px] flex-col overflow-hidden rounded-xl border border-accent-border bg-accent-tint/60 p-6"
       data-testid="comparison-workflow-visual"
     >
       <div className="relative flex items-center justify-between gap-2">
@@ -102,49 +144,34 @@ function WorkflowVisual() {
         </span>
       </div>
 
-      {/* pipeline with traveling packets */}
-      <div className="relative mt-8 flex items-start justify-between px-1">
-        {nodes.map((n, i) => (
-          <div key={n.label} className="flex items-start">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.7 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 280, damping: 16, delay: 0.15 + i * 0.16 }}
-              className="flex flex-col items-center gap-1.5"
-            >
-              <motion.span
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 3.2, delay: i * 0.4, repeat: Infinity, ease: "easeInOut" }}
-                className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white shadow-[0_16px_30px_-12px_rgba(61,67,232,0.45)] ring-1 ring-accent/30"
-              >
-                <n.icon className="h-5 w-5 text-accent" strokeWidth={1.9} />
-              </motion.span>
-              <span className="text-[9.5px] font-semibold uppercase tracking-wide text-ink/70">{n.label}</span>
-            </motion.div>
-            {i < nodes.length - 1 && (
-              <span className="relative mx-1 mt-5 hidden h-px w-8 border-t border-dashed border-accent/50 sm:block lg:w-12" aria-hidden="true">
-                <motion.span
-                  className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
-                  style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
-                  animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
-                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
-                />
-              </span>
-            )}
+      <div className="relative flex flex-1 items-center justify-center">
+        <div className="scale-[0.78] sm:scale-95">
+          <div className="relative h-[180px] w-[300px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
+            {/* pipeline wires with packets */}
+            <IsoWire from={[54, 90]} to={[86, 90]} delay={0} />
+            <IsoWire from={[134, 90]} to={[166, 90]} delay={0.3} />
+            <IsoWire from={[214, 90]} to={[246, 90]} delay={0.6} />
+            {/* loop-back wire: deliver → connect, next cycle */}
+            <div className="absolute left-[54px] top-[134px] h-0 w-[192px] border-t border-dashed border-accent/30" aria-hidden="true" />
+            {/* node tiles */}
+            {nodes.map((n, i) => (
+              <div key={n.label} className="absolute" style={{ left: 6 + i * 80, top: 66, width: 48, height: 48 }}>
+                <div className="flex h-full w-full items-center justify-center rounded-xl bg-white shadow-[0_14px_26px_-12px_rgba(16,16,20,0.4)] ring-1 ring-accent/20">
+                  <n.icon className="h-5 w-5 text-accent" strokeWidth={1.9} />
+                </div>
+              </div>
+            ))}
+            <IsoBillboard x={268} y={60}>
+              <span className="whitespace-nowrap rounded-full bg-accent px-2.5 py-1 text-[10px] font-semibold text-white">Client-ready</span>
+            </IsoBillboard>
+            <IsoBillboard x={120} y={148}>
+              <span className="text-[11px] font-semibold text-ink">Same dependable loop, every cycle</span>
+            </IsoBillboard>
           </div>
-        ))}
+        </div>
       </div>
 
-      {/* loop-back note */}
-      <div className="relative mt-7 flex items-center gap-2.5 rounded-lg border border-dashed border-accent/35 bg-page/70 px-3.5 py-2.5">
-        <RefreshCw className="h-3.5 w-3.5 shrink-0 text-accent motion-safe:animate-[spin_5s_linear_infinite]" />
-        <p className="text-[11px] font-medium leading-snug text-ink-soft">
-          The loop repeats next cycle—no one rebuilds it.
-        </p>
-      </div>
-
-      <p className="relative mt-5 max-w-[280px] text-[12px] leading-relaxed text-ink-soft">
+      <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
         Runs the same dependable loop on schedule, without being asked.
       </p>
     </div>
@@ -160,7 +187,7 @@ export default function AiComparison() {
         copy="General AI assistants can help draft summaries and explore data. An agency reporting workflow also needs dependable data connections, metric definitions, client separation, consistent branding, repeatable schedules, and a delivery process people can trust."
       />
 
-      {/* prompt vs workflow illustration */}
+      {/* prompt vs workflow isometric illustrations */}
       <div className="grid items-stretch gap-4 sm:grid-cols-2">
         <Reveal className="h-full">
           <PromptVisual />
