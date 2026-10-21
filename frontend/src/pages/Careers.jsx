@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
-import { Check, ChevronDown, Loader2, Rocket, Send, Sparkles, TrendingUp, Users } from "lucide-react";
+import gsap from "gsap";
+import { motion, useReducedMotion } from "framer-motion";
+import { BadgeCheck, Check, ChevronDown, Loader2, MessagesSquare, Rocket, Send, Sparkles, TrendingUp, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
@@ -9,10 +10,12 @@ import Seo from "@/components/Seo";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import TapCTA from "@/components/ui/TapCTA";
-import { ROLES, CULTURE, CAREER_FAQS } from "@/data/careers";
+import { FluxvexMark } from "@/components/brand/FluxvexLogo";
+import { ROLES, CULTURE, HIRING_STEPS, CAREER_FAQS, TICKER_ITEMS } from "@/data/careers";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const CULTURE_ICONS = { ship: Rocket, ai: Sparkles, founders: Users, grow: TrendingUp };
+const STEP_ICONS = { text: Send, session: MessagesSquare, ppo: BadgeCheck };
 
 function JsonLd() {
   useEffect(() => {
@@ -46,13 +49,68 @@ function JsonLd() {
   return null;
 }
 
+/* GSAP roles ticker — one DOM copy per item, duplicated track for the loop */
+function RolesTicker() {
+  const trackRef = useRef(null);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || reduce) return undefined;
+    gsap.set(track, { force3D: true });
+    const tween = gsap.to(track, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
+    return () => {
+      tween.kill();
+      gsap.set(track, { clearProps: "transform" });
+    };
+  }, [reduce]);
+
+  return (
+    <div
+      className="relative mt-14 overflow-hidden border-y border-line bg-page py-4"
+      data-testid="careers-ticker"
+      aria-label="Open internship roles at Fluxvex"
+    >
+      <div ref={trackRef} className="flex w-max items-center will-change-transform">
+        {[0, 1].map((dup) => (
+          <div key={dup} aria-hidden={dup === 1} className="flex shrink-0 items-center">
+            {TICKER_ITEMS.map((t, i) => (
+              <span key={`${dup}-${i}`} className="flex items-center">
+                <span className="whitespace-nowrap font-display text-sm font-semibold tracking-tight text-ink/80">{t}</span>
+                <FluxvexMark size={16} className="mx-6 rounded" />
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* Slow-floating hero badge (desktop whitespace) */
+function FloatBadge({ className = "", children, delay = 0 }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.85 }}
+      animate={reduce ? { opacity: 1, scale: 1 } : { opacity: 1, scale: 1, y: [0, -10, 0] }}
+      transition={reduce ? { delay } : { y: { duration: 5.5, repeat: Infinity, delay, ease: "easeInOut" }, opacity: { delay }, scale: { delay } }}
+      className={`pointer-events-none absolute hidden items-center gap-2 rounded-full border border-line bg-page px-4 py-2 text-[11px] font-semibold text-ink shadow-[0_18px_40px_-18px_rgba(16,16,20,0.35)] lg:flex ${className}`}
+      aria-hidden="true"
+    >
+      {children}
+    </motion.span>
+  );
+}
+
 function RoleCard({ role, i, onApply }) {
   return (
     <Reveal delay={i * 0.08} className="h-full">
       <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="h-full">
         <div className="flex h-full flex-col rounded-2xl border border-line bg-page p-7 shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]" data-testid={role.testid}>
           <div className="flex items-center justify-between gap-3">
-            <span className="rounded-full border border-mint/40 bg-mint/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#0E8A3E]">
+            <span className="flex items-center gap-1.5 rounded-full border border-mint/40 bg-mint/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#0E8A3E]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" />
               Open
             </span>
             <span className="text-[11px] font-medium text-black/40">{role.team}</span>
@@ -89,6 +147,53 @@ function RoleCard({ role, i, onApply }) {
         </div>
       </motion.div>
     </Reveal>
+  );
+}
+
+function HiringTimeline() {
+  const reduce = useReducedMotion();
+  return (
+    <div className="relative" data-testid="careers-timeline">
+      {/* animated connector line (desktop) */}
+      <div className="absolute left-0 right-0 top-[26px] hidden h-px lg:block" aria-hidden="true">
+        <motion.div
+          className="h-px origin-left bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+          initial={reduce ? false : { scaleX: 0 }}
+          whileInView={reduce ? {} : { scaleX: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+        />
+      </div>
+      <div className="grid gap-5 lg:grid-cols-3 lg:gap-8">
+        {HIRING_STEPS.map((s, i) => {
+          const Icon = STEP_ICONS[s.icon];
+          return (
+            <Reveal key={s.title} delay={i * 0.12} className="h-full">
+              <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="relative h-full">
+                <div className="flex h-full flex-col rounded-2xl border border-line bg-page p-7 shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]" data-testid={`careers-step-${i + 1}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-accent font-display text-sm font-bold text-white">
+                      {i + 1}
+                      {!reduce && (
+                        <motion.span
+                          className="absolute inset-0 rounded-xl border-2 border-accent/50"
+                          animate={{ scale: [1, 1.3], opacity: [0.9, 0] }}
+                          transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut", delay: i * 0.5 }}
+                          aria-hidden="true"
+                        />
+                      )}
+                    </span>
+                    <Icon className="h-5 w-5 text-accent" strokeWidth={1.8} />
+                  </div>
+                  <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-ink">{s.title}</h3>
+                  <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">{s.desc}</p>
+                </div>
+              </motion.div>
+            </Reveal>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -264,15 +369,25 @@ export default function Careers() {
   return (
     <>
       <Seo
-        title="Careers — Internships With Guaranteed PPOs | Fluxvex"
-        description="Join Fluxvex as a SaaS sales intern for India, US, or UK markets. Four-month unpaid internships with guaranteed PPO conversion chances up to ₹6 LPA. Apply by texting the founding team."
+        title="Careers — SaaS Sales Internships With Guaranteed PPOs | Fluxvex"
+        description="Fluxvex is hiring SaaS sales interns for India, US, and UK markets. Four-month unpaid internships with guaranteed PPO conversion chances up to ₹6 LPA. Apply by texting the founding team."
         path="/careers"
       />
       <JsonLd />
       <Navbar />
       <main className="pt-[76px]" data-testid="careers-page">
         {/* hero */}
-        <div className="mx-auto max-w-[1100px] px-5 py-16 text-center lg:px-8 lg:py-24">
+        <div className="relative mx-auto max-w-[1100px] px-5 py-16 text-center lg:px-8 lg:py-24">
+          <FloatBadge className="left-[2%] top-[26%]" delay={0.6}>
+            <Sparkles className="h-3.5 w-3.5 text-accent" /> PPO up to ₹6 LPA
+          </FloatBadge>
+          <FloatBadge className="right-[2%] top-[34%]" delay={1.2}>
+            <Users className="h-3.5 w-3.5 text-accent" /> US · UK · India — all remote
+          </FloatBadge>
+          <FloatBadge className="bottom-[14%] left-[6%]" delay={1.8}>
+            <Send className="h-3.5 w-3.5 text-accent" /> Replies from the founding team
+          </FloatBadge>
+
           <Reveal>
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">Careers at Fluxvex</p>
           </Reveal>
@@ -283,10 +398,11 @@ export default function Careers() {
             Don't send a cover letter. Send us a text.
           </CinematicText>
           <Reveal y={14} delay={0.1}>
-            <p className="mx-auto mt-6 max-w-xl text-[15px] leading-[1.75] text-ink-soft">
-              We are building the operating system for marketing agencies—and we hire people who want to show what
-              they can do, not recite it. Four months of real ownership, and a guaranteed PPO conversion chance at
-              the finish line.
+            <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-[1.75] text-ink-soft" data-testid="careers-answer-first">
+              Fluxvex is hiring three SaaS sales interns—for India, the US, and the UK markets. The internships are
+              unpaid, run four months, and end with a guaranteed PPO conversion chance: up to ₹6 LPA in India and
+              above-market-standard packages in the US and UK. Apply by texting the founding team directly—no
+              portals, no cover letters.
             </p>
           </Reveal>
           <Reveal y={12} delay={0.15}>
@@ -300,8 +416,10 @@ export default function Careers() {
           </Reveal>
         </div>
 
+        <RolesTicker />
+
         {/* culture */}
-        <div className="mx-auto max-w-[1280px] px-5 pb-4 lg:px-8">
+        <div className="mx-auto max-w-[1280px] px-5 pb-4 pt-14 lg:px-8">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {CULTURE.map((c, i) => {
               const Icon = CULTURE_ICONS[c.icon];
@@ -338,8 +456,23 @@ export default function Careers() {
           </div>
         </div>
 
+        {/* how hiring works */}
+        <div className="border-y border-line bg-[#F7F6F2]">
+          <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-20">
+            <Reveal>
+              <div className="mb-10 flex flex-col items-center gap-3 text-center">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">How hiring works</p>
+                <h2 className="max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+                  Three steps. No black holes.
+                </h2>
+              </div>
+            </Reveal>
+            <HiringTimeline />
+          </div>
+        </div>
+
         {/* text-us application */}
-        <div className="border-y border-line bg-[#F7F6F2]" id="apply">
+        <div id="apply">
           <div className="mx-auto max-w-[1100px] px-5 py-16 lg:px-8 lg:py-20">
             <Reveal>
               <div className="mb-10 flex flex-col items-center gap-3 text-center">
@@ -348,7 +481,7 @@ export default function Careers() {
                   Skip the portal. Text us why you want in.
                 </h2>
                 <p className="max-w-xl text-[15px] leading-[1.7] text-ink-soft">
-                  One message—why you want to join Fluxvex and why you want to work with us. It lands directly with
+                  One message—why you want to join Fluxvex and where you can contribute. It lands directly with
                   the founding team, and we read every single one.
                 </p>
               </div>

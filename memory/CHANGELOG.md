@@ -68,3 +68,8 @@
 - Hero eyebrow "Automated client reporting for agencies" rebuilt premium: glass pill, word-by-word spring entrance, mint "Pre-launch" chip that pops in with a pulsing dot + recurring shine sweep, periodic sheen across the whole pill.
 - Final CTA sweep completed: CookieConsent (accept/reject/customize/save), Showcase "Export branded PDF", IntegrationsStrip live cards, NotFound "Back to the homepage", Pricing page "Get pricing updates" — all now TapCTA spring-animated. CurrencyToggle already animates (layoutId spring pill). Every interactive CTA site-wide is now motion-animated.
 - Fixed compile regressions (duplicate Reveal import in IntegrationsStrip, duplicate ScrollManager import in App.js). Verified: clean compile, hero renders, no overflow.
+
+## 2026-10-21 (session 7 — careers page 2.0, SEO/AEO/GEO)
+- Careers page rebuilt: floating hero badges (PPO up to ₹6 LPA / US·UK·India remote / founding-team replies), GSAP roles ticker, NEW "How hiring works" 3-step animated timeline (draw-line + pulsing step dots), answer-first hero paragraph (liftable by answer engines), 5 FAQs (added "Which markets can I apply for?" + "Who can apply?") matched 1:1 to FAQPage JSON-LD, JobPosting JSON-LD ×3 (INTERN, TELECOMMUTE, directApply) retained.
+- SEO/AEO/GEO: keyword-rich honest copy (SaaS sales internship, guaranteed PPO, ₹6 LPA, markets), per-route title/canonical/og, sitemap 21 URLs + llms.txt already include /careers.
+- Verified: clean compile, 3 roles/3 steps/5 FAQs render, GSAP ticker runs, no overflow at 1440 or 390.

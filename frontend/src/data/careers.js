@@ -1,4 +1,4 @@
-/* Careers data — roles, culture, and FAQ for /careers (user-confirmed program details) */
+/* Careers data — roles, culture, hiring steps, and FAQ for /careers (user-confirmed program details) */
 export const ROLES = [
   {
     slug: "saas-sales-intern",
@@ -57,6 +57,24 @@ export const CULTURE = [
   { icon: "grow", title: "A PPO you can point at", desc: "Months of proof, then a guaranteed performance-based PPO conversion chance tied to your results." },
 ];
 
+export const HIRING_STEPS = [
+  {
+    icon: "text",
+    title: "Text us",
+    desc: "One honest message—who you are, why Fluxvex, and where you can contribute the most. It lands straight with the founding team.",
+  },
+  {
+    icon: "session",
+    title: "Working session",
+    desc: "A short, real-task conversation instead of an interview quiz. You show how you sell and think; we show you the product and the plan.",
+  },
+  {
+    icon: "ppo",
+    title: "The PPO decision",
+    desc: "Four months of shipped proof, then your guaranteed PPO conversion chance—India up to ₹6 LPA, US and UK above market standards.",
+  },
+];
+
 export const CAREER_FAQS = [
   [
     "Are the internships paid?",
@@ -70,4 +88,20 @@ export const CAREER_FAQS = [
     "What happens after I send my message?",
     "We read every message. If the fit is real, we reply to schedule a short working session so you can show how you sell and think, not just what your résumé says.",
   ],
+  [
+    "Which markets can I apply for?",
+    "Three markets: India (remote + hybrid from Bengaluru, PPO conversion chance up to ₹6 LPA), the US (remote, above-market-standard PPO), and the UK (remote, above-market-standard PPO). All three are four-month unpaid internships with the same guaranteed PPO structure.",
+  ],
+  [
+    "Who can apply?",
+    "Anyone who can show real selling ability—a student, an early-career switcher, or someone between roles. Send the text and show us how you think; we weigh your message and your working session far above your résumé.",
+  ],
+];
+
+export const TICKER_ITEMS = [
+  "SaaS Sales Intern — India · PPO up to ₹6 LPA",
+  "SaaS Sales US Markets Intern — above-market PPO",
+  "SaaS Sales UK Markets Intern — above-market PPO",
+  "4-month program · Remote-first",
+  "Apply by text — no portals, no cover letters",
 ];
