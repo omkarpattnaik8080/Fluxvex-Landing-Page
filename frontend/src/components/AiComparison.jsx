@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Check, HelpCircle, MessageSquare, Minus, Plug, RefreshCw, Repeat, Send, SlidersHorizontal, Sparkles } from "lucide-react";
+import { IsoTile, IsoWire, IsoBillboard, PLANE } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 
@@ -11,54 +12,6 @@ const ROWS = [
   ["Keep client data and access separated", "Depends on the tools, configuration, and permissions used", "Must be enforced by Fluxvex’s actual access-control design"],
   ["Review, correct, and deliver a report", "Depends on the process wrapped around the AI tool", "Report review and delivery process can be built into the workflow"],
 ];
-
-/* ---- isometric primitives (same technique as the workflow stage) ---- */
-const PLANE = "rotateX(55deg) rotateZ(-45deg)";
-const BILLBOARD = "rotateZ(45deg) rotateX(-55deg)";
-
-function IsoTile({ x, y, s = 36, children }) {
-  return (
-    <div className="absolute" style={{ left: x, top: y, width: s, height: s }}>
-      <div className="flex h-full w-full items-center justify-center rounded-lg bg-white shadow-[0_14px_26px_-12px_rgba(16,16,20,0.4)] ring-1 ring-black/[0.06]">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function IsoBillboard({ x, y, children }) {
-  return (
-    <div className="pointer-events-none absolute z-10" style={{ left: x, top: y, transform: BILLBOARD, transformOrigin: "50% 100%" }}>
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: [0, -4, 0] }}
-        viewport={{ once: true }}
-        transition={{ opacity: { duration: 0.35 }, y: { duration: 3.6, repeat: Infinity, ease: "easeInOut" } }}
-        className="rounded-xl border border-black/[0.06] bg-white px-3.5 py-2 shadow-[0_22px_44px_-16px_rgba(16,16,20,0.4)]"
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
-}
-
-function IsoWire({ from, to, delay = 0 }) {
-  const dx = to[0] - from[0];
-  const dy = to[1] - from[1];
-  const len = Math.round(Math.hypot(dx, dy));
-  const ang = (Math.atan2(dy, dx) * 180) / Math.PI;
-  return (
-    <div className="absolute" style={{ left: from[0], top: from[1], width: len, transform: `rotate(${ang}deg)`, transformOrigin: "0 0" }} aria-hidden="true">
-      <div className="h-0 w-full border-t border-dashed border-accent/50" />
-      <motion.span
-        className="absolute -top-[3px] h-1.5 w-1.5 rounded-full bg-accent"
-        style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
-        animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
-        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay }}
-      />
-    </div>
-  );
-}
 
 /* Prompt scene — a question answered, then a manual loop that never ends */
 function PromptVisual() {
@@ -91,19 +44,19 @@ function PromptVisual() {
               <span className="absolute -top-[3px] left-1/2 -ml-[3px] h-1.5 w-1.5 rounded-full bg-ink/70" />
             </motion.div>
             {/* loop step tiles */}
-            <IsoTile x={97} y={27}>
+            <IsoTile x={97} y={27} w={36} h={36}>
               <HelpCircle className="h-4 w-4 text-ink-soft" strokeWidth={1.8} />
             </IsoTile>
-            <IsoTile x={160} y={132}>
+            <IsoTile x={160} y={132} w={36} h={36}>
               <MessageSquare className="h-4 w-4 text-ink-soft" strokeWidth={1.8} />
             </IsoTile>
-            <IsoTile x={34} y={132}>
+            <IsoTile x={34} y={132} w={36} h={36}>
               <Repeat className="h-4 w-4 text-ink-soft" strokeWidth={1.8} />
             </IsoTile>
             {/* the question, floating above the loop */}
             <IsoBillboard x={115} y={112}>
               <span className="block max-w-[190px] whitespace-normal text-center text-[11.5px] font-medium leading-snug text-ink">
-                “How did the client’s ads do in June?”
+                “Claude, how did the client’s ads do in June?”
               </span>
               <span className="mt-1.5 flex items-center justify-center gap-1.5 rounded-2xl rounded-bl-sm border border-line bg-surface px-3 py-2">
                 {[0, 1, 2].map((i) => (
@@ -183,8 +136,8 @@ export default function AiComparison() {
     <SectionShell id="why">
       <SectionHeader
         overline="Why a prompt isn’t a reporting system"
-        title="ChatGPT can help explain the numbers. Fluxvex is built to run the reporting workflow."
-        copy="General AI assistants can help draft summaries and explore data. An agency reporting workflow also needs dependable data connections, metric definitions, client separation, consistent branding, repeatable schedules, and a delivery process people can trust."
+        title="Claude and ChatGPT can help explain the numbers. Fluxvex is built to run the reporting workflow."
+        copy="General AI assistants—Claude, ChatGPT, and similar tools—can help draft summaries and explore data. An agency reporting workflow also needs dependable data connections, metric definitions, client separation, consistent branding, repeatable schedules, and a delivery process people can trust."
       />
 
       {/* prompt vs workflow isometric illustrations */}

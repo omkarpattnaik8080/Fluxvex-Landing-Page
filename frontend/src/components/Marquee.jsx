@@ -1,11 +1,38 @@
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 
 const ITEMS = ["Client reporting, on autopilot", "Google Ads", "Meta Ads", "GA4"];
 
 export default function Marquee() {
+  const trackRef = useRef(null);
+  const tweenRef = useRef(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    gsap.set(track, { force3D: true });
+    const tween = gsap.to(track, { xPercent: -50, duration: 22, ease: "none", repeat: -1 });
+    tweenRef.current = tween;
+    return () => {
+      tween.kill();
+      gsap.set(track, { clearProps: "transform" });
+    };
+  }, []);
+
+  const slow = () => tweenRef.current && gsap.to(tweenRef.current, { timeScale: 0.2, duration: 0.5, overwrite: true });
+  const resume = () => tweenRef.current && gsap.to(tweenRef.current, { timeScale: 1, duration: 0.5, overwrite: true });
+
   return (
-    <div className="overflow-hidden border-b border-line bg-page py-6 sm:py-8" data-testid="marquee-band" aria-label="Fluxvex promise and initial integrations">
-      <div className="marquee-track">
+    <div
+      className="overflow-hidden border-b border-line bg-page py-6 sm:py-8"
+      data-testid="marquee-band"
+      aria-label="Fluxvex promise and initial integrations"
+      onMouseEnter={slow}
+      onMouseLeave={resume}
+    >
+      <div ref={trackRef} className="flex w-max items-center will-change-transform">
         {[0, 1].map((dup) => (
           <div key={dup} aria-hidden={dup === 1} className="flex shrink-0 items-center">
             {ITEMS.map((t, i) => (

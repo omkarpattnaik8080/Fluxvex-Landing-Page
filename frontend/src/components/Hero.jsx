@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowDown, BarChart3, CalendarDays, CalendarClock, Lock, Plus, Check, Trophy, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowDown, CalendarDays, CalendarClock, Lock, Plus, Check, Trophy, Sparkles } from "lucide-react";
 import { useWaitlist } from "@/components/WaitlistContext";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
@@ -474,40 +474,8 @@ export default function Hero() {
         <CornerFastener className="bottom-3 left-3" />
         <CornerFastener className="bottom-3 right-3" />
 
-        {/* floating decorations */}
-        <motion.div
-          {...float(0.4)}
-          className="pointer-events-none absolute left-8 top-[54%] hidden h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-mint to-[#2BBE5C] shadow-[0_18px_40px_-10px_rgba(0,0,0,0.45)] md:flex"
-          aria-hidden="true"
-        >
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M4 15c2.5-6 5-6 8 0s5.5 6 8 0" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
-          </svg>
-        </motion.div>
-
-        <motion.div
-          {...float(1.6)}
-          className="pointer-events-none absolute left-8 top-[64%] hidden w-40 rotate-[-8deg] bg-note p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.4)] xl:block"
-          aria-hidden="true"
-        >
-          <p className="font-hand text-xl leading-tight text-ink">reports assemble themselves—reporting day, automated.</p>
-        </motion.div>
-
+        {/* floating decorations — kept minimal: isometric flow (left) + report toast + AI insight (right) */}
         <IsoMiniFlow />
-
-        <motion.div
-          {...float(2.0)}
-          className="pointer-events-none absolute left-6 top-[40%] hidden items-center gap-2.5 rounded-xl bg-white px-3.5 py-3 shadow-[0_20px_45px_-14px_rgba(0,0,0,0.45)] xl:flex"
-          aria-hidden="true"
-        >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-tint">
-            <BarChart3 className="h-4 w-4 text-accent" />
-          </span>
-          <span>
-            <span className="block text-[12.5px] font-semibold text-ink">12 client reports</span>
-            <span className="block text-[10.5px] text-black/50">assembled this cycle</span>
-          </span>
-        </motion.div>
 
         <motion.div
           {...float(2.4)}

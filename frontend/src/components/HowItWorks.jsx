@@ -100,7 +100,13 @@ function IsoStage({ step }) {
   const engineActive = step === 1 || step === 2 || step === 3;
   return (
     <div className="flex h-[460px] items-center justify-center overflow-hidden" data-testid="workflow-iso-stage">
-      <div className="relative scale-[0.78] sm:scale-95 lg:scale-110">
+      <motion.div
+        key={step}
+        initial={{ opacity: 0.3 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="relative scale-[0.78] sm:scale-95 lg:scale-110"
+      >
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-80 -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-black/[0.05] blur-2xl" aria-hidden="true" />
         <div className="relative h-[280px] w-[280px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
           {/* wires */}
@@ -163,7 +169,7 @@ function IsoStage({ step }) {
             </Billboard>
           )}
         </div>
-      </div>
+        </motion.div>
     </div>
   );
 }

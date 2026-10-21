@@ -1,169 +1,163 @@
 import { motion } from "framer-motion";
-import { Database, Sparkles, Bell, BarChart3, TrendingUp, Users, Zap } from "lucide-react";
+import { BarChart3, TrendingUp, Users, Zap, Database, Sparkles, Bell } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
+import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
 
 function Cursor() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" className="absolute -bottom-2.5 -right-2 drop-shadow" aria-hidden="true">
+    <svg width="12" height="12" viewBox="0 0 24 24" className="absolute -bottom-2 -right-2 drop-shadow" aria-hidden="true">
       <path d="M5 3l14 8-6.5 1.5L15 20l-3 1-2.5-7.5L5 17V3z" fill="#101014" stroke="#fff" strokeWidth="1.5" />
     </svg>
   );
 }
 
-function Bob({ children, delay = 0 }) {
-  return (
-    <motion.span
-      animate={{ y: [0, -5, 0] }}
-      transition={{ duration: 3.2, delay, repeat: Infinity, ease: "easeInOut" }}
-      className="inline-block"
-      aria-hidden="false"
-    >
-      {children}
-    </motion.span>
-  );
-}
-
-/* Card 1 — dish of sources, dashed drop, section list (exact reference diagram) */
+/* Card 1 — sources feed the hub; the report-section list floats beside it */
 function VisualInputs() {
   return (
-    <div className="flex h-full flex-col items-center justify-center p-6" data-testid="feature-visual-inputs">
-      {/* dish holding the source icons */}
-      <div className="relative flex h-[86px] w-56 items-end justify-center">
-        <div className="absolute bottom-0 h-14 w-56 rounded-[50%] bg-white shadow-[inset_0_8px_16px_rgba(16,16,20,0.09),0_26px_45px_-18px_rgba(16,16,20,0.35)]" />
-        <div className="relative bottom-3 flex items-end gap-3">
-          <Bob>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_12px_24px_-10px_rgba(16,16,20,0.3)] ring-1 ring-black/5">
-              <GoogleAdsMark size={16} />
-            </span>
-          </Bob>
-          <Bob delay={0.5}>
-            <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-[0_16px_32px_-8px_rgba(61,67,232,0.5)] ring-1 ring-accent/25">
-              <span className="absolute inset-0 rounded-2xl bg-accent/25 blur-md" aria-hidden="true" />
-              <FluxvexMark size={26} className="relative rounded-lg" />
-            </span>
-          </Bob>
-          <Bob delay={1}>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_12px_24px_-10px_rgba(16,16,20,0.3)] ring-1 ring-black/5">
-              <MetaMark size={16} />
-            </span>
-          </Bob>
-        </div>
-      </div>
-      {/* dashed connector with traveling packet */}
-      <div className="relative h-9 w-px" aria-hidden="true">
-        <div className="absolute inset-0 border-l border-dashed border-black/25" />
-        <motion.span
-          className="absolute -left-[3px] h-1.5 w-1.5 rounded-full bg-accent"
-          style={{ boxShadow: "0 0 8px 2px rgba(61,67,232,0.4)" }}
-          animate={{ top: ["-4%", "96%"], opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
-      {/* section list */}
-      <div className="w-56 space-y-1.5">
-        {[
-          { icon: BarChart3, label: "Campaign metrics", count: "12", hot: false },
-          { icon: TrendingUp, label: "Channel results", count: "+24", hot: true },
-          { icon: Users, label: "Audience insights", count: "8", hot: false },
-        ].map((row) => (
-          <div
-            key={row.label}
-            className={`relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-medium ${
-              row.hot ? "border border-accent/30 bg-white text-ink shadow-[0_14px_30px_-14px_rgba(61,67,232,0.45)]" : "text-ink-soft"
-            }`}
-          >
-            <row.icon className={`h-3.5 w-3.5 ${row.hot ? "text-accent" : "text-black/35"}`} strokeWidth={1.9} />
-            {row.label}
-            <span className={`ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold ${row.hot ? "bg-accent text-white" : "bg-black/[0.06] text-ink-soft"}`}>
-              {row.count}
-            </span>
-            {row.hot && <Cursor />}
+    <div className="h-full" data-testid="feature-visual-inputs">
+      <IsoPlane w={240} h={210} scale="scale-[0.8] sm:scale-95" className="h-full">
+        <IsoTile x={10} y={20} w={44} h={44}>
+          <GoogleAdsMark size={16} />
+        </IsoTile>
+        <IsoTile x={10} y={82} w={44} h={44}>
+          <MetaMark size={16} />
+        </IsoTile>
+        <IsoTile x={10} y={144} w={44} h={44}>
+          <GA4Mark size={16} />
+        </IsoTile>
+        <IsoWire from={[56, 42]} to={[100, 102]} delay={0} />
+        <IsoWire from={[56, 104]} to={[100, 104]} delay={0.3} />
+        <IsoWire from={[56, 166]} to={[100, 106]} delay={0.6} />
+        <IsoTile x={100} y={82} w={44} h={44} active>
+          <FluxvexMark size={22} className="rounded-lg" />
+        </IsoTile>
+        <IsoBillboard x={162} y={34}>
+          <div className="w-52 space-y-1.5 whitespace-normal">
+            {[
+              { icon: BarChart3, label: "Campaign metrics", count: "12", hot: false },
+              { icon: TrendingUp, label: "Channel results", count: "+24", hot: true },
+              { icon: Users, label: "Audience insights", count: "8", hot: false },
+            ].map((row) => (
+              <div
+                key={row.label}
+                className={`relative flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[11px] font-medium ${
+                  row.hot ? "border border-accent/30 bg-accent-tint/70 text-ink" : "text-ink-soft"
+                }`}
+              >
+                <row.icon className={`h-3 w-3 shrink-0 ${row.hot ? "text-accent" : "text-black/35"}`} strokeWidth={1.9} />
+                {row.label}
+                <span className={`ml-auto rounded-full px-1.5 py-0.5 text-[9px] font-semibold ${row.hot ? "bg-accent text-white" : "bg-black/[0.06] text-ink-soft"}`}>
+                  {row.count}
+                </span>
+                {row.hot && <Cursor />}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </IsoBillboard>
+      </IsoPlane>
     </div>
   );
 }
 
-/* Card 2 — cascading message bubbles (exact reference diagram) */
+/* Card 2 — channels stream into Fluxvex AI, which drafts the summary */
 function VisualSummaries() {
-  const bubbles = [
-    { mark: <GoogleAdsMark size={14} />, title: "Northbeam Media", text: "June spend synced—$48,210", cls: "" },
-    { mark: <MetaMark size={14} />, title: "Meta Ads", text: "ROAS 2.4x this month", cls: "ml-7" },
-    { mark: <GA4Mark size={14} />, title: "GA4", text: "Sessions +18% vs May", cls: "ml-12" },
-    { mark: <FluxvexMark size={14} className="rounded-md" />, title: "Fluxvex AI", text: "Drafting the client summary…", cls: "ml-4", ai: true },
-  ];
   return (
-    <div className="flex h-full flex-col justify-center gap-3 p-6" data-testid="feature-visual-summaries">
-      {bubbles.map((b, i) => (
-        <div
-          key={b.title}
-          className={`flex w-fit items-center gap-3 rounded-xl border border-black/[0.05] bg-white px-4 py-3 shadow-[0_18px_40px_-18px_rgba(16,16,20,0.28)] bob ${b.ai ? "ring-1 ring-accent/25" : ""} ${b.cls}`}
-          style={{ animationDelay: `${i * 0.55}s` }}
-        >
-          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ring-1 ring-black/5 ${b.ai ? "bg-accent-tint" : "bg-surface"}`}>{b.mark}</span>
-          <span className="min-w-0">
-            <span className="flex items-center gap-1.5 text-[12px] font-semibold text-ink">
-              {b.title}
-              {b.ai && <Sparkles className="h-3 w-3 text-accent" />}
-            </span>
-            <span className="block truncate text-[11px] text-ink-soft">{b.text}</span>
+    <div className="h-full" data-testid="feature-visual-summaries">
+      <IsoPlane w={240} h={210} scale="scale-[0.8] sm:scale-95" className="h-full">
+        <IsoTile x={10} y={20} w={44} h={44}>
+          <GoogleAdsMark size={16} />
+        </IsoTile>
+        <IsoTile x={10} y={82} w={44} h={44}>
+          <MetaMark size={16} />
+        </IsoTile>
+        <IsoTile x={10} y={144} w={44} h={44}>
+          <GA4Mark size={16} />
+        </IsoTile>
+        <IsoWire from={[56, 42]} to={[102, 102]} delay={0} />
+        <IsoWire from={[56, 104]} to={[102, 104]} delay={0.3} />
+        <IsoWire from={[56, 166]} to={[102, 106]} delay={0.6} />
+        <IsoTile x={102} y={82} w={46} h={46} active testid="feature-ai-tile">
+          <span className="relative">
+            <span className="absolute inset-0 rounded-xl bg-accent/25 blur-md" aria-hidden="true" />
+            <FluxvexMark size={22} className="relative rounded-lg" />
           </span>
-        </div>
-      ))}
+        </IsoTile>
+        <IsoBillboard x={170} y={26}>
+          <span className="flex items-center gap-2 whitespace-nowrap text-[11px] font-medium text-ink">
+            <MetaMark size={13} />
+            Meta Ads — ROAS 2.4x this month
+          </span>
+        </IsoBillboard>
+        <IsoBillboard x={170} y={120}>
+          <span className="flex items-center gap-2 whitespace-nowrap text-[11px] font-semibold text-ink">
+            <Sparkles className="h-3 w-3 text-accent" />
+            Fluxvex AI — Drafting the client summary…
+            <span className="typing-dot h-1 w-1 rounded-full bg-accent" />
+            <span className="typing-dot h-1 w-1 rounded-full bg-accent" style={{ animationDelay: "0.18s" }} />
+          </span>
+        </IsoBillboard>
+      </IsoPlane>
     </div>
   );
 }
 
-/* Card 3 — report request card → generating pill → countdown dial (exact reference diagram) */
+/* Card 3 — request → AI generation → client-ready in seconds */
 function VisualDelivery() {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-2.5 p-6" data-testid="feature-visual-delivery">
-      <div className="flex w-60 items-center gap-3 rounded-xl border border-black/[0.05] bg-white px-4 py-3 shadow-[0_18px_40px_-18px_rgba(16,16,20,0.28)]">
-        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink font-display text-[10px] font-bold text-white">N</span>
-        <span>
-          <span className="block text-[12px] font-semibold text-ink">northbeam.client</span>
-          <span className="block text-[11px] text-ink-soft">June 2025 report—due Friday</span>
-        </span>
-      </div>
-      <div className="h-4 w-px border-l border-dashed border-black/25" aria-hidden="true" />
-      <div className="relative flex w-64 items-center gap-2.5 rounded-full bg-white px-4 py-2.5 shadow-[0_20px_45px_-16px_rgba(16,16,20,0.3)] ring-1 ring-accent/15">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="animate-spin" style={{ animationDuration: "2.4s" }} aria-hidden="true">
-          <path d="M12 3a9 9 0 1 0 9 9" stroke="#3D43E8" strokeWidth="2.4" strokeLinecap="round" />
-        </svg>
-        <span className="text-[12px] font-medium text-ink">Fluxvex generating fast report…</span>
-        <span className="absolute -bottom-2.5 right-3 flex items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[9px] font-semibold text-white">
-          <Zap className="h-2.5 w-2.5 text-[#F5D748]" /> 3 Integrations
-        </span>
-      </div>
-      <div className="h-4 w-px border-l border-dashed border-black/25" aria-hidden="true" />
-      <div className="relative mt-1 flex h-32 w-32 items-center justify-center rounded-full bg-white shadow-[0_24px_50px_-18px_rgba(16,16,20,0.35)] ring-1 ring-black/5">
-        <svg viewBox="0 0 120 120" className="absolute inset-0 h-full w-full" aria-hidden="true">
-          {Array.from({ length: 48 }).map((_, i) => {
-            const angle = (i * 7.5 * Math.PI) / 180;
-            const inner = i % 4 === 0 ? 50 : 54;
-            return (
-              <line
-                key={i}
-                x1={60 + inner * Math.cos(angle)}
-                y1={60 + inner * Math.sin(angle)}
-                x2={60 + 57 * Math.cos(angle)}
-                y2={60 + 57 * Math.sin(angle)}
-                stroke="rgba(16,16,20,0.22)"
-                strokeWidth="1.4"
+    <div className="h-full" data-testid="feature-visual-delivery">
+      <IsoPlane w={240} h={210} scale="scale-[0.8] sm:scale-95" className="h-full">
+        <IsoTile x={8} y={78} w={44} h={52} float={false}>
+          <span className="flex h-10 w-8 flex-col gap-[3px] p-1" aria-hidden="true">
+            <span className="flex h-4 w-4 items-center justify-center rounded bg-ink font-display text-[7px] font-bold text-white">N</span>
+            <span className="mt-1 h-[3px] w-full rounded bg-accent/50" />
+            <span className="h-[2px] w-4/5 rounded bg-black/15" />
+            <span className="h-[2px] w-3/5 rounded bg-black/10" />
+          </span>
+        </IsoTile>
+        <IsoWire from={[54, 104]} to={[98, 104]} delay={0} />
+        <IsoTile x={98} y={80} w={46} h={46} active>
+          <Sparkles className="h-5 w-5 text-accent" strokeWidth={1.8} />
+        </IsoTile>
+        <IsoWire from={[146, 104]} to={[190, 104]} delay={0.5} />
+        <IsoTile x={190} y={78} w={44} h={52} float={false}>
+          <span className="flex h-10 w-8 flex-col gap-[3px] p-1" aria-hidden="true">
+            <span className="flex h-4 w-4 items-center justify-center rounded bg-accent font-display text-[7px] font-bold text-white">N</span>
+            <span className="mt-1 h-[3px] w-full rounded bg-accent/60" />
+            <span className="h-[2px] w-4/5 rounded bg-black/15" />
+            <span className="h-[2px] w-3/5 rounded bg-black/10" />
+          </span>
+        </IsoTile>
+        <IsoBillboard x={104} y={150}>
+          <span className="whitespace-nowrap text-[11px] font-medium text-ink">Fluxvex generating fast report…</span>
+          <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[9px] font-semibold text-white align-middle">
+            <Zap className="h-2.5 w-2.5 text-[#F5D748]" /> 3 Integrations
+          </span>
+        </IsoBillboard>
+        <IsoBillboard x={216} y={170}>
+          <span className="flex items-center gap-2">
+            <svg viewBox="0 0 40 40" className="h-9 w-9" aria-hidden="true">
+              <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(16,16,20,0.12)" strokeWidth="3" />
+              <motion.circle
+                cx="20"
+                cy="20"
+                r="17"
+                fill="none"
+                stroke="#3D43E8"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeDasharray="30 77"
+                initial={false}
+                animate={{ strokeDashoffset: [30, 0, 30] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
               />
-            );
-          })}
-        </svg>
-        <svg viewBox="0 0 120 120" className="absolute inset-0 h-full w-full motion-safe:animate-[spin_3.2s_linear_infinite]" aria-hidden="true">
-          <circle cx="60" cy="60" r="56" fill="none" stroke="#3D43E8" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="88 264" />
-        </svg>
-        <span className="font-display text-2xl font-semibold tracking-tight text-ink">00:03</span>
-        <span className="absolute bottom-5 text-[9px] font-medium uppercase tracking-wide text-black/40">to delivery</span>
-      </div>
+            </svg>
+            <span className="font-display text-sm font-semibold text-ink">00:03</span>
+          </span>
+        </IsoBillboard>
+      </IsoPlane>
     </div>
   );
 }
