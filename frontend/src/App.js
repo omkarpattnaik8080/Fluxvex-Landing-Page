@@ -16,6 +16,7 @@ const Blog = lazy(() => import("@/pages/Blog"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const Integration = lazy(() => import("@/pages/Integration"));
 const Careers = lazy(() => import("@/pages/Careers"));
+const AdminJobs = lazy(() => import("@/pages/AdminJobs"));
 
 const PageLoader = () => (
   <div className="flex min-h-[70vh] items-center justify-center bg-page" aria-label="Loading page">
@@ -106,6 +107,7 @@ function App() {
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/integrations/:slug" element={<Integration />} />
               <Route path="/careers" element={<Careers />} />
+              <Route path="/admin/jobs" element={<AdminJobs />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

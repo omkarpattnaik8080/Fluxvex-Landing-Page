@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,8 +10,11 @@ import logging
 from collections import defaultdict, deque
 from pathlib import Path
 from pydantic import BaseModel, Field
-from typing import List
-from datetime import datetime, timezone
+from typing import List, Optional
+from datetime import datetime, timedelta, timezone
+import bcrypt
+import jwt
+from uuid import uuid4
 
 
 ROOT_DIR = Path(__file__).parent
@@ -67,7 +70,98 @@ async def forward_to_sheets(sheet_name: str, headers: List[str], row: List[str])
         return "error"
 
 
+# ---------- Auth helpers (single-admin, JWT httpOnly cookie) ----------
+
+JWT_ALGORITHM = "HS256"
+
+
+def get_jwt_secret() -> str:
+    return os.environ["JWT_SECRET"]
+
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def verify_password(plain: str, hashed: str) -> bool:
+    try:
+        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except ValueError:
+        return False
+
+
+def create_access_token(user_id: str, email: str) -> str:
+    payload = {
+        "sub": user_id,
+        "email": email,
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=15),
+        "type": "access",
+    }
+    return jwt.encode(payload, get_jwt_secret(), algorithm=JWT_ALGORITHM)
+
+
+def create_refresh_token(user_id: str) -> str:
+    payload = {
+        "sub": user_id,
+        "exp": datetime.now(timezone.utc) + timedelta(days=7),
+        "type": "refresh",
+    }
+    return jwt.encode(payload, get_jwt_secret(), algorithm=JWT_ALGORITHM)
+
+
+async def get_current_admin(request: Request) -> dict:
+    token = request.cookies.get("access_token")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = jwt.decode(token, get_jwt_secret(), algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "access":
+            raise HTTPException(status_code=401, detail="Invalid token type")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = await db.users.find_one({"_id": payload["sub"], "role": "admin"})
+    if not user:
+        raise HTTPException(status_code=401, detail="Admin not found")
+    return {"id": payload["sub"], "email": payload.get("email", "")}
+
+
+def _slugify(text: str) -> str:
+    s = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return s or str(uuid4())[:8]
+
 # ---------- Models ----------
+
+class LoginIn(BaseModel):
+    email: str
+    password: str
+
+
+class JobCreate(BaseModel):
+    title: str
+    team: str = "Growth"
+    location: str
+    type: str
+    ppo: str
+    desc: str
+    wants: List[str] = []
+
+
+class JobUpdate(BaseModel):
+    title: Optional[str] = None
+    team: Optional[str] = None
+    location: Optional[str] = None
+    type: Optional[str] = None
+    ppo: Optional[str] = None
+    desc: Optional[str] = None
+    wants: Optional[List[str]] = None
+    active: Optional[bool] = None
+
 
 class StatusCheck(BaseModel):
     model_config = {"extra": "ignore"}
@@ -238,7 +332,237 @@ async def submit_career_application(input: CareerApplicationCreate, request: Req
     return {"ok": True, "sheet_status": sheet_status}
 
 
-# Include the router in the main app
+# ---------- Admin auth ----------
+
+LOCK_THRESHOLD = 5
+LOCK_WINDOW_MIN = 15
+
+
+@api_router.post("/auth/login")
+async def admin_login(input: LoginIn, request: Request, response: Response):
+    if not _rate_ok(request.client.host if request.client else "unknown"):
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again shortly.")
+    email = input.email.strip().lower()
+    identifier = f"{request.client.host if request.client else 'unknown'}:{email}"
+    now = datetime.now(timezone.utc)
+    attempt = await db.login_attempts.find_one({"identifier": identifier})
+    if attempt and attempt.get("locked_until") and datetime.fromisoformat(attempt["locked_until"]) > now:
+        raise HTTPException(status_code=429, detail="Too many failed attempts. Try again in 15 minutes.")
+    user = await db.users.find_one({"email": email, "role": "admin"})
+    if not user or not verify_password(input.password, user.get("password_hash", "")):
+        fails = ((attempt or {}).get("fails", 0) or 0) + 1
+        update = {"fails": fails}
+        if fails >= LOCK_THRESHOLD:
+            update["locked_until"] = (now + timedelta(minutes=LOCK_WINDOW_MIN)).isoformat()
+            update["fails"] = 0
+        await db.login_attempts.update_one({"identifier": identifier}, {"$set": update}, upsert=True)
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+    await db.login_attempts.delete_one({"identifier": identifier})
+    access = create_access_token(user["_id"], user["email"])
+    refresh = create_refresh_token(user["_id"])
+    response.set_cookie(key="access_token", value=access, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+    response.set_cookie(key="refresh_token", value=refresh, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
+    return {"ok": True, "email": user["email"], "role": "admin"}
+
+
+@api_router.post("/auth/refresh")
+async def admin_refresh(request: Request, response: Response):
+    token = request.cookies.get("refresh_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = jwt.decode(token, get_jwt_secret(), algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "refresh":
+            raise HTTPException(status_code=401, detail="Invalid token type")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = await db.users.find_one({"_id": payload["sub"], "role": "admin"})
+    if not user:
+        raise HTTPException(status_code=401, detail="Admin not found")
+    access = create_access_token(user["_id"], user["email"])
+    response.set_cookie(key="access_token", value=access, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+    return {"ok": True}
+
+
+@api_router.post("/auth/logout")
+async def admin_logout(response: Response):
+    response.delete_cookie(key="access_token", path="/")
+    response.delete_cookie(key="refresh_token", path="/")
+    return {"ok": True}
+
+
+@api_router.get("/auth/me")
+async def admin_me(request: Request):
+    return await get_current_admin(request)
+
+
+# ---------- Job postings (admin-managed, public read) ----------
+
+@api_router.get("/careers/jobs")
+async def list_jobs(request: Request, all: bool = False):
+    if all:
+        await get_current_admin(request)
+        cursor = db.job_postings.find({})
+    else:
+        cursor = db.job_postings.find({"active": True})
+    items = await cursor.sort("created_at", 1).to_list(200)
+    for d in items:
+        d.pop("_id", None)
+    return items
+
+
+@api_router.post("/careers/jobs")
+async def create_job(input: JobCreate, request: Request):
+    await get_current_admin(request)
+    title = input.title.strip()
+    if not title or len(title) > 120:
+        raise HTTPException(status_code=400, detail="Please enter a job title.")
+    if not input.location.strip() or not input.type.strip():
+        raise HTTPException(status_code=400, detail="Please enter a location and a program type.")
+    if not input.ppo.strip():
+        raise HTTPException(status_code=400, detail="Please describe the PPO offer.")
+    if not input.desc.strip() or len(input.desc.strip()) < 20:
+        raise HTTPException(status_code=400, detail="Please write a short description (at least 20 characters).")
+    now = _now_iso()
+    doc = {
+        "id": str(uuid4()),
+        "slug": _slugify(title),
+        "title": title,
+        "team": input.team.strip()[:60] or "Growth",
+        "location": input.location.strip()[:120],
+        "type": input.type.strip()[:120],
+        "ppo": input.ppo.strip()[:200],
+        "desc": input.desc.strip()[:1200],
+        "wants": [w.strip()[:160] for w in input.wants if w.strip()][:6],
+        "active": True,
+        "created_at": now,
+        "updated_at": now,
+    }
+    await db.job_postings.insert_one(dict(doc))
+    return doc
+
+
+@api_router.patch("/careers/jobs/{job_id}")
+async def update_job(job_id: str, input: JobUpdate, request: Request):
+    await get_current_admin(request)
+    updates = {k: v for k, v in input.model_dump().items() if v is not None}
+    if "title" in updates:
+        title = updates.pop("title").strip()
+        if not title or len(title) > 120:
+            raise HTTPException(status_code=400, detail="Please enter a valid job title.")
+        updates["title"] = title
+        updates["slug"] = _slugify(title)
+    if "wants" in updates:
+        updates["wants"] = [w.strip()[:160] for w in updates["wants"] if w.strip()][:6]
+    if not updates:
+        raise HTTPException(status_code=400, detail="Nothing to update.")
+    updates["updated_at"] = _now_iso()
+    doc = await db.job_postings.find_one_and_update({"id": job_id}, {"$set": updates}, return_document=True)
+    if not doc:
+        raise HTTPException(status_code=404, detail="Job not found.")
+    doc.pop("_id", None)
+    return doc
+
+
+@api_router.delete("/careers/jobs/{job_id}")
+async def delete_job(job_id: str, request: Request):
+    await get_current_admin(request)
+    doc = await db.job_postings.find_one_and_update(
+        {"id": job_id}, {"$set": {"active": False, "updated_at": _now_iso()}}
+    )
+    if not doc:
+        raise HTTPException(status_code=404, detail="Job not found.")
+    return {"ok": True}
+SEED_JOBS = [
+    {
+        "slug": "saas-sales-intern",
+        "title": "SaaS Sales Intern",
+        "team": "Growth",
+        "location": "Remote + Hybrid · Bengaluru, India",
+        "type": "Unpaid internship · 4 months",
+        "ppo": "Guaranteed PPO conversion chances—with a package up to ₹6 LPA",
+        "desc": "Learn B2B SaaS sales on a product agencies genuinely need. Work the waitlist with the founding team, talk to agency owners, run demos, and turn interest into launch-day customers.",
+        "wants": [
+            "Clear, confident conversations—in English, on calls and in text",
+            "Curiosity about how marketing agencies actually operate",
+            "A bias for following up without being reminded",
+        ],
+    },
+    {
+        "slug": "saas-sales-us-markets-intern",
+        "title": "SaaS Sales US Markets Intern",
+        "team": "Growth",
+        "location": "Remote · USA",
+        "type": "Unpaid internship · 4 months",
+        "ppo": "Guaranteed PPO conversion chances—with a package above market standards",
+        "desc": "Own US-market conversations for a pre-launch SaaS: prospect agencies across US time zones, run discovery texts and calls, and feed real objections straight into the product.",
+        "wants": [
+            "Comfort selling into US time zones, text-first and call-ready",
+            "Talent for turning a cold reply into a real conversation",
+            "Interest in agencies, ad platforms, and reporting pain",
+        ],
+    },
+    {
+        "slug": "saas-sales-uk-markets-intern",
+        "title": "SaaS Sales UK Markets Intern",
+        "team": "Growth",
+        "location": "Remote · UK",
+        "type": "Unpaid internship · 4 months",
+        "ppo": "Guaranteed PPO conversion chances—with a package above market standards",
+        "desc": "Open up the UK market for Fluxvex: prospect and qualify UK agencies, run demos with the founding team, and build the playbook the whole company will use post-launch.",
+        "wants": [
+            "Fluent, professional communication tuned to UK business culture",
+            "Self-directed outreach—you plan the week, you hit the targets",
+            "Genuine interest in SaaS and the agency reporting workflow",
+        ],
+    },
+]
+
+
+@app.on_event("startup")
+async def startup_seed():
+    # Admin account — seeded once; if ADMIN_PASSWORD changes in .env, the stored hash is updated.
+    admin_email = os.environ.get("ADMIN_EMAIL", "admin@example.com")
+    admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")
+    existing = await db.users.find_one({"email": admin_email, "role": "admin"})
+    if existing is None:
+        await db.users.insert_one(
+            {
+                "_id": str(uuid4()),
+                "email": admin_email,
+                "password_hash": hash_password(admin_password),
+                "name": "Admin",
+                "role": "admin",
+                "created_at": _now_iso(),
+            }
+        )
+        logger.info("Seeded admin account: %s", admin_email)
+    elif not verify_password(admin_password, existing.get("password_hash", "")):
+        await db.users.update_one(
+            {"_id": existing["_id"]}, {"$set": {"password_hash": hash_password(admin_password)}}
+        )
+        logger.info("Updated admin password hash from env")
+
+    await db.login_attempts.create_index("identifier")
+
+    # Seed the current job openings only when the collection is empty.
+    if await db.job_postings.count_documents({}) == 0:
+        now = _now_iso()
+        await db.job_postings.insert_many(
+            [
+                {
+                    **job,
+                    "id": str(uuid4()),
+                    "active": True,
+                    "created_at": now,
+                    "updated_at": now,
+                }
+                for job in SEED_JOBS
+            ]
+        )
+        logger.info("Seeded %d job postings", len(SEED_JOBS))
+
+
 app.include_router(api_router)
 
 app.add_middleware(

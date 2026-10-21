@@ -82,7 +82,7 @@ function CloudVisual() {
       transition={{ duration: 0.9, ease: [0.19, 1, 0.22, 1] }}
       data-testid="platform-cloud-visual"
     >
-      <IsoPlane w={280} h={240} scale="scale-[0.8] sm:scale-95" className="py-8">
+      <IsoPlane w={280} h={240} scale="scale-[0.9] sm:scale-110 lg:scale-125" className="py-8">
         <div data-testid="platform-cloud-icons" className="contents">
           {marks.map((mark, i) => (
             <IsoTile key={i} x={8} y={28 + i * 64} w={48} h={48}>

@@ -75,7 +75,7 @@ const AI_CAPABILITIES = [
 
 function VisionScene() {
   return (
-    <IsoPlane w={330} h={246} scale="scale-[0.68] sm:scale-90 lg:scale-100" className="mx-auto h-full">
+    <IsoPlane w={330} h={246} scale="scale-[0.78] sm:scale-100 lg:scale-[1.18]" className="mx-auto h-full">
       <IsoTile x={16} y={18} w={54} h={54}>
         <GoogleAdsMark size={22} />
       </IsoTile>

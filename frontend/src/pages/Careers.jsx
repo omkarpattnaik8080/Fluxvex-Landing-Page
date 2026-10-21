@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import gsap from "gsap";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { BadgeCheck, Check, ChevronDown, Loader2, MessagesSquare, Rocket, Send, Sparkles, TrendingUp, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,14 +9,22 @@ import Seo from "@/components/Seo";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import TapCTA from "@/components/ui/TapCTA";
-import { FluxvexMark } from "@/components/brand/FluxvexLogo";
-import { ROLES, CULTURE, HIRING_STEPS, CAREER_FAQS, TICKER_ITEMS } from "@/data/careers";
+import { ROLES, CULTURE, HIRING_STEPS, CAREER_FAQS } from "@/data/careers";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const CULTURE_ICONS = { ship: Rocket, ai: Sparkles, founders: Users, grow: TrendingUp };
 const STEP_ICONS = { text: Send, session: MessagesSquare, ppo: BadgeCheck };
 
-function JsonLd() {
+/* Composed hover lift for cards */
+function MotionCard({ children }) {
+  return (
+    <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="h-full">
+      {children}
+    </motion.div>
+  );
+}
+
+function JsonLd({ roles }) {
   useEffect(() => {
     const el = document.createElement("script");
     el.type = "application/ld+json";
@@ -25,7 +32,7 @@ function JsonLd() {
     el.text = JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
-        ...ROLES.map((r) => ({
+        ...roles.map((r) => ({
           "@type": "JobPosting",
           title: r.title,
           description: `${r.type}. Location: ${r.location}. On completion: ${r.ppo}. ${r.desc}`,
@@ -45,68 +52,26 @@ function JsonLd() {
     return () => {
       document.getElementById("careers-jsonld")?.remove();
     };
-  }, []);
+  }, [roles]);
   return null;
 }
 
-/* GSAP roles ticker — one DOM copy per item, duplicated track for the loop */
-function RolesTicker() {
-  const trackRef = useRef(null);
-  const reduce = useReducedMotion();
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track || reduce) return undefined;
-    gsap.set(track, { force3D: true });
-    const tween = gsap.to(track, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
-    return () => {
-      tween.kill();
-      gsap.set(track, { clearProps: "transform" });
-    };
-  }, [reduce]);
-
+/* Slow, composed hero stat — the calm alternative to floating badges */
+function HeroStat({ value, label, delay, testid }) {
   return (
-    <div
-      className="relative mt-14 overflow-hidden border-y border-line bg-page py-4"
-      data-testid="careers-ticker"
-      aria-label="Open internship roles at Fluxvex"
-    >
-      <div ref={trackRef} className="flex w-max items-center will-change-transform">
-        {[0, 1].map((dup) => (
-          <div key={dup} aria-hidden={dup === 1} className="flex shrink-0 items-center">
-            {TICKER_ITEMS.map((t, i) => (
-              <span key={`${dup}-${i}`} className="flex items-center">
-                <span className="whitespace-nowrap font-display text-sm font-semibold tracking-tight text-ink/80">{t}</span>
-                <FluxvexMark size={16} className="mx-6 rounded" />
-              </span>
-            ))}
-          </div>
-        ))}
+    <Reveal y={12} delay={delay} className="h-full">
+      <div className="flex h-full flex-col items-center gap-1 rounded-2xl border border-line bg-page px-6 py-5 text-center" data-testid={testid}>
+        <span className="font-display text-2xl font-semibold tracking-tight text-ink">{value}</span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-soft">{label}</span>
       </div>
-    </div>
-  );
-}
-
-/* Slow-floating hero badge (desktop whitespace) */
-function FloatBadge({ className = "", children, delay = 0 }) {
-  const reduce = useReducedMotion();
-  return (
-    <motion.span
-      initial={{ opacity: 0, scale: 0.85 }}
-      animate={reduce ? { opacity: 1, scale: 1 } : { opacity: 1, scale: 1, y: [0, -10, 0] }}
-      transition={reduce ? { delay } : { y: { duration: 5.5, repeat: Infinity, delay, ease: "easeInOut" }, opacity: { delay }, scale: { delay } }}
-      className={`pointer-events-none absolute hidden items-center gap-2 rounded-full border border-line bg-page px-4 py-2 text-[11px] font-semibold text-ink shadow-[0_18px_40px_-18px_rgba(16,16,20,0.35)] lg:flex ${className}`}
-      aria-hidden="true"
-    >
-      {children}
-    </motion.span>
+    </Reveal>
   );
 }
 
 function RoleCard({ role, i, onApply }) {
   return (
     <Reveal delay={i * 0.08} className="h-full">
-      <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="h-full">
+      <MotionCard>
         <div className="flex h-full flex-col rounded-2xl border border-line bg-page p-7 shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]" data-testid={role.testid}>
           <div className="flex items-center justify-between gap-3">
             <span className="flex items-center gap-1.5 rounded-full border border-mint/40 bg-mint/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#0E8A3E]">
@@ -129,7 +94,7 @@ function RoleCard({ role, i, onApply }) {
             <p className="text-[12.5px] font-semibold leading-snug text-ink">{role.ppo}</p>
           </div>
           <ul className="mt-4 space-y-2">
-            {role.wants.map((w) => (
+            {(role.wants || []).map((w) => (
               <li key={w} className="flex items-start gap-2 text-[12.5px] leading-snug text-ink-soft">
                 <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={2.4} />
                 {w}
@@ -137,7 +102,7 @@ function RoleCard({ role, i, onApply }) {
             ))}
           </ul>
           <TapCTA
-            onClick={() => onApply(role.slug)}
+            onClick={() => onApply(role)}
             className="group mt-6 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-ink font-display text-sm font-semibold text-white transition-colors hover:bg-black/80"
             testid={`career-apply-${role.slug}`}
           >
@@ -145,59 +110,36 @@ function RoleCard({ role, i, onApply }) {
             <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </TapCTA>
         </div>
-      </motion.div>
+      </MotionCard>
     </Reveal>
   );
 }
 
 function HiringTimeline() {
-  const reduce = useReducedMotion();
   return (
-    <div className="relative" data-testid="careers-timeline">
-      {/* animated connector line (desktop) */}
-      <div className="absolute left-0 right-0 top-[26px] hidden h-px lg:block" aria-hidden="true">
-        <motion.div
-          className="h-px origin-left bg-gradient-to-r from-transparent via-accent/50 to-transparent"
-          initial={reduce ? false : { scaleX: 0 }}
-          whileInView={reduce ? {} : { scaleX: 1 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
-        />
-      </div>
-      <div className="grid gap-5 lg:grid-cols-3 lg:gap-8">
-        {HIRING_STEPS.map((s, i) => {
-          const Icon = STEP_ICONS[s.icon];
-          return (
-            <Reveal key={s.title} delay={i * 0.12} className="h-full">
-              <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="relative h-full">
-                <div className="flex h-full flex-col rounded-2xl border border-line bg-page p-7 shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]" data-testid={`careers-step-${i + 1}`}>
-                  <div className="flex items-center justify-between">
-                    <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-accent font-display text-sm font-bold text-white">
-                      {i + 1}
-                      {!reduce && (
-                        <motion.span
-                          className="absolute inset-0 rounded-xl border-2 border-accent/50"
-                          animate={{ scale: [1, 1.3], opacity: [0.9, 0] }}
-                          transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut", delay: i * 0.5 }}
-                          aria-hidden="true"
-                        />
-                      )}
-                    </span>
-                    <Icon className="h-5 w-5 text-accent" strokeWidth={1.8} />
-                  </div>
-                  <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-ink">{s.title}</h3>
-                  <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">{s.desc}</p>
+    <div className="grid gap-5 lg:grid-cols-3 lg:gap-8" data-testid="careers-timeline">
+      {HIRING_STEPS.map((s, i) => {
+        const Icon = STEP_ICONS[s.icon];
+        return (
+          <Reveal key={s.title} delay={i * 0.12} className="h-full">
+            <MotionCard>
+              <div className="flex h-full flex-col rounded-2xl border border-line bg-page p-7 shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]" data-testid={`careers-step-${i + 1}`}>
+                <div className="flex items-center justify-between">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent font-display text-sm font-bold text-white">{i + 1}</span>
+                  <Icon className="h-5 w-5 text-accent" strokeWidth={1.8} />
                 </div>
-              </motion.div>
-            </Reveal>
-          );
-        })}
-      </div>
+                <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-ink">{s.title}</h3>
+                <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">{s.desc}</p>
+              </div>
+            </MotionCard>
+          </Reveal>
+        );
+      })}
     </div>
   );
 }
 
-function TextUsForm({ role, setRole }) {
+function TextUsForm({ roleSlug, setRoleSlug }) {
   const [form, setForm] = useState({ name: "", email: "", portfolio: "", message: "", trap: "" });
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
@@ -210,7 +152,7 @@ function TextUsForm({ role, setRole }) {
     setStatus("loading");
     setError("");
     try {
-      const res = await axios.post(`${API}/careers`, { ...form, role });
+      const res = await axios.post(`${API}/careers`, { ...form, role: roleSlug });
       if (res.data && res.data.ok) setStatus("success");
       else {
         setStatus("error");
@@ -252,20 +194,10 @@ function TextUsForm({ role, setRole }) {
             >
               <Check className="h-8 w-8 text-white" strokeWidth={3} />
             </motion.div>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              className="mt-5 font-display text-xl font-semibold tracking-tight text-ink"
-            >
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mt-5 font-display text-xl font-semibold tracking-tight text-ink">
               Text sent. It's with us.
             </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-ink-soft"
-            >
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-ink-soft">
               Your message landed straight with the founding team. If the fit is real, we reply to schedule a short
               working session.
             </motion.p>
@@ -273,7 +205,6 @@ function TextUsForm({ role, setRole }) {
         ) : (
           <form onSubmit={submit} className="space-y-4 p-5 sm:p-6" noValidate data-testid="careers-form">
             <input type="text" name="trap" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" data-testid="careers-honeypot" />
-            {/* incoming bubble */}
             <div className="flex justify-start">
               <p className="max-w-[85%] rounded-2xl rounded-bl-md bg-surface px-4 py-3 text-[13px] leading-relaxed text-ink shadow-sm">
                 Tell us who you are, where you can contribute the most, and why you want to build the agency OS with
@@ -302,8 +233,8 @@ function TextUsForm({ role, setRole }) {
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="relative">
                 <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  value={roleSlug}
+                  onChange={(e) => setRoleSlug(e.target.value)}
                   className="h-11 w-full appearance-none rounded-xl border border-line bg-surface px-3.5 pr-9 text-sm text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   data-testid="careers-role-select"
                 >
@@ -359,10 +290,25 @@ function TextUsForm({ role, setRole }) {
 }
 
 export default function Careers() {
-  const [role, setRole] = useState(ROLES[0].slug);
+  const [roleSlug, setRoleSlug] = useState(ROLES[0].slug);
+  const [roles, setRoles] = useState(ROLES);
 
-  const applyTo = (slug) => {
-    setRole(slug);
+  /* Live job postings from the admin-managed collection; static seed as fallback */
+  useEffect(() => {
+    let alive = true;
+    axios
+      .get(`${API}/careers/jobs`)
+      .then((res) => {
+        if (alive && Array.isArray(res.data) && res.data.length) setRoles(res.data);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const applyTo = (r) => {
+    setRoleSlug(r.slug);
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -373,21 +319,11 @@ export default function Careers() {
         description="Fluxvex is hiring SaaS sales interns for India, US, and UK markets. Four-month unpaid internships with guaranteed PPO conversion chances up to ₹6 LPA. Apply by texting the founding team."
         path="/careers"
       />
-      <JsonLd />
+      <JsonLd roles={roles} />
       <Navbar />
       <main className="pt-[76px]" data-testid="careers-page">
-        {/* hero */}
-        <div className="relative mx-auto max-w-[1100px] px-5 py-16 text-center lg:px-8 lg:py-24">
-          <FloatBadge className="left-[2%] top-[26%]" delay={0.6}>
-            <Sparkles className="h-3.5 w-3.5 text-accent" /> PPO up to ₹6 LPA
-          </FloatBadge>
-          <FloatBadge className="right-[2%] top-[34%]" delay={1.2}>
-            <Users className="h-3.5 w-3.5 text-accent" /> US · UK · India — all remote
-          </FloatBadge>
-          <FloatBadge className="bottom-[14%] left-[6%]" delay={1.8}>
-            <Send className="h-3.5 w-3.5 text-accent" /> Replies from the founding team
-          </FloatBadge>
-
+        {/* hero — composed and quiet */}
+        <div className="mx-auto max-w-[1100px] px-5 pb-14 pt-16 text-center lg:px-8 lg:pb-20 lg:pt-24">
           <Reveal>
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">Careers at Fluxvex</p>
           </Reveal>
@@ -399,27 +335,23 @@ export default function Careers() {
           </CinematicText>
           <Reveal y={14} delay={0.1}>
             <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-[1.75] text-ink-soft" data-testid="careers-answer-first">
-              Fluxvex is hiring three SaaS sales interns—for India, the US, and the UK markets. The internships are
-              unpaid, run four months, and end with a guaranteed PPO conversion chance: up to ₹6 LPA in India and
-              above-market-standard packages in the US and UK. Apply by texting the founding team directly—no
-              portals, no cover letters.
+              Fluxvex is hiring {roles.length} SaaS sales {roles.length === 1 ? "intern" : "interns"}—for India, the
+              US, and the UK markets. The internships are unpaid, run four months, and end with a guaranteed PPO
+              conversion chance: up to ₹6 LPA in India and above-market-standard packages in the US and UK. Apply by
+              texting the founding team directly—no portals, no cover letters.
             </p>
           </Reveal>
           <Reveal y={12} delay={0.15}>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-              {["Remote-first", "Internship-first", "AI-native", "Founders you can text"].map((chip) => (
-                <span key={chip} className="rounded-full border border-line bg-page px-3.5 py-1.5 text-[11px] font-medium text-ink-soft">
-                  {chip}
-                </span>
-              ))}
+            <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3" data-testid="careers-hero-stats">
+              <HeroStat value={roles.length} label={roles.length === 1 ? "open role" : "open roles"} delay={0.2} testid="careers-stat-roles" />
+              <HeroStat value="4 mo" label="program · unpaid" delay={0.28} testid="careers-stat-months" />
+              <HeroStat value="PPO" label="guaranteed conversion chance" delay={0.36} testid="careers-stat-ppo" />
             </div>
           </Reveal>
         </div>
 
-        <RolesTicker />
-
         {/* culture */}
-        <div className="mx-auto max-w-[1280px] px-5 pb-4 pt-14 lg:px-8">
+        <div className="mx-auto max-w-[1280px] px-5 pb-4 lg:px-8">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {CULTURE.map((c, i) => {
               const Icon = CULTURE_ICONS[c.icon];
@@ -450,7 +382,7 @@ export default function Careers() {
             </div>
           </Reveal>
           <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {ROLES.map((r, i) => (
+            {roles.map((r, i) => (
               <RoleCard key={r.slug} role={r} i={i} onApply={applyTo} />
             ))}
           </div>
@@ -487,7 +419,7 @@ export default function Careers() {
               </div>
             </Reveal>
             <Reveal delay={0.1}>
-              <TextUsForm role={role} setRole={setRole} />
+              <TextUsForm roleSlug={roleSlug} setRoleSlug={setRoleSlug} />
             </Reveal>
           </div>
         </div>

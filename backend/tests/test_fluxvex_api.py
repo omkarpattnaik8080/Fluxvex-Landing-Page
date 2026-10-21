@@ -235,3 +235,61 @@ class TestSeo:
                         assert ans == onpage, f"JSON-LD mismatch: {ans!r} vs {onpage!r}"
                         found = True
         assert found, "pricing FAQ not found in JSON-LD"
+
+
+def test_admin_auth_and_job_crud(client):
+    """Iteration 10: admin login (JWT cookie) guards job CRUD; public reads active jobs only."""
+    # 1) unauthorized create is rejected
+    r = client.post(f"{BASE_URL}/api/careers/jobs", json={"title": "TEST Sneaky Job", "location": "X", "type": "Y", "ppo": "Z", "desc": "Should not be created without auth."})
+    assert r.status_code == 401
+
+    # 2) wrong password rejected
+    r = client.post(f"{BASE_URL}/api/auth/login", json={"email": "admin@example.com", "password": "wrong-password"})
+    assert r.status_code == 401
+
+    # 3) correct login sets httpOnly cookies
+    r = client.post(f"{BASE_URL}/api/auth/login", json={"email": "admin@example.com", "password": "admin123"})
+    assert r.status_code == 200
+    assert "access_token" in r.cookies
+
+    # 4) admin can create a job
+    r = client.post(f"{BASE_URL}/api/careers/jobs", json={"title": "TEST QA Job", "team": "QA", "location": "Remote", "type": "Unpaid internship · 4 months", "ppo": "Test PPO", "desc": "Automated test job for CRUD verification.", "wants": ["a", "b"]})
+    assert r.status_code == 200
+    job = r.json()
+    assert job["title"] == "TEST QA Job" and job["active"] is True and job["slug"] == "test-qa-job"
+
+    # 5) job shows publicly
+    jobs = client.get(f"{BASE_URL}/api/careers/jobs").json()
+    assert any(j["title"] == "TEST QA Job" for j in jobs)
+
+    # 6) admin update (deactivate) hides it from the public list
+    r = client.patch(f"{BASE_URL}/api/careers/jobs/{job['id']}", json={"active": False})
+    assert r.status_code == 200
+    jobs = client.get(f"{BASE_URL}/api/careers/jobs").json()
+    assert not any(j["title"] == "TEST QA Job" for j in jobs)
+
+    # 7) admin list (?all=true) still includes it
+    all_jobs = client.get(f"{BASE_URL}/api/careers/jobs?all=true").json()
+    assert any(j["title"] == "TEST QA Job" for j in all_jobs)
+
+    # 8) soft delete + cleanup of any test residue (sync pymongo — Motor calls need await)
+    r = client.delete(f"{BASE_URL}/api/careers/jobs/{job['id']}")
+    assert r.status_code == 200
+    from pymongo import MongoClient as SyncMongo
+    import os as _os
+    _c = SyncMongo(_os.environ["MONGO_URL"])
+    _db = _c[_os.environ["DB_NAME"]]
+    _db.job_postings.delete_many({"title": {"$regex": "^TEST"}})
+    _db.login_attempts.delete_many({})
+    _c.close()
+
+
+def test_careers_page_lists_dynamic_jobs(client):
+    """Careers page shell renders and the jobs API that feeds it works."""
+    r = client.get(f"{BASE_URL}/api/careers/jobs")
+    jobs = r.json()
+    assert isinstance(jobs, list) and len(jobs) >= 3
+    titles = [j["title"] for j in jobs]
+    assert "SaaS Sales Intern" in titles
+    assert "SaaS Sales US Markets Intern" in titles
+    assert "SaaS Sales UK Markets Intern" in titles

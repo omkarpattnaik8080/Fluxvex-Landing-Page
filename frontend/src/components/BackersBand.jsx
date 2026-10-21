@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { MetaMark } from "@/components/brand/IntegrationMarks";
 
 function ProductHuntMark() {
   return (
@@ -54,7 +53,6 @@ function SarvamMark() {
 const BACKERS = [
   { name: "Product Hunt", mark: <ProductHuntMark /> },
   { name: "StartupBase", mark: <StartupBaseMark /> },
-  { name: "Meta Tech Partner", mark: <MetaMark size={20} /> },
   { name: "AWS Startups", mark: <AwsMark /> },
   { name: "Microsoft Azure Startups", mark: <MicrosoftMark /> },
   { name: "Sarvam", mark: <SarvamMark /> },
