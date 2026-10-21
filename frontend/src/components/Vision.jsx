@@ -123,7 +123,7 @@ export default function Vision() {
       />
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
-          <div data-testid="vision-scene">
+          <div className="overflow-x-clip" data-testid="vision-scene">
             <VisionScene />
           </div>
         </Reveal>

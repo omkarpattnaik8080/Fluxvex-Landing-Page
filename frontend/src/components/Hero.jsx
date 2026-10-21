@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowDown, CalendarDays, CalendarClock, Lock, Plus, Check, Trophy, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowDown, CalendarDays, CalendarClock, Lock, Palette, Plus, Check, Trophy, Sparkles } from "lucide-react";
 import { useWaitlist } from "@/components/WaitlistContext";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
@@ -324,26 +324,40 @@ function AiInsightStream() {
 
   return (
     <motion.div
-      animate={reduce ? {} : { y: [0, -8, 0] }}
-      transition={{ duration: 6, repeat: Infinity, delay: 0.9, ease: "easeInOut" }}
-      className="pointer-events-none absolute right-6 top-[42%] z-20 hidden w-64 rounded-xl bg-white p-3.5 text-left shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] lg:block"
+      initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: 1.25, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+      className="absolute right-4 top-[38%] z-20 hidden lg:block xl:right-8"
       data-testid="hero-ai-insight"
     >
-      <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
-        <Sparkles className="h-3 w-3" /> Fluxvex AI insight
-      </span>
-      <p className="mt-1.5 min-h-[32px] text-[12px] leading-snug text-ink">
-        {text}
-        <motion.span
-          animate={reduce ? {} : { opacity: [1, 0, 1] }}
-          transition={{ duration: 0.9, repeat: Infinity }}
-          className="ml-0.5 inline-block h-3 w-[2px] translate-y-[2px] bg-accent"
-          aria-hidden="true"
-        />
-      </p>
-      <span className="mt-1.5 flex items-center gap-1.5 text-[10px] text-black/45">
-        <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Analyzing connected accounts
-      </span>
+      <motion.div
+        animate={reduce ? {} : { y: [0, -8, 0] }}
+        transition={{ duration: 6, repeat: Infinity, delay: 1.6, ease: "easeInOut" }}
+        className="relative w-64 rotate-[-1deg] rounded-2xl border border-white/50 bg-white/85 p-4 text-left shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
+      >
+        <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
+        <span className="flex items-center justify-between">
+          <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
+            <Sparkles className="h-3 w-3" /> Fluxvex AI insight
+          </span>
+          <span className="rounded-full border border-accent/25 bg-accent-tint px-2 py-0.5 text-[9px] font-semibold text-accent">Review queue</span>
+        </span>
+        <p className="mt-2 min-h-[32px] text-[12px] leading-snug text-ink">
+          {text}
+          <motion.span
+            animate={reduce ? {} : { opacity: [1, 0, 1] }}
+            transition={{ duration: 0.9, repeat: Infinity }}
+            className="ml-0.5 inline-block h-3 w-[2px] translate-y-[2px] bg-accent"
+            aria-hidden="true"
+          />
+        </p>
+        <span className="mt-2.5 flex items-center justify-between">
+          <span className="flex items-center gap-1.5 text-[10px] text-black/45">
+            <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Analyzing connected accounts
+          </span>
+          <span className="rounded-full border border-black/[0.08] bg-surface px-2 py-0.5 text-[9.5px] font-semibold text-ink-soft">Approve to include</span>
+        </span>
+      </motion.div>
     </motion.div>
   );
 }
@@ -428,20 +442,109 @@ export default function Hero() {
         <CornerFastener className="bottom-3 left-3" />
         <CornerFastener className="bottom-3 right-3" />
 
-        {/* floating decorations — kept minimal: report toast + AI insight */}
+        {/* floating glass cards — informative, animated, balanced left/right */}
+        {/* White-label card (left) */}
         <motion.div
-          {...float(2.4)}
-          className="pointer-events-none absolute right-6 top-[63%] hidden w-52 rotate-2 items-center gap-3 rounded-xl bg-white p-3.5 shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] md:flex"
+          initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 1.35, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+          className="absolute left-4 top-[36%] z-20 hidden lg:block xl:left-8"
           aria-hidden="true"
         >
-          <FluxvexMark size={36} />
-          <span>
-            <span className="block text-[13px] font-semibold text-ink">June report is ready</span>
-            <span className="block text-[11px] text-black/50">Branded & client-ready</span>
-          </span>
-          <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-mint">
-            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-          </span>
+          <motion.div
+            animate={reduce ? {} : { y: [0, -9, 0] }}
+            transition={{ duration: 6.8, repeat: Infinity, delay: 1.8, ease: "easeInOut" }}
+            className="relative w-56 rotate-[-1.5deg] rounded-2xl border border-white/50 bg-white/85 p-4 shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
+            data-testid="hero-brand-card"
+          >
+            <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
+            <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
+              <Palette className="h-3 w-3" /> White-label ready
+            </span>
+            <span className="mt-2.5 flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-ink font-display text-[9px] font-bold text-white">N</span>
+              <span className="text-[11.5px] font-semibold text-ink">Northbeam Media</span>
+              <span className="ml-auto flex gap-1" aria-hidden="true">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#3D43E8]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#F5D748]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#0E8A3E]" />
+              </span>
+            </span>
+            <span className="mt-2 block text-[10.5px] leading-snug text-black/50">Logo, palette, and voice applied to every report automatically.</span>
+          </motion.div>
+        </motion.div>
+
+        {/* Delivery card (left, lower) */}
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 1.55, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+          className="absolute left-4 top-[58%] z-20 hidden lg:block xl:left-8"
+          aria-hidden="true"
+        >
+          <motion.div
+            animate={reduce ? {} : { y: [0, -8, 0] }}
+            transition={{ duration: 6, repeat: Infinity, delay: 2.6, ease: "easeInOut" }}
+            className="relative w-56 rotate-[1.5deg] rounded-2xl border border-white/50 bg-white/85 p-4 shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
+            data-testid="hero-delivery-card"
+          >
+            <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
+            <span className="flex items-center justify-between">
+              <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
+                <CalendarClock className="h-3 w-3 text-black/40" /> Delivery on schedule
+              </span>
+              <span className="flex items-center gap-1 text-[9px] font-semibold text-[#0E8A3E]">
+                <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> Auto-on
+              </span>
+            </span>
+            <span className="mt-2.5 flex items-center justify-between">
+              <span className="text-[11.5px] font-semibold text-ink">Next report · Jul 1</span>
+              <span className="rounded-full bg-accent-tint px-2 py-0.5 text-[9.5px] font-semibold text-accent">in 3 days</span>
+            </span>
+            <span className="mt-2 block h-1 overflow-hidden rounded-full bg-black/[0.08]" aria-hidden="true">
+              <motion.span
+                className="block h-full rounded-full bg-gradient-to-r from-accent to-[#8A90FF]"
+                initial={reduce ? false : { width: "10%" }}
+                animate={reduce ? {} : { width: "72%" }}
+                transition={{ duration: 1.4, delay: 2, ease: [0.19, 1, 0.22, 1] }}
+              />
+            </span>
+          </motion.div>
+        </motion.div>
+
+        {/* Report-ready toast (right, lower) — glass */}
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 1.45, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+          className="absolute right-4 top-[60%] z-20 hidden md:block xl:right-8"
+          aria-hidden="true"
+        >
+          <motion.div
+            animate={reduce ? {} : { y: [0, -9, 0] }}
+            transition={{ duration: 6.4, repeat: Infinity, delay: 2.4, ease: "easeInOut" }}
+            className="relative w-56 rotate-2 rounded-2xl border border-white/50 bg-white/85 p-4 shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
+            data-testid="hero-report-toast"
+          >
+            <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
+            <span className="flex items-center gap-2.5">
+              <FluxvexMark size={32} />
+              <span className="min-w-0">
+                <span className="block text-[12.5px] font-semibold text-ink">June report is ready</span>
+                <span className="block text-[10.5px] text-black/50">Branded & client-ready</span>
+              </span>
+              <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-mint shadow-[0_6px_14px_-4px_rgba(67,214,117,0.7)]">
+                <Check className="h-3 w-3 text-white" strokeWidth={3} />
+              </span>
+            </span>
+            <span className="mt-2.5 flex gap-1.5">
+              <span className="rounded-full border border-mint/40 bg-mint/10 px-2 py-0.5 text-[9.5px] font-semibold text-[#0E8A3E]">Leads +18.5%</span>
+              <span className="rounded-full border border-accent/25 bg-accent-tint px-2 py-0.5 text-[9.5px] font-semibold text-accent">ROAS 2.4x</span>
+            </span>
+            <span className="mt-2 flex items-center gap-1.5 text-[10px] text-black/45">
+              <CalendarClock className="h-3 w-3" /> Scheduled send · Jul 1, 9:00
+            </span>
+          </motion.div>
         </motion.div>
 
         <AiInsightStream />
@@ -451,7 +554,7 @@ export default function Hero() {
             initial="hidden"
             animate="show"
             variants={{ show: { transition: { staggerChildren: 0.055, delayChildren: 0.15 } } }}
-            className="group relative mx-auto inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm"
+            className="group relative mx-auto inline-flex max-w-full flex-wrap items-center justify-center gap-2 overflow-hidden rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm sm:flex-nowrap"
             data-testid="hero-eyebrow"
           >
             {"Automated client reporting for agencies".split(" ").map((w, i) => (

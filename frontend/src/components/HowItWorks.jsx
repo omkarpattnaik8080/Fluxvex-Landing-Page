@@ -199,6 +199,7 @@ export default function HowItWorks() {
 
   return (
     <SectionShell id="workflow" className="!px-0 !py-0">
+      <div ref={sectionRef}>
       <div className="mx-auto max-w-[1280px] px-5 pb-16 pt-20 text-center lg:px-8 lg:pb-20 lg:pt-28" ref={sectionRef}>
         <Reveal>
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">How it works</p>
@@ -298,6 +299,7 @@ export default function HowItWorks() {
             <IsoStage step={active} />
           </div>
         </div>
+      </div>
       </div>
     </SectionShell>
   );

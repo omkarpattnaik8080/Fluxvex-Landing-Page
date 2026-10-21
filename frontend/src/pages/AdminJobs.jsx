@@ -86,6 +86,7 @@ export default function AdminJobs() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [editing, setEditing] = useState(null);
+  const [actionError, setActionError] = useState("");
 
   const loadJobs = () =>
     axios
@@ -132,8 +133,13 @@ export default function AdminJobs() {
   };
 
   const remove = async (job) => {
-    await axios.delete(`${API}/careers/jobs/${job.id}`, { withCredentials: true }).catch(() => {});
-    loadJobs();
+    setActionError("");
+    try {
+      await axios.delete(`${API}/careers/jobs/${job.id}`, { withCredentials: true });
+      loadJobs();
+    } catch (err) {
+      setActionError(formatApiErrorDetail(err.response?.data?.detail));
+    }
   };
 
   const startEdit = (job) =>
@@ -194,14 +200,19 @@ export default function AdminJobs() {
             )}
 
             <div className="space-y-3">
+              {actionError && (
+                <p className="rounded-xl border border-[#D64545]/30 bg-[#D64545]/[0.06] px-4 py-2.5 text-sm text-[#D64545]" role="alert" data-testid="admin-action-error">
+                  {actionError}
+                </p>
+              )}
               {jobs.length === 0 && <p className="text-sm text-ink-soft">No job postings yet—post the first one above.</p>}
               {jobs.map((job) => (
-                <div key={job.id} className="flex flex-col gap-4 rounded-2xl border border-line bg-page p-5 sm:flex-row sm:items-center" data-testid={`admin-job-card-${job.slug}`}>
+                <div key={job.id} className={`flex flex-col gap-4 rounded-2xl border border-line bg-page p-5 sm:flex-row sm:items-center ${job.deleted ? "opacity-55" : ""}`} data-testid={`admin-job-card-${job.slug}`}>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-display text-base font-semibold text-ink">{job.title}</p>
-                      <span className={`rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${job.active ? "bg-mint/15 text-[#0E8A3E]" : "bg-black/[0.06] text-black/45"}`} data-testid={`admin-job-status-${job.slug}`}>
-                        {job.active ? "Live" : "Hidden"}
+                      <span className={`rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${job.deleted ? "bg-black/[0.06] text-black/40 line-through" : job.active ? "bg-mint/15 text-[#0E8A3E]" : "bg-black/[0.06] text-black/45"}`} data-testid={`admin-job-status-${job.slug}`}>
+                        {job.deleted ? "Removed" : job.active ? "Live" : "Hidden"}
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-ink-soft">
@@ -210,15 +221,21 @@ export default function AdminJobs() {
                     <p className="mt-1 text-xs text-ink-soft">{job.ppo}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <TapCTA onClick={() => toggleActive(job)} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-xs font-semibold text-ink hover:border-accent/40 hover:text-accent" testid={`admin-job-toggle-${job.slug}`}>
-                      <Power className="h-3.5 w-3.5" /> {job.active ? "Hide" : "Show"}
-                    </TapCTA>
-                    <TapCTA onClick={() => startEdit(job)} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-xs font-semibold text-ink hover:border-accent/40 hover:text-accent" testid={`admin-job-edit-${job.slug}`}>
-                      <Pencil className="h-3.5 w-3.5" /> Edit
-                    </TapCTA>
-                    <TapCTA onClick={() => remove(job)} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[#D64545]/30 bg-[#D64545]/[0.06] px-3.5 text-xs font-semibold text-[#D64545] hover:bg-[#D64545]/10" testid={`admin-job-delete-${job.slug}`}>
-                      <Trash2 className="h-3.5 w-3.5" /> Remove
-                    </TapCTA>
+                    {!job.deleted ? (
+                      <>
+                        <TapCTA onClick={() => toggleActive(job)} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-xs font-semibold text-ink hover:border-accent/40 hover:text-accent" testid={`admin-job-toggle-${job.slug}`}>
+                          <Power className="h-3.5 w-3.5" /> {job.active ? "Hide" : "Show"}
+                        </TapCTA>
+                        <TapCTA onClick={() => startEdit(job)} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 text-xs font-semibold text-ink hover:border-accent/40 hover:text-accent" testid={`admin-job-edit-${job.slug}`}>
+                          <Pencil className="h-3.5 w-3.5" /> Edit
+                        </TapCTA>
+                        <TapCTA onClick={() => remove(job)} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[#D64545]/30 bg-[#D64545]/[0.06] px-3.5 text-xs font-semibold text-[#D64545] hover:bg-[#D64545]/10" testid={`admin-job-delete-${job.slug}`}>
+                          <Trash2 className="h-3.5 w-3.5" /> Remove
+                        </TapCTA>
+                      </>
+                    ) : (
+                      <span className="text-xs text-black/40">No longer listed on the careers page</span>
+                    )}
                   </div>
                 </div>
               ))}

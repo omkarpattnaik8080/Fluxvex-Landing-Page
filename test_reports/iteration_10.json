@@ -1,0 +1,32 @@
+{
+  "summary": "Iteration 10 end-to-end testing for Admin Jobs CRUD, Careers dynamic page, HowItWorks auto-advance, BackersBand, illustration sizes, and regression. Backend pytest 19/19 passed (test_fluxvex_api.py incl. test_admin_auth_and_job_crud + test_careers_page_lists_dynamic_jobs). Full admin flow in browser verified: wrong password → admin-login-error 'Invalid email or password.', correct login (admin@example.com/admin123) → admin-dashboard, create 'TEST QA Jobs E2E 10' → appears on dashboard (status 'Live') AND on public /careers, edit title → persists, Hide toggle → status 'Hidden' and removed from public /careers, Remove soft-delete fires and admin dashboard still lists it (expected: admin uses ?all=true), logout → login form. /careers calm redesign verified: 3 seeded roles rendered dynamically ('SaaS Sales Intern', 'SaaS Sales US Markets Intern', 'SaaS Sales UK Markets Intern'); hero stats 3 / 4 mo / PPO; JobPosting + FAQPage JSON-LD both present; NO floating badges and NO ticker in HTML; 'Text us to apply' preselects the correct role in the application form select (saas-sales-intern). BackersBand: 'Meta Tech Partner' confirmed absent. All main routes (/, /careers, /blog, /blog/best-swaydo-alternative, /integrations/google-ads, /pricing, /contact, /security) → 200. Zero console errors on / and /careers. Horizontal overflow: 0 at 1440 for home and careers; 0 at 390 for /careers; 6px at 390 on / (very minor). BUG FOUND: HowItWorks auto-advance only runs when the HEADING of the section is in view, NOT when the tour tabs/tiles (which are what the user actually watches) are visible — because sectionRef is attached to the heading container only (HowItWorks.jsx line 202). When scrolled to see the Connect/Choose/Generate/Deliver tabs, auto-play silently stops even though the toggle still reads 'Auto-playing'. Confirmed by test: with heading visible, step advances workflow-step-1→2→3 every ~3.8s. With toggle visible but heading scrolled above viewport, step stayed at workflow-step-1 for 8+ seconds. Manual click correctly stops auto-play and shows 'Play tour'; toggle resumes to 'Auto-playing'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "HowItWorks", "issue": "Auto-advance pauses as soon as the section heading scrolls out of view, even though the tour tabs/tiles are still visible. useInView is bound to sectionRef on the heading container (HowItWorks.jsx line 202-217) instead of a wrapper that includes the heading, tab strip, and iso stage. Toggle still reads 'Auto-playing' misleadingly in this state.", "selector": "[data-testid=\"workflow-autoplay-toggle\"] / [data-testid=\"workflow-tabs\"]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home @390px", "issues": ["6px horizontal overflow at 390 viewport (document.scrollWidth - clientWidth = 6). Not visible to users but worth tracing."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/iteration_10_results.xml"],
+  "action_items": [
+    "Move the ref used by useInView in HowItWorks.jsx from the heading-only div (line 202) to the outer SectionShell wrapper (or add a new wrapper that encloses the heading + workflow-tabs + iso stage) so auto-advance keeps running while the user is actually looking at the tour.",
+    "Optionally: when !inView and auto===true, show toggle label 'Paused (scroll into view)' instead of 'Auto-playing' to avoid confusion.",
+    "Investigate 6px horizontal overflow at 390 on homepage (iterate over sections to find offender)."
+  ],
+  "critical_code_review_comments": [
+    "HowItWorks.jsx: sectionRef should wrap the full section (heading + tabs + iso) — current placement defeats the auto-advance UX because the tour tabs/tiles are below the ref element.",
+    "AdminJobs.jsx remove() uses .catch(() => {}) silently — a 401/500 on delete is swallowed with no toast. Consider surfacing errors.",
+    "Admin dashboard reuses ?all=true and still displays soft-deleted jobs; UX would benefit from a visual 'Deleted' state (e.g., strikethrough or opacity) distinct from 'Hidden'. Currently 'Removed' and 'Hidden' look identical to admins."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (19/19)", "frontend": "95% (1 medium bug: auto-advance ref scope)"},
+  "test_credentials": "Admin admin@example.com / admin123 (per /app/memory/test_credentials.md). Used in-browser and in pytest.",
+  "seed_data_creation": "Created and soft-deleted 'TEST QA Jobs E2E 10' / 'TEST QA Jobs E2E 10 Edited' during browser E2E. Pytest cleans job_postings {title: /^TEST/} and login_attempts after test_admin_auth_and_job_crud. Confirmed Mongo residue is cleaned.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest regression suite is stable (19/19). To retest HowItWorks fix: open https://spec-landing-3.preview.emergentagent.com/, dismiss cookies, scroll so [data-testid=\"workflow-autoplay-toggle\"] is in viewport (NOT the heading above), poll aria-pressed=true on [data-testid^=\"workflow-step-\"] every 4s — it should advance workflow-step-1→2→3. Admin CRUD slug behavior: editing a title regenerates slug (test-qa-jobs-e2e-10 → test-qa-jobs-e2e-10-edited). Admin dashboard uses ?all=true, so soft-deleted jobs still appear with Hidden status; main agent may want to add a visible 'Deleted' indicator.",
+  "rca of the issue": "HowItWorks auto-advance bug: useInView(sectionRef, {amount: 0.3}) in HowItWorks.jsx line 184 depends on sectionRef which is attached in line 202 only to the heading <div>. The heading is ~250px tall; once the user scrolls past the heading to look at the actual tour tabs + iso stage (which are rendered OUTSIDE the ref element at lines 221-298), useInView flips to false and the setInterval effect (line 189-193) is torn down. Fix: attach sectionRef to the outer SectionShell wrapper or to a new div wrapping lines 202-304. Verified by scrolling the heading into view: steps advanced step-1→2→3 at 4s intervals as expected."
+}
