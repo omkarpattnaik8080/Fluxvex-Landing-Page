@@ -1,15 +1,16 @@
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, ArrowDown, Lock, Plus } from "lucide-react";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { ArrowRight, ArrowDown, Lock, Plus, Check } from "lucide-react";
 import CinematicText from "@/components/ui/CinematicText";
 import { useWaitlist } from "@/components/WaitlistContext";
+import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 
 function CornerFastener({ className }) {
   return (
     <span
       aria-hidden="true"
-      className={`absolute z-10 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#0A5FA8] shadow-[inset_0_1px_2px_rgba(255,255,255,0.45),0_1px_2px_rgba(0,0,0,0.35)] ${className}`}
+      className={`absolute z-10 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#23279E] shadow-[inset_0_1px_2px_rgba(255,255,255,0.45),0_1px_2px_rgba(0,0,0,0.35)] ${className}`}
     >
       <span className="h-1 w-1 rounded-full bg-white/70" />
     </span>
@@ -20,25 +21,25 @@ function ReportPreview() {
   return (
     <div className="relative mx-auto w-full max-w-3xl" data-testid="hero-report-preview">
       {/* integration markers + connection lines */}
-      <div className="pointer-events-none absolute -top-4 left-0 right-0 hidden justify-between px-6 md:flex" aria-hidden="true">
+      <div className="pointer-events-none absolute -top-11 left-0 right-0 z-20 hidden justify-between px-10 md:flex" aria-hidden="true">
         {[
           { mark: <GoogleAdsMark size={16} />, label: "Google Ads" },
           { mark: <MetaMark size={16} />, label: "Meta Ads" },
           { mark: <GA4Mark size={16} />, label: "GA4" },
         ].map((c, i) => (
           <div key={c.label} className={`flex flex-col items-center ${i === 0 ? "items-start pl-2" : i === 2 ? "items-end pr-2" : ""}`}>
-            <span className="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 py-1 pl-1 pr-3 text-[11px] font-medium text-white backdrop-blur-sm">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white">{c.mark}</span>
+            <span className="flex items-center gap-1.5 rounded-full bg-white py-1 pl-1 pr-3 text-[11px] font-medium text-ink shadow-[0_14px_30px_-10px_rgba(0,0,0,0.4)]">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-surface">{c.mark}</span>
               {c.label}
             </span>
-            <svg width="2" height="26" className="mt-0 overflow-visible">
-              <line x1="1" y1="0" x2="1" y2="26" stroke="rgba(255,255,255,0.55)" strokeWidth="2" strokeDasharray="4 5" className="animate-dash-flow" />
+            <svg width="2" height="20" className="overflow-visible">
+              <line x1="1" y1="0" x2="1" y2="20" stroke="rgba(255,255,255,0.65)" strokeWidth="2" strokeDasharray="4 5" className="animate-dash-flow" />
             </svg>
           </div>
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl bg-white text-left shadow-[0_40px_90px_-24px_rgba(0,26,43,0.55)] ring-1 ring-black/10">
+      <div className="overflow-hidden rounded-xl bg-white text-left shadow-[0_40px_90px_-24px_rgba(0,0,0,0.6)] ring-1 ring-black/10">
         {/* browser chrome */}
         <div className="flex items-center gap-3 border-b border-black/[0.07] bg-[#FAFAF8] px-4 py-2.5">
           <div className="flex gap-1.5" aria-hidden="true">
@@ -55,14 +56,14 @@ function ReportPreview() {
         <div className="p-5 sm:p-6">
           {/* header */}
           <div className="flex flex-wrap items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-black font-display text-sm font-bold text-white">N</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink font-display text-sm font-bold text-white">N</span>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-black">Northbeam Media</p>
+              <p className="truncate text-sm font-semibold text-ink">Northbeam Media</p>
               <p className="text-[11px] text-black/45">Agency report</p>
             </div>
             <span className="ml-auto flex items-center gap-2">
               <span className="rounded-full border border-black/[0.08] px-3 py-1 text-[11px] font-medium text-black/60">June 2025 ▾</span>
-              <span className="rounded-full bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">Sample report</span>
+              <span className="rounded-full bg-accent-tint px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">Sample report</span>
             </span>
           </div>
 
@@ -73,12 +74,18 @@ function ReportPreview() {
               ["Impressions", "1.24M", "+11.6%"],
               ["Clicks", "34,880", "+6.1%"],
               ["Conversions", "1,204", "+14.9%"],
-            ].map(([label, value, delta]) => (
-              <div key={label} className="rounded-lg border border-black/[0.07] bg-[#FAFAF8] p-3">
+            ].map(([label, value, delta], i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.3 + i * 0.09, ease: [0.19, 1, 0.22, 1] }}
+                className="rounded-lg border border-black/[0.07] bg-[#FAFAF8] p-3"
+              >
                 <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">{label}</p>
-                <p className="mt-1 font-display text-lg font-semibold tracking-tight text-black">{value}</p>
+                <p className="mt-1 font-display text-lg font-semibold tracking-tight text-ink">{value}</p>
                 <p className="text-[10.5px] font-medium text-[#0E8A3E]">{delta}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -89,16 +96,39 @@ function ReportPreview() {
               <svg viewBox="0 0 300 90" className="mt-2 w-full" role="img" aria-label="Performance trend chart with an upward trajectory">
                 <defs>
                   <linearGradient id="heroArea" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0099FF" stopOpacity="0.28" />
-                    <stop offset="100%" stopColor="#0099FF" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#3D43E8" stopOpacity="0.26" />
+                    <stop offset="100%" stopColor="#3D43E8" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 {[18, 42, 66].map((y) => (
                   <line key={y} x1="0" x2="300" y1={y} y2={y} stroke="#EEECE6" strokeWidth="1" />
                 ))}
-                <path d="M0 70 C 30 62, 45 74, 70 60 S 115 34, 140 44 S 190 20, 215 26 S 265 8, 300 10 L 300 90 L 0 90 Z" fill="url(#heroArea)" />
-                <path d="M0 70 C 30 62, 45 74, 70 60 S 115 34, 140 44 S 190 20, 215 26 S 265 8, 300 10" fill="none" stroke="#0099FF" strokeWidth="2.2" strokeLinecap="round" />
-                <circle cx="300" cy="10" r="3.5" fill="#0099FF" />
+                <motion.path
+                  d="M0 70 C 30 62, 45 74, 70 60 S 115 34, 140 44 S 190 20, 215 26 S 265 8, 300 10 L 300 90 L 0 90 Z"
+                  fill="url(#heroArea)"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1, delay: 1.6 }}
+                />
+                <motion.path
+                  d="M0 70 C 30 62, 45 74, 70 60 S 115 34, 140 44 S 190 20, 215 26 S 265 8, 300 10"
+                  fill="none"
+                  stroke="#3D43E8"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.6, delay: 1.4, ease: "easeInOut" }}
+                />
+                <motion.circle
+                  cx="300"
+                  cy="10"
+                  r="3.5"
+                  fill="#3D43E8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2.9 }}
+                />
               </svg>
             </div>
             <div className="space-y-2 rounded-lg border border-black/[0.07] p-3 sm:col-span-2">
@@ -126,7 +156,7 @@ function ReportPreview() {
             <span className="flex items-center gap-2 text-[11px] font-medium text-black/55">
               <Plus className="h-3.5 w-3.5 text-accent" /> White-label: branded for Northbeam Media
             </span>
-            <span className="rounded-full bg-black px-3.5 py-1.5 text-[11px] font-semibold text-white">Export report</span>
+            <span className="rounded-full bg-ink px-3.5 py-1.5 text-[11px] font-semibold text-white">Export report</span>
           </div>
         </div>
       </div>
@@ -137,28 +167,68 @@ function ReportPreview() {
 export default function Hero() {
   const { openWaitlist } = useWaitlist();
   const ref = useRef(null);
+  const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const cardY = useTransform(scrollYProgress, [0, 1], [0, -70]);
-  const gridY = useTransform(scrollYProgress, [0, 1], [0, 40]);
+  const float = (d = 0) =>
+    reduce
+      ? {}
+      : { animate: { y: [0, -8, 0] }, transition: { duration: 6, repeat: Infinity, delay: d, ease: "easeInOut" } };
 
   return (
     <section ref={ref} className="px-2 pt-2 sm:px-2.5" data-testid="hero-section">
-      <div className="grain relative overflow-hidden rounded-2xl bg-accent">
-        {/* pixel mosaic + vignette */}
-        <div className="pixel-blocks absolute inset-0 opacity-90" aria-hidden="true" />
-        <motion.div
-          className="fine-grid-light absolute inset-0 opacity-[0.16]"
-          style={{ y: gridY }}
+      <div className="grain relative overflow-hidden rounded-2xl bg-[#14141C]">
+        {/* textured background */}
+        <img
+          src="/hero-texture.jpg"
+          alt=""
           aria-hidden="true"
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_0%,transparent_55%,rgba(0,26,43,0.45)_100%)]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[#0A0A16]/20" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_0%,transparent_50%,rgba(5,5,15,0.5)_100%)]" aria-hidden="true" />
 
         <CornerFastener className="left-3 top-3" />
         <CornerFastener className="right-3 top-3" />
         <CornerFastener className="bottom-3 left-3" />
         <CornerFastener className="bottom-3 right-3" />
 
-        <div className="relative mx-auto max-w-5xl px-5 pb-14 pt-14 text-center sm:px-8 sm:pt-20 lg:pb-20">
+        {/* floating decorations */}
+        <motion.div
+          {...float(0.4)}
+          className="pointer-events-none absolute left-8 top-[54%] hidden h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-mint to-[#2BBE5C] shadow-[0_18px_40px_-10px_rgba(0,0,0,0.45)] md:flex"
+          aria-hidden="true"
+        >
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M4 15c2.5-6 5-6 8 0s5.5 6 8 0" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
+          </svg>
+        </motion.div>
+
+        <motion.div
+          {...float(1.6)}
+          className="pointer-events-none absolute left-8 top-[58%] hidden w-40 rotate-[-8deg] bg-note p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.4)] md:block"
+          aria-hidden="true"
+        >
+          <p className="font-hand text-xl leading-tight text-ink">reports assemble themselves—reporting day, automated.</p>
+        </motion.div>
+
+        <motion.div
+          {...float(2.4)}
+          className="pointer-events-none absolute right-6 top-[63%] hidden w-52 rotate-2 items-center gap-3 rounded-xl bg-white p-3.5 shadow-[0_24px_50px_-16px_rgba(0,0,0,0.45)] md:flex"
+          aria-hidden="true"
+        >
+          <FluxvexMark size={36} />
+          <span>
+            <span className="block text-[13px] font-semibold text-ink">June report is ready</span>
+            <span className="block text-[11px] text-black/50">Branded & client-ready</span>
+          </span>
+          <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-mint">
+            <Check className="h-3 w-3 text-white" strokeWidth={3} />
+          </span>
+        </motion.div>
+
+        <div className="relative mx-auto max-w-5xl px-5 pb-14 pt-24 text-center sm:px-8 sm:pt-28 lg:pb-20">
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -166,8 +236,8 @@ export default function Hero() {
             className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm"
             data-testid="hero-eyebrow"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse-dot" />
             Automated client reporting for agencies
+            <span className="rounded-full bg-mint px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">Pre-launch</span>
           </motion.p>
 
           <CinematicText
@@ -196,7 +266,7 @@ export default function Hero() {
           >
             <button
               onClick={() => openWaitlist("hero")}
-              className="group inline-flex h-11 items-center gap-2 rounded-full bg-white px-6 text-sm font-semibold text-black transition-all hover:gap-3 hover:bg-white/90"
+              className="group inline-flex h-11 items-center gap-2 rounded-full bg-white px-6 font-display text-sm font-semibold text-ink transition-all hover:gap-3 hover:bg-white/90"
               data-testid="hero-join-waitlist-button"
             >
               Join the waitlist

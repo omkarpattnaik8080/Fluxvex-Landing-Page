@@ -39,13 +39,13 @@ export default function Outcome() {
       />
       <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 xl:grid-cols-4">
         {CARDS.map((card, i) => (
-          <Reveal key={card.num} delay={i * 0.08} className="bg-surface">
-            <div className="group relative h-full p-7 transition-colors hover:bg-elevated" data-testid={`outcome-card-${card.num}`}>
-              <span className="font-display text-sm font-semibold tracking-wide text-accent/70">{card.num}</span>
+          <Reveal key={card.num} delay={i * 0.08} className="bg-page">
+            <div className="group relative h-full p-7 transition-colors hover:bg-accent-tint/60" data-testid={`outcome-card-${card.num}`}>
+              <span className="font-display text-sm font-semibold tracking-wide text-accent/80">{card.num}</span>
               <card.icon className="mt-6 h-6 w-6 text-accent" strokeWidth={1.7} />
-              <h3 className="mt-4 text-[17px] font-semibold text-white">{card.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/55">{card.desc}</p>
-              <span className="absolute bottom-0 left-0 h-px w-0 bg-accent transition-all duration-500 group-hover:w-full" aria-hidden="true" />
+              <h3 className="mt-4 text-[17px] font-semibold text-ink">{card.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">{card.desc}</p>
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-accent transition-all duration-500 group-hover:w-full" aria-hidden="true" />
             </div>
           </Reveal>
         ))}

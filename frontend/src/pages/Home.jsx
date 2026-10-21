@@ -2,10 +2,12 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import IntegrationsStrip from "@/components/IntegrationsStrip";
+import Testimonial from "@/components/Testimonial";
 import Problem from "@/components/Problem";
 import Outcome from "@/components/Outcome";
 import FeatureGrid from "@/components/FeatureGrid";
 import Showcase from "@/components/Showcase";
+import Platform from "@/components/Platform";
 import AiComparison from "@/components/AiComparison";
 import HowItWorks from "@/components/HowItWorks";
 import RoiCalculator from "@/components/RoiCalculator";
@@ -25,10 +27,12 @@ export default function Home() {
         <Hero />
         <Marquee />
         <IntegrationsStrip />
+        <Testimonial />
         <Problem />
         <Outcome />
         <FeatureGrid />
         <Showcase />
+        <Platform />
         <AiComparison />
         <HowItWorks />
         <RoiCalculator />

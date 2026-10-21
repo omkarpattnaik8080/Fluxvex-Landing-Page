@@ -27,7 +27,7 @@ export default function Faq() {
           </Reveal>
           <CinematicText
             as="h2"
-            className="mt-4 font-display text-3xl font-semibold leading-[1.04] tracking-tighter2 text-white sm:text-4xl lg:text-[44px]"
+            className="mt-4 font-display text-3xl font-semibold leading-[1.04] tracking-tighter2 text-ink sm:text-4xl lg:text-[44px]"
           >
             Asked about Fluxvex, answered plainly.
           </CinematicText>
@@ -36,10 +36,10 @@ export default function Faq() {
           <Accordion type="single" collapsible className="border-t border-line" data-testid="faq-accordion">
             {FAQS.map(([q, a], i) => (
               <AccordionItem key={q} value={`q-${i}`} className="border-b border-line">
-                <AccordionTrigger className="py-5 text-left text-[16px] font-medium text-white hover:text-accent-soft hover:no-underline" data-testid={`faq-trigger-${i + 1}`}>
+                <AccordionTrigger className="py-5 text-left text-[16px] font-medium text-ink hover:text-accent hover:no-underline" data-testid={`faq-trigger-${i + 1}`}>
                   {q}
                 </AccordionTrigger>
-                <AccordionContent className="pb-6 text-sm leading-relaxed text-white/60">
+                <AccordionContent className="pb-6 text-sm leading-relaxed text-ink-soft">
                   {a}
                 </AccordionContent>
               </AccordionItem>

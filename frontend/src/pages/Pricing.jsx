@@ -36,7 +36,7 @@ export default function Pricing() {
         description="Starter and Growth plans are shaping up around your client portfolio. Fluxvex pricing will be announced before launch—join the waitlist for updates."
       />
       <Navbar />
-      <main className="border-t border-hairline">
+      <main className="pt-[76px]">
         <section className="mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <Reveal>
@@ -44,12 +44,12 @@ export default function Pricing() {
             </Reveal>
             <CinematicText
               as="h1"
-              className="mt-4 font-display text-4xl font-semibold leading-[1.02] tracking-tightest text-white sm:text-5xl lg:text-6xl"
+              className="mt-4 font-display text-4xl font-semibold leading-[1.02] tracking-tightest text-ink sm:text-5xl lg:text-6xl"
             >
               Simple pricing for agency reporting.
             </CinematicText>
             <Reveal y={16} delay={0.15}>
-              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-white/55 sm:text-base">
+              <p className="mx-auto mt-5 max-w-xl text-[15px] leading-[1.7] text-ink-soft sm:text-base">
                 Two plans are taking shape around your client portfolio. Pricing will be announced before launch.
               </p>
             </Reveal>
@@ -97,28 +97,28 @@ export default function Pricing() {
           {/* comparison */}
           <Reveal>
             <div className="mx-auto mt-16 max-w-4xl">
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-white">How the plans compare</h2>
-              <div className="mt-6 overflow-x-auto rounded-xl border border-line" data-testid="pricing-comparison-table">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">How the plans compare</h2>
+              <div className="mt-6 overflow-x-auto rounded-xl border border-line bg-page" data-testid="pricing-comparison-table">
                 <table className="w-full min-w-[640px] text-left">
                   <thead>
                     <tr className="border-b border-line bg-elevated">
-                      <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">Decision</th>
-                      <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">Starter</th>
-                      <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">Growth</th>
+                      <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Decision</th>
+                      <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Starter</th>
+                      <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Growth</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {TABLE_ROWS.map(([row, s, g]) => (
-                      <tr key={row} className="border-b border-hairline last:border-b-0">
-                        <td className="px-5 py-4 text-sm font-medium text-white">{row}</td>
-                        <td className="px-5 py-4 text-sm text-white/60">{s}</td>
-                        <td className="px-5 py-4 text-sm text-white/60">{g}</td>
+                    {TABLE_ROWS.map(([row, s, g], i) => (
+                      <tr key={row} className={`border-b border-hairline last:border-b-0 ${i % 2 ? "bg-surface/60" : ""}`}>
+                        <td className="px-5 py-4 text-sm font-medium text-ink">{row}</td>
+                        <td className="px-5 py-4 text-sm text-ink-soft">{s}</td>
+                        <td className="px-5 py-4 text-sm text-ink-soft">{g}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <p className="mt-4 text-xs leading-relaxed text-white/40">
+              <p className="mt-4 text-xs leading-relaxed text-ink-soft/80">
                 Rows marked “To be announced” are undecided product decisions—we won’t guess them on a marketing page.
               </p>
             </div>
@@ -127,12 +127,12 @@ export default function Pricing() {
           {/* pricing faqs */}
           <Reveal>
             <div className="mx-auto mt-16 max-w-3xl">
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-white">Pricing questions</h2>
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">Pricing questions</h2>
               <div className="mt-6 space-y-4">
                 {PRICING_FAQS.map(([q, a]) => (
-                  <div key={q} className="rounded-xl border border-line bg-surface p-5" data-testid={`pricing-faq-${q.length}`}>
-                    <p className="text-[15px] font-semibold text-white">{q}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-white/55">{a}</p>
+                  <div key={q} className="rounded-xl border border-line bg-page p-5" data-testid={`pricing-faq-${q.length}`}>
+                    <p className="text-[15px] font-semibold text-ink">{q}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">{a}</p>
                   </div>
                 ))}
               </div>
@@ -141,23 +141,23 @@ export default function Pricing() {
 
           {/* cta */}
           <Reveal>
-            <div className="mx-auto mt-16 max-w-4xl rounded-2xl border border-line bg-[#06121E] p-8 text-center sm:p-12">
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+            <div className="mx-auto mt-16 max-w-4xl rounded-2xl border border-accent-border bg-accent-tint p-8 text-center sm:p-12">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
                 Get pricing updates
               </h2>
-              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/55">
+              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
                 Join the waitlist and pick your plan interest—we’ll email the announcement the moment it’s ready.
               </p>
               <button
                 onClick={() => openWaitlist("pricing-page-cta")}
-                className="group mt-7 inline-flex h-11 items-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-white transition-all hover:gap-3 hover:bg-accent-strong"
+                className="group mt-7 inline-flex h-11 items-center gap-2 rounded-full bg-accent px-6 font-display text-sm font-semibold text-white transition-all hover:gap-3 hover:bg-accent-strong"
                 data-testid="pricing-page-cta-button"
               >
                 Get pricing updates
                 <ArrowRight className="h-4 w-4" />
               </button>
-              <p className="mt-4 text-xs text-white/35">
-                Questions first? <Link to="/contact" className="text-accent-soft underline-offset-4 hover:underline">Contact the team</Link>.
+              <p className="mt-4 text-xs text-ink-soft">
+                Questions first? <Link to="/contact" className="text-accent underline-offset-4 hover:underline">Contact the team</Link>.
               </p>
             </div>
           </Reveal>

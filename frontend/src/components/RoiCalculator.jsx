@@ -57,24 +57,24 @@ export default function RoiCalculator() {
         </Reveal>
         <CinematicText
           as="h2"
-          className="mt-4 font-display text-3xl font-semibold leading-[1.04] tracking-tighter2 text-white sm:text-4xl lg:text-[44px]"
+          className="mt-4 font-display text-3xl font-semibold leading-[1.04] tracking-tighter2 text-ink sm:text-4xl lg:text-[44px]"
         >
           What is manual reporting costing your team each month?
         </CinematicText>
       </div>
 
       <Reveal>
-        <div className="grid overflow-hidden rounded-xl border border-line lg:grid-cols-2" data-testid="roi-calculator">
+        <div className="grid overflow-hidden rounded-xl border border-line bg-page lg:grid-cols-2" data-testid="roi-calculator">
           {/* inputs */}
-          <div className="space-y-8 border-b border-line bg-surface p-7 sm:p-10 lg:border-b-0 lg:border-r">
+          <div className="space-y-8 border-b border-line p-7 sm:p-10 lg:border-b-0 lg:border-r">
             {sliders.map((s) => (
               <div key={s.label}>
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-white/75" htmlFor={s.testid}>
+                  <label className="text-sm font-medium text-ink" htmlFor={s.testid}>
                     {s.label}
                   </label>
-                  <span className="rounded-full border border-line bg-elevated px-3 py-1 text-sm font-semibold text-white" data-testid={`${s.testid}-value`}>
-                    {s.value} <span className="font-normal text-white/45">{s.suffix}</span>
+                  <span className="rounded-full border border-line bg-surface px-3 py-1 text-sm font-semibold text-ink" data-testid={`${s.testid}-value`}>
+                    {s.value} <span className="font-normal text-ink-soft">{s.suffix}</span>
                   </span>
                 </div>
                 <input
@@ -85,36 +85,36 @@ export default function RoiCalculator() {
                   step={s.step}
                   value={s.value}
                   onChange={(e) => s.set(Number(e.target.value))}
-                  className="mt-3 w-full accent-[#0099FF]"
+                  className="mt-3 w-full accent-[#3D43E8]"
                   data-testid={s.testid}
                 />
               </div>
             ))}
-            <p className="border-t border-hairline pt-5 text-xs leading-relaxed text-white/40">
+            <p className="border-t border-hairline pt-5 text-xs leading-relaxed text-ink-soft/80">
               Estimate based on your inputs. Actual time savings depend on your workflow and the product features you use.
             </p>
           </div>
 
           {/* outputs */}
-          <div className="flex flex-col justify-between bg-[#06121E] p-7 sm:p-10">
+          <div className="flex flex-col justify-between bg-accent-tint p-7 sm:p-10">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">Monthly reporting hours</p>
-                <p className="mt-2 font-display text-5xl font-semibold tracking-tight text-white" data-testid="roi-monthly-output">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Monthly reporting hours</p>
+                <p className="mt-2 font-display text-5xl font-semibold tracking-tight text-ink" data-testid="roi-monthly-output">
                   {fmt(monthly)}
                 </p>
               </div>
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">Annual reporting hours</p>
-                <p className="mt-2 font-display text-5xl font-semibold tracking-tight text-accent-soft" data-testid="roi-annual-output">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Annual reporting hours</p>
+                <p className="mt-2 font-display text-5xl font-semibold tracking-tight text-accent" data-testid="roi-annual-output">
                   {fmt(annual)}
                 </p>
               </div>
             </div>
 
-            <div className="mt-10 rounded-xl border border-accent/25 bg-accent/[0.07] p-6">
+            <div className="mt-10 rounded-xl border border-accent/25 bg-page p-6">
               <div className="flex items-center justify-between">
-                <label htmlFor="roi-reduction-input" className="text-sm font-medium text-white/80">
+                <label htmlFor="roi-reduction-input" className="text-sm font-medium text-ink">
                   Hypothetical: if reporting effort dropped by
                 </label>
                 <span className="rounded-full bg-accent px-3 py-1 text-sm font-semibold text-white" data-testid="roi-reduction-value">
@@ -129,16 +129,16 @@ export default function RoiCalculator() {
                 step={5}
                 value={reduction}
                 onChange={(e) => setReduction(Number(e.target.value))}
-                className="mt-4 w-full accent-[#0099FF]"
+                className="mt-4 w-full accent-[#3D43E8]"
                 data-testid="roi-reduction-input"
               />
-              <p className="mt-4 text-sm leading-relaxed text-white/60" data-testid="roi-saved-output">
-                At that rate, roughly <span className="font-semibold text-white">{fmt(saved)} hours a year</span> stay
+              <p className="mt-4 text-sm leading-relaxed text-ink-soft" data-testid="roi-saved-output">
+                At that rate, roughly <span className="font-semibold text-ink">{fmt(saved)} hours a year</span> stay
                 with the team—choose your own percentage; nothing here is a promised result.
               </p>
             </div>
 
-            <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-white/40">
+            <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink-soft/80">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               This calculator runs entirely in your browser and stores nothing.
             </p>

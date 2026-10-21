@@ -1,38 +1,23 @@
-export function FluxvexMark({ size = 28, tone = "accent" }) {
-  const color = tone === "white" ? "#FFFFFF" : tone === "ink" ? "#0B0B0B" : "#0099FF";
+export function FluxvexMark({ size = 28, className = "" }) {
   return (
-    <svg
+    <img
+      src="/fluxvex-icon.png"
+      alt=""
       width={size}
       height={size}
-      viewBox="0 0 32 32"
-      fill="none"
       aria-hidden="true"
       focusable="false"
-    >
-      <path
-        d="M7.5 6.5 15.5 16l-8 9.5"
-        stroke={color}
-        strokeWidth="3.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M24.5 6.5 16.5 16l8 9.5"
-        stroke={color}
-        strokeWidth="3.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.55"
-      />
-    </svg>
+      className={`inline-block shrink-0 rounded-[18%] object-cover ${className}`}
+      style={{ width: size, height: size }}
+    />
   );
 }
 
 export function FluxvexLogo({ tone = "ink", size = 26, className = "" }) {
-  const textColor = tone === "white" ? "#FFFFFF" : "#0B0B0B";
+  const textColor = tone === "white" ? "#FFFFFF" : "#101014";
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
-      <FluxvexMark size={size} tone={tone === "white" ? "white" : "accent"} />
+      <FluxvexMark size={size} />
       <span
         className="font-display font-semibold tracking-[-0.03em]"
         style={{ color: textColor, fontSize: size * 0.82, lineHeight: 1 }}

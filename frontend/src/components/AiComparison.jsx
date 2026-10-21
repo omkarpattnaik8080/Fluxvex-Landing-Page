@@ -20,23 +20,23 @@ export default function AiComparison() {
       />
 
       <Reveal>
-        <div className="overflow-x-auto rounded-xl border border-line" data-testid="ai-comparison-table">
+        <div className="overflow-x-auto rounded-xl border border-line bg-page" data-testid="ai-comparison-table">
           <table className="w-full min-w-[720px] border-collapse text-left">
             <thead>
               <tr className="border-b border-line bg-elevated">
-                <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">Workflow need</th>
-                <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">General AI assistant used by itself</th>
-                <th className="border-l border-line bg-accent/[0.06] px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent-soft">
+                <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Workflow need</th>
+                <th className="px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">General AI assistant used by itself</th>
+                <th className="border-l border-accent-border bg-accent-tint px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
                   A dedicated reporting workflow like Fluxvex
                 </th>
               </tr>
             </thead>
             <tbody>
               {ROWS.map(([need, ai, fx], i) => (
-                <tr key={need} className={`border-b border-hairline last:border-b-0 ${i % 2 ? "bg-surface" : "bg-[#0D0D0D]"}`}>
-                  <td className="px-5 py-4 text-sm font-medium text-white" data-testid={`comparison-need-${i + 1}`}>{need}</td>
-                  <td className="px-5 py-4 text-sm leading-relaxed text-white/50">{ai}</td>
-                  <td className="border-l border-line bg-accent/[0.04] px-5 py-4 text-sm leading-relaxed text-white/85">{fx}</td>
+                <tr key={need} className={`border-b border-hairline last:border-b-0 ${i % 2 ? "bg-surface/60" : "bg-page"}`}>
+                  <td className="px-5 py-4 text-sm font-medium text-ink" data-testid={`comparison-need-${i + 1}`}>{need}</td>
+                  <td className="px-5 py-4 text-sm leading-relaxed text-ink-soft">{ai}</td>
+                  <td className="border-l border-accent-border/60 bg-accent-tint/50 px-5 py-4 text-sm leading-relaxed text-ink">{fx}</td>
                 </tr>
               ))}
             </tbody>
@@ -45,7 +45,7 @@ export default function AiComparison() {
       </Reveal>
 
       <Reveal delay={0.1}>
-        <p className="mt-10 max-w-2xl font-display text-xl font-medium leading-snug tracking-tight text-white/85 sm:text-2xl" data-testid="ai-comparison-close">
+        <p className="mt-10 max-w-2xl font-display text-xl font-medium leading-snug tracking-tight text-ink sm:text-2xl" data-testid="ai-comparison-close">
           Use AI where it helps. Use a reporting system for the work that must happen every month.
         </p>
       </Reveal>

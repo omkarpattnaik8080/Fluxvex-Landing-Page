@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --bg: #000000;
-  --surface: #0B0B0B;
-  --elevated: #111111;
-  --line: #374151;
-  --accent: #0099FF;
-  --accent-soft: #66C2FF;
+  --bg: #FFFFFF;
+  --surface: #FAFAF7;
+  --elevated: #F4F2ED;
+  --line: #E7E5DE;
+  --accent: #3D43E8;
+  --accent-soft: #7B7FFF;
   --paper: #F4F2ED;
 }
 
@@ -22,7 +22,7 @@ html.lenis, html.lenis body { height: auto; }
 body {
   margin: 0;
   background: var(--bg);
-  color: #fff;
+  color: #101014;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -30,7 +30,7 @@ body {
   overflow-x: hidden;
 }
 
-::selection { background: rgba(0, 153, 255, 0.35); color: #fff; }
+::selection { background: rgba(61, 67, 232, 0.22); color: #101014; }
 
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -41,14 +41,14 @@ body {
 /* ---------- Fine grid + grain textures ---------- */
 .fine-grid {
   background-image:
-    linear-gradient(90deg, rgba(55, 65, 81, 0.14) 1px, transparent 1px),
-    linear-gradient(rgba(55, 65, 81, 0.14) 1px, transparent 1px);
+    linear-gradient(90deg, rgba(16, 16, 20, 0.045) 1px, transparent 1px),
+    linear-gradient(rgba(16, 16, 20, 0.045) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 .fine-grid-light {
   background-image:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
@@ -94,20 +94,44 @@ body {
   html { scroll-behavior: auto; }
 }
 
-/* Outlined display text */
+/* Outlined display text (on light background) */
 .text-outline {
   color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+  -webkit-text-stroke: 1px rgba(16, 16, 20, 0.28);
 }
 
-/* Giant footer wordmark */
+/* Hatched texture divider band (reference framing) */
+.hatch-band {
+  height: 18px;
+  background-image: repeating-linear-gradient(45deg, rgba(16, 16, 20, 0.07) 0 1px, transparent 1px 7px);
+}
+
+/* Gentle floating animation for decorative mini-cards */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.bob { animation: bob 5s ease-in-out infinite; }
+.bob-slow { animation: bob 6.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .bob, .bob-slow { animation: none; }
+}
+
+/* Dropdown panel entrance */
+@keyframes menu-pop {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.menu-pop { animation: menu-pop 0.22s cubic-bezier(0.19, 1, 0.22, 1); }
+
+/* Giant footer wordmark (dark footer) */
 .footer-wordmark {
   font-family: 'Inter Tight', sans-serif;
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 0.78;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(102, 194, 255, 0.28);
+  -webkit-text-stroke: 1px rgba(123, 127, 255, 0.32);
   user-select: none;
 }
 
@@ -127,7 +151,7 @@ body {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.4s ease;
-  background: radial-gradient(560px circle at var(--mx, 50%) var(--my, 0%), rgba(102, 194, 255, 0.14), transparent 55%);
+  background: radial-gradient(560px circle at var(--mx, 50%) var(--my, 0%), rgba(61, 67, 232, 0.10), transparent 55%);
 }
 .spotlight:hover::before { opacity: 1; }
 

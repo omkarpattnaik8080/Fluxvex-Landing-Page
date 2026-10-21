@@ -2,7 +2,7 @@ import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
 
 export const SectionShell = ({ id, children, className = "" }) => (
-  <section id={id} className={`border-t border-hairline ${className}`} data-testid={`section-${id || "unnamed"}`}>
+  <section id={id} className={`border-t border-line ${className}`} data-testid={`section-${id || "unnamed"}`}>
     <div className="mx-auto max-w-[1280px] px-5 py-20 lg:px-8 lg:py-28">{children}</div>
   </section>
 );
@@ -25,14 +25,14 @@ export const SectionHeader = ({ overline, title, copy, align = "split" }) => (
       </Reveal>
       <CinematicText
         as="h2"
-        className="mt-4 font-display text-3xl font-semibold leading-[1.04] tracking-tighter2 text-white sm:text-4xl lg:text-[44px]"
+        className="mt-4 font-display text-3xl font-semibold leading-[1.04] tracking-tighter2 text-ink sm:text-4xl lg:text-[44px]"
       >
         {title}
       </CinematicText>
     </div>
     {copy && (
       <Reveal delay={0.15} className={align === "split" ? "max-w-sm lg:pb-2" : "mx-auto mt-5 max-w-xl"}>
-        <p className="text-[15px] leading-[1.7] text-white/55">{copy}</p>
+        <p className="text-[15px] leading-[1.7] text-ink-soft">{copy}</p>
       </Reveal>
     )}
   </div>

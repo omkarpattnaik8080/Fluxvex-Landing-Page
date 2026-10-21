@@ -1,3 +1,4 @@
+import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 
@@ -21,28 +22,31 @@ const ITEMS = [
 
 export default function IntegrationsStrip() {
   return (
-    <section id="integrations" className="border-t border-hairline" data-testid="section-integrations">
+    <section id="integrations" className="bg-page" data-testid="section-integrations">
       <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-20">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
           <Reveal>
-            <h2 className="font-display text-2xl font-semibold leading-[1.1] tracking-tight text-white sm:text-3xl">
+            <CinematicText
+              as="h2"
+              className="font-display text-2xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-3xl"
+            >
               One reporting workflow. The channels your clients already use.
-            </h2>
-            <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-accent-soft" data-testid="integrations-qualifier">
+            </CinematicText>
+            <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-accent" data-testid="integrations-qualifier">
               <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" />
               Initial integration focus
             </span>
           </Reveal>
           <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-3">
             {ITEMS.map((item, i) => (
-              <Reveal key={item.name} delay={i * 0.1} className="bg-surface">
+              <Reveal key={item.name} delay={i * 0.1} className="bg-page">
                 <div className="flex h-full flex-col gap-3 p-6" data-testid={`integration-card-${item.name.toLowerCase().replace(/\s+/g, "-")}`}>
-                  <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-elevated">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-surface">
                     {item.mark}
                   </span>
                   <div>
-                    <p className="text-[15px] font-semibold text-white">{item.name}</p>
-                    <p className="mt-1 text-[13px] leading-relaxed text-white/50">{item.desc}</p>
+                    <p className="text-[15px] font-semibold text-ink">{item.name}</p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">{item.desc}</p>
                   </div>
                 </div>
               </Reveal>
