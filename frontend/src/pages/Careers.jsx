@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { BadgeCheck, Check, ChevronDown, Loader2, MessagesSquare, Rocket, Send, Sparkles, TrendingUp, Users } from "lucide-react";
+import { BadgeCheck, CalendarCheck, Check, ChevronDown, Loader2, MessagesSquare, Send, Sparkles, Sunset, Target, TrendingUp, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
@@ -12,7 +12,7 @@ import TapCTA from "@/components/ui/TapCTA";
 import { ROLES, CULTURE, HIRING_STEPS, CAREER_FAQS } from "@/data/careers";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-const CULTURE_ICONS = { ship: Rocket, ai: Sparkles, founders: Users, grow: TrendingUp };
+const CULTURE_ICONS = { target: Target, rest: CalendarCheck, balance: Sunset, ai: Sparkles, founders: Users, grow: TrendingUp };
 const STEP_ICONS = { text: Send, session: MessagesSquare, ppo: BadgeCheck };
 
 /* Composed hover lift for cards */
@@ -351,8 +351,20 @@ export default function Careers() {
         </div>
 
         {/* culture */}
-        <div className="mx-auto max-w-[1280px] px-5 pb-4 lg:px-8">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto max-w-[1280px] px-5 pb-4 lg:px-8" data-testid="careers-culture">
+          <Reveal>
+            <div className="flex flex-col items-center gap-3 pb-10 text-center">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">Our culture</p>
+              <h2 className="max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+                Ownership-first. Rest built-in.
+              </h2>
+              <p className="max-w-xl text-[15px] leading-[1.7] text-ink-soft">
+                We run on weekly targets, not long hours: hit yours and your time is yours. We'd rather you be
+                sharp on Monday than exhausted on Friday.
+              </p>
+            </div>
+          </Reveal>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CULTURE.map((c, i) => {
               const Icon = CULTURE_ICONS[c.icon];
               return (

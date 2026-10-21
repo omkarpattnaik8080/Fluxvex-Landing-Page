@@ -51,10 +51,36 @@ export const ROLES = [
 ];
 
 export const CULTURE = [
-  { icon: "ship", title: "Ship weekly, learn monthly", desc: "Real work goes live every week—with your name on it, not busywork." },
-  { icon: "ai", title: "AI-native by default", desc: "You sell and build with state-of-the-art AI tools the way future teams will actually work." },
-  { icon: "founders", title: "Work directly with founders", desc: "No layers. Your ideas reach the people who decide—same day." },
-  { icon: "grow", title: "A PPO you can point at", desc: "Months of proof, then a guaranteed performance-based PPO conversion chance tied to your results." },
+  {
+    icon: "target",
+    title: "Ownership, not oversight",
+    desc: "We're ownership-focused: you and the founders set a weekly target together, then it's yours—plan, follow-ups, and result. Nobody micromanages your day; the number tells the story.",
+  },
+  {
+    icon: "rest",
+    title: "Hit the target, then rest",
+    desc: "We work in weekly targets, not long hours. Finish yours and your week is done—log off guilt-free. No performative overtime, no busywork to look busy.",
+  },
+  {
+    icon: "balance",
+    title: "Work–life balance, for real",
+    desc: "We value rest as much as output. Balance is policy here, not a poster on a wall: recharge fully so you're sharp for the week ahead.",
+  },
+  {
+    icon: "ai",
+    title: "AI-native by default",
+    desc: "You sell and build with state-of-the-art AI tools the way future teams will actually work.",
+  },
+  {
+    icon: "founders",
+    title: "Work directly with founders",
+    desc: "No layers. Your ideas reach the people who decide—same day.",
+  },
+  {
+    icon: "grow",
+    title: "A PPO you can point at",
+    desc: "Months of proof, then a guaranteed performance-based PPO conversion chance tied to your results.",
+  },
 ];
 
 export const HIRING_STEPS = [
@@ -76,6 +102,10 @@ export const HIRING_STEPS = [
 ];
 
 export const CAREER_FAQS = [
+  [
+    "What is the culture like at Fluxvex?",
+    "Ownership-focused, with weekly targets instead of long hours: you and the founders set the week's target together, and once you've completed it you're free to rest—no need to work extra, no performative overtime. We value work–life balance as much as output, and every intern works directly with the founding team.",
+  ],
   [
     "Are the internships paid?",
     "The internships are unpaid, four-month programs, and every role carries a guaranteed PPO conversion chance on completion—with packages up to ₹6 LPA in India and above market standards in the US and UK.",

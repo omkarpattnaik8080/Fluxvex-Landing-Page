@@ -1,5 +1,11 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 8 — careers culture + test job cleanup)
+- Removed leftover TEST job postings ("TEST QA Audit Final 1792625788", "TEST Audit 1792625832") from the `job_postings` collection — public /api/careers/jobs returns only the 3 real roles.
+- Culture section rebuilt per user's culture brief: new header ("Our culture — Ownership-first. Rest built-in."), 6 cards (3×2 grid) leading with Ownership not oversight / Hit the target, then rest (weekly targets: done = rest, no performative overtime) / Work–life balance for real; added "What is the culture like at Fluxvex?" FAQ synced 1:1 with FAQPage JSON-LD (AEO/GEO).
+- Icons: Target, CalendarCheck, Sunset added (Rocket dropped with "Ship weekly" card).
+- Verified: jobs API clean, TEST job absent from page DOM, culture heading renders, zero overflow at 1440/390.
+
 ## 2026-10-21 (session 7)
 - One 3D isometric language everywhere: shared kit (components/iso/IsoKit.jsx) now drives HowItWorks, AiComparison (Claude + ChatGPT copy), FeatureGrid (3 iso scenes), Platform (iso scene replacing cloud), Consistency (iso diagrams per row).
 - Hero decluttered: orb, sticky note, stat chip removed; kept marquee headline + subcopy + CTAs + trust line + dashboard (corner ticks, AI summary) + AI insight/toast/iso flow.

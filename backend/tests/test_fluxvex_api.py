@@ -272,9 +272,14 @@ def test_admin_auth_and_job_crud(client):
     all_jobs = client.get(f"{BASE_URL}/api/careers/jobs?all=true").json()
     assert any(j["title"] == "TEST QA Job" for j in all_jobs)
 
-    # 8) soft delete + cleanup of any test residue (sync pymongo — Motor calls need await)
+    # 8) soft delete sets deleted:true; public list excludes it; admin list surfaces it
     r = client.delete(f"{BASE_URL}/api/careers/jobs/{job['id']}")
     assert r.status_code == 200
+    public = client.get(f"{BASE_URL}/api/careers/jobs").json()
+    assert not any(j["id"] == job["id"] for j in public), "deleted job must not appear publicly"
+    all_jobs2 = client.get(f"{BASE_URL}/api/careers/jobs?all=true").json()
+    deleted_match = [j for j in all_jobs2 if j["id"] == job["id"]]
+    assert deleted_match and deleted_match[0].get("deleted") is True, "admin ?all=true must include deleted:true"
     from pymongo import MongoClient as SyncMongo
     import os as _os
     _c = SyncMongo(_os.environ["MONGO_URL"])

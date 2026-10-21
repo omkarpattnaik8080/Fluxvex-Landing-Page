@@ -289,6 +289,113 @@ function ReportPreview() {
           </motion.div>
         </div>
       </div>
+
+      {/* glass companions anchored to the dashboard */}
+      {/* white-label (left margin, xl+) */}
+      <motion.div
+        initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 1.35, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+        className="absolute -left-[118px] top-[14%] z-20 hidden xl:block"
+        aria-hidden="true"
+      >
+        <motion.div
+          animate={reduce ? {} : { y: [0, -9, 0] }}
+          transition={{ duration: 6.8, repeat: Infinity, delay: 1.8, ease: "easeInOut" }}
+          className={`relative w-56 rotate-[-1.5deg] ${GLASS_CARD}`}
+          data-testid="hero-brand-card"
+        >
+          <span aria-hidden="true" className={GLASS_EDGE} />
+          <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-black/50">
+            <Palette className="h-3 w-3 text-accent" /> White-label ready
+          </span>
+          <span className="mt-2.5 flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-white/90 font-display text-[9px] font-bold text-ink">N</span>
+            <span className="text-[11.5px] font-semibold text-ink">Northbeam Media</span>
+            <span className="ml-auto flex gap-1" aria-hidden="true">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#3D43E8]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#F5D748]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#0E8A3E]" />
+            </span>
+          </span>
+          <span className="mt-2 block text-[10.5px] leading-snug text-black/50">Logo, palette, and voice applied to every report automatically.</span>
+        </motion.div>
+      </motion.div>
+
+      {/* delivery (left margin, lower, xl+) */}
+      <motion.div
+        initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 1.55, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+        className="absolute -left-[112px] bottom-[12%] z-20 hidden xl:block"
+        aria-hidden="true"
+      >
+        <motion.div
+          animate={reduce ? {} : { y: [0, -8, 0] }}
+          transition={{ duration: 6, repeat: Infinity, delay: 2.6, ease: "easeInOut" }}
+          className={`relative w-56 rotate-[1.5deg] ${GLASS_CARD}`}
+          data-testid="hero-delivery-card"
+        >
+          <span aria-hidden="true" className={GLASS_EDGE} />
+          <span className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-black/50">
+              <CalendarClock className="h-3 w-3 text-black/35" /> Auto-delivery
+            </span>
+            <span className="flex items-center gap-1 text-[9px] font-semibold text-[#0E8A3E]">
+              <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> Auto-on
+            </span>
+          </span>
+          <span className="mt-2.5 flex items-center justify-between">
+            <span className="text-[11.5px] font-semibold text-ink">Next report · Jul 1</span>
+            <span className="rounded-full border border-accent/40 bg-accent/15 px-2 py-0.5 text-[9.5px] font-semibold text-[#A3A8FF]">in 3 days</span>
+          </span>
+          <span className="mt-2 block h-1 overflow-hidden rounded-full bg-black/[0.08]" aria-hidden="true">
+            <motion.span
+              className="block h-full rounded-full bg-gradient-to-r from-accent to-[#8A90FF]"
+              initial={reduce ? false : { width: "10%" }}
+              animate={reduce ? {} : { width: "72%" }}
+              transition={{ duration: 1.4, delay: 2, ease: [0.19, 1, 0.22, 1] }}
+            />
+          </span>
+        </motion.div>
+      </motion.div>
+
+      {/* report-ready toast (bottom-left corner overlap) */}
+      <motion.div
+        initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ delay: 1.45, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
+        className="absolute right-[-168px] bottom-[10%] z-30 hidden xl:block"
+        aria-hidden="true"
+      >
+        <motion.div
+          animate={reduce ? {} : { y: [0, -9, 0] }}
+          transition={{ duration: 6.4, repeat: Infinity, delay: 2.4, ease: "easeInOut" }}
+          className={`relative w-56 rotate-2 ${GLASS_CARD}`}
+          data-testid="hero-report-toast"
+        >
+          <span aria-hidden="true" className={GLASS_EDGE} />
+          <span className="flex items-center gap-2.5">
+            <FluxvexMark size={32} />
+            <span className="min-w-0">
+              <span className="block text-[12px] font-semibold leading-tight text-ink">June report is ready</span>
+              <span className="block text-[10.5px] text-black/50">Branded & client-ready</span>
+            </span>
+            <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-mint shadow-[0_6px_14px_-4px_rgba(67,214,117,0.7)]">
+              <Check className="h-3 w-3 text-ink" strokeWidth={3} />
+            </span>
+          </span>
+          <span className="mt-2.5 flex gap-1.5">
+            <span className="rounded-full border border-mint/40 bg-mint/10 px-2 py-0.5 text-[9.5px] font-semibold text-[#0E8A3E]">Leads +18.5%</span>
+            <span className="rounded-full border border-accent/40 bg-accent/15 px-2 py-0.5 text-[9.5px] font-semibold text-[#A3A8FF]">ROAS 2.4x</span>
+          </span>
+          <span className="mt-2 flex items-center gap-1.5 text-[10px] text-black/45">
+            <CalendarClock className="h-3 w-3" /> Scheduled send · Jul 1, 9:00
+          </span>
+        </motion.div>
+      </motion.div>
+
+      <AiInsightStream />
     </div>
   );
 }
@@ -300,6 +407,10 @@ const AI_INSIGHTS = [
   "Meta ROAS improving 3 weeks in a row.",
   "GA4 conversions +14.9% vs May.",
 ];
+
+const GLASS_CARD =
+  "rounded-2xl border border-white/50 bg-white/60 p-4 shadow-[0_40px_90px_-24px_rgba(0,0,0,0.5)] ring-1 ring-inset ring-white/40 backdrop-blur-2xl";
+const GLASS_EDGE = "absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent";
 
 function AiInsightStream() {
   const reduce = useReducedMotion();
@@ -327,20 +438,20 @@ function AiInsightStream() {
       initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: 1.25, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
-      className="absolute right-4 top-[38%] z-20 hidden lg:block xl:right-8"
+      className="absolute right-[-176px] top-[8%] z-30 hidden xl:block"
       data-testid="hero-ai-insight"
     >
       <motion.div
         animate={reduce ? {} : { y: [0, -8, 0] }}
         transition={{ duration: 6, repeat: Infinity, delay: 1.6, ease: "easeInOut" }}
-        className="relative w-64 rotate-[-1deg] rounded-2xl border border-white/50 bg-white/85 p-4 text-left shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
+        className={`relative w-60 rotate-[-1deg] ${GLASS_CARD}`}
       >
-        <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
-        <span className="flex items-center justify-between">
-          <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
-            <Sparkles className="h-3 w-3" /> Fluxvex AI insight
+        <span aria-hidden="true" className={GLASS_EDGE} />
+        <span className="flex items-center justify-between gap-2">
+          <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-black/50">
+            <Sparkles className="h-3 w-3 text-accent" /> Fluxvex AI insight
           </span>
-          <span className="rounded-full border border-accent/25 bg-accent-tint px-2 py-0.5 text-[9px] font-semibold text-accent">Review queue</span>
+          <span className="shrink-0 rounded-full border border-accent/25 bg-accent-tint px-2 py-0.5 text-[9px] font-semibold text-accent">Review queue</span>
         </span>
         <p className="mt-2 min-h-[32px] text-[12px] leading-snug text-ink">
           {text}
@@ -351,9 +462,9 @@ function AiInsightStream() {
             aria-hidden="true"
           />
         </p>
-        <span className="mt-2.5 flex items-center justify-between">
+        <span className="mt-2.5 flex items-center justify-between gap-2">
           <span className="flex items-center gap-1.5 text-[10px] text-black/45">
-            <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Analyzing connected accounts
+            <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> Analyzing accounts
           </span>
           <span className="rounded-full border border-black/[0.08] bg-surface px-2 py-0.5 text-[9.5px] font-semibold text-ink-soft">Approve to include</span>
         </span>
@@ -441,113 +552,6 @@ export default function Hero() {
         <CornerFastener className="right-3 top-3" />
         <CornerFastener className="bottom-3 left-3" />
         <CornerFastener className="bottom-3 right-3" />
-
-        {/* floating glass cards — informative, animated, balanced left/right */}
-        {/* White-label card (left) */}
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 1.35, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
-          className="absolute left-4 top-[36%] z-20 hidden lg:block xl:left-8"
-          aria-hidden="true"
-        >
-          <motion.div
-            animate={reduce ? {} : { y: [0, -9, 0] }}
-            transition={{ duration: 6.8, repeat: Infinity, delay: 1.8, ease: "easeInOut" }}
-            className="relative w-56 rotate-[-1.5deg] rounded-2xl border border-white/50 bg-white/85 p-4 shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
-            data-testid="hero-brand-card"
-          >
-            <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
-            <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
-              <Palette className="h-3 w-3" /> White-label ready
-            </span>
-            <span className="mt-2.5 flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-ink font-display text-[9px] font-bold text-white">N</span>
-              <span className="text-[11.5px] font-semibold text-ink">Northbeam Media</span>
-              <span className="ml-auto flex gap-1" aria-hidden="true">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#3D43E8]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#F5D748]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#0E8A3E]" />
-              </span>
-            </span>
-            <span className="mt-2 block text-[10.5px] leading-snug text-black/50">Logo, palette, and voice applied to every report automatically.</span>
-          </motion.div>
-        </motion.div>
-
-        {/* Delivery card (left, lower) */}
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 1.55, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
-          className="absolute left-4 top-[58%] z-20 hidden lg:block xl:left-8"
-          aria-hidden="true"
-        >
-          <motion.div
-            animate={reduce ? {} : { y: [0, -8, 0] }}
-            transition={{ duration: 6, repeat: Infinity, delay: 2.6, ease: "easeInOut" }}
-            className="relative w-56 rotate-[1.5deg] rounded-2xl border border-white/50 bg-white/85 p-4 shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
-            data-testid="hero-delivery-card"
-          >
-            <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
-            <span className="flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink">
-                <CalendarClock className="h-3 w-3 text-black/40" /> Delivery on schedule
-              </span>
-              <span className="flex items-center gap-1 text-[9px] font-semibold text-[#0E8A3E]">
-                <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> Auto-on
-              </span>
-            </span>
-            <span className="mt-2.5 flex items-center justify-between">
-              <span className="text-[11.5px] font-semibold text-ink">Next report · Jul 1</span>
-              <span className="rounded-full bg-accent-tint px-2 py-0.5 text-[9.5px] font-semibold text-accent">in 3 days</span>
-            </span>
-            <span className="mt-2 block h-1 overflow-hidden rounded-full bg-black/[0.08]" aria-hidden="true">
-              <motion.span
-                className="block h-full rounded-full bg-gradient-to-r from-accent to-[#8A90FF]"
-                initial={reduce ? false : { width: "10%" }}
-                animate={reduce ? {} : { width: "72%" }}
-                transition={{ duration: 1.4, delay: 2, ease: [0.19, 1, 0.22, 1] }}
-              />
-            </span>
-          </motion.div>
-        </motion.div>
-
-        {/* Report-ready toast (right, lower) — glass */}
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 18, scale: 0.94 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 1.45, duration: 0.7, ease: [0.19, 1, 0.22, 1] }}
-          className="absolute right-4 top-[60%] z-20 hidden md:block xl:right-8"
-          aria-hidden="true"
-        >
-          <motion.div
-            animate={reduce ? {} : { y: [0, -9, 0] }}
-            transition={{ duration: 6.4, repeat: Infinity, delay: 2.4, ease: "easeInOut" }}
-            className="relative w-56 rotate-2 rounded-2xl border border-white/50 bg-white/85 p-4 shadow-[0_32px_70px_-20px_rgba(0,0,0,0.55)] ring-1 ring-inset ring-white/50 backdrop-blur-xl"
-            data-testid="hero-report-toast"
-          >
-            <span aria-hidden="true" className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
-            <span className="flex items-center gap-2.5">
-              <FluxvexMark size={32} />
-              <span className="min-w-0">
-                <span className="block text-[12.5px] font-semibold text-ink">June report is ready</span>
-                <span className="block text-[10.5px] text-black/50">Branded & client-ready</span>
-              </span>
-              <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-mint shadow-[0_6px_14px_-4px_rgba(67,214,117,0.7)]">
-                <Check className="h-3 w-3 text-white" strokeWidth={3} />
-              </span>
-            </span>
-            <span className="mt-2.5 flex gap-1.5">
-              <span className="rounded-full border border-mint/40 bg-mint/10 px-2 py-0.5 text-[9.5px] font-semibold text-[#0E8A3E]">Leads +18.5%</span>
-              <span className="rounded-full border border-accent/25 bg-accent-tint px-2 py-0.5 text-[9.5px] font-semibold text-accent">ROAS 2.4x</span>
-            </span>
-            <span className="mt-2 flex items-center gap-1.5 text-[10px] text-black/45">
-              <CalendarClock className="h-3 w-3" /> Scheduled send · Jul 1, 9:00
-            </span>
-          </motion.div>
-        </motion.div>
-
-        <AiInsightStream />
 
         <div className="relative mx-auto max-w-5xl px-5 pb-14 pt-24 text-center sm:px-8 sm:pt-28 lg:pb-20">
           <motion.p

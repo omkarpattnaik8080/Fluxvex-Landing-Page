@@ -29,6 +29,7 @@ Backend pytest 17/17 (incl. /api/careers: valid+persistence, short-message rejec
 
 ## Careers
 - `/careers`: 3 SaaS sales internships (4-month unpaid, guaranteed PPO conversion chances — India up to ₹6 LPA; US/UK above market standards), chat-style "Text Fluxvex" application form → POST /api/careers (career_applications collection), JobPosting (TELECOMMUTE/INTERN) + FAQPage JSON-LD, sitemap + llms.txt wired.
+- Culture section (user-defined): "Our culture — Ownership-first. Rest built-in." header + 6 cards: Ownership not oversight, Hit the target then rest (weekly targets; done = rest, no performative overtime), Work–life balance for real, AI-native, Work with founders, PPO. Culture FAQ pair (#1 in list, synced with FAQPage JSON-LD).
 
 ## Backlog
 - P0: DEPLOY PENDING USER CONFIRMATION (first deploy = 50 ECU, asked in chat); after deploy: enable "Search Engine Crawling and Optimisation", verify blog live.
