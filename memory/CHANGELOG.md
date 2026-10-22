@@ -1,5 +1,11 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 10 — brighter Iso3D + no play button + premium Inside-Fluxvex band)
+- Scene enrichment: colored base plates per element (sky/blue/amber sources, violet AI, mint delivery), volumetric light beams, floating KPI chips (2.4x ROAS, +38% conversions, +24% channel results, 5→500 clients — honest copy), particle bursts (on step change / click / 3.2s pipeline cycle), orbiting octahedron satellites, brighter palette (amber/violet/sky/mint). PromptScene intentionally stays gray = contrast vs colorful pipeline.
+- HowItWorks: Auto-playing/Play tour toggle REMOVED — tour auto-plays on scroll into view; tabs + dots remain.
+- "Inside Fluxvex" band redesigned premium: gradient top bar (accent→violet→emerald), "Three layers, one frame" header + subcopy + "Hover to fan the layers" chip, taller scene (230/260px), colored slab headers, diagonal chips per layer, satellites; fan pivots at the middle layer (1.48×) so nothing clips; pulsing-dot Suspense placeholder while the lazy 3D chunk loads (~6s cold throttled mobile in dev, faster in prod build).
+- Verified (iteration 12: 100%): backend 19/19; 1 canvas, 10 scene testids, no play button, no clipping on hover, 0 overflow 1440/390, no ghosting, other pages clean.
+
 ## 2026-10-21 (session 9 — Three.js Iso3D illustrations)
 - Interactive 3D for every requested section illustration via three.js + @react-three/fiber + @react-three/drei (installed with --ignore-engines; camera-controls wants Node 22 but works): HowItWorks stage, AiComparison ×2 (prompt loop VS pipeline), FeatureGrid ×3 islands, Platform orbit, Vision ecosystem, NEW Showcase "exploded layers" band (Connected data → Fluxvex AI → Branded delivery, fans apart on hover).
 - Architecture: ONE shared WebGL context on Home (drei View portals + View.Port; SceneCanvas fixed z-35 pointer-events-none, mounted lazily in Home.jsx only — other routes render 0 canvases). Scenes lazy-chunked (Scene3D + scenes + kit3d). FullClear at useFrame priority 0 clears the fixed canvas each frame — fixes drei View stale-pixel ghosting at old scroll positions.
