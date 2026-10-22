@@ -130,3 +130,14 @@
 - Vision roadmap: dark launch-sequence panel replaced with a premium BENTO GRID matching the user reference anatomy — tinted visual zones (mint/violet/amber/sky) with floating white stat pills (label | green value), signature animated mini-viz per card (ghost bars + green gradient highlight + white dot + dashed Avg.-cycle line; drafting doc; auto-drafted invoice; AI chat bubbles + typing dots), BUILDING NOW/FUTURE PLAN chips, title + desc below. Layout: lg 2+1 / 1+2 spans; scroll-in animations on premium bezier; hover lift + shadow.
 - Honesty kept: future-plan pills use process words (AI-assisted / Suggested / Auto) — no fabricated metrics; hero card stats tie to calculator defaults (-40% / +230 h / +29 workdays).
 - Verified desktop 1440 + mobile 390 (renders, no overflow, animations fire). Testids preserved.
+
+## 2026-10-22 (sessions 13-14 — zero-friction forms, premium dashboards, integrations bento)
+- WAITLIST MODAL: email-first rebuild (single required field + live validity check + inline error), trust row, optional disclosure (auto-expands on pricing preselect), Done button on success; SuccessBurst extracted to shared component.
+- CONTACT PAGE: what-to-expect list + quick-answer chips; icon fields with focus rings; per-field validation; success echoes name/email + reset flow. Label-import crash caught and fixed.
+- Vision: bento cards got loop animations (drafting line, stamp pulse, AI bubble float, bar shimmer); AI-core block redesigned as a dark premium band (ping tile, terminal line with blinking caret, 5 glass capability cards).
+- Loading speed: three.js chunk warmed on requestIdleCallback in App.js, .iso3d-host crossfade on mount, Showcase branded "Warming up the scene" fallback.
+- Calculator: accent ticks on section headings, pulse dot in Live-tool pill, drifting hero glow (hero-drift).
+- HERO SAMPLE REPORT: KPI tiles with animated sparklines + vs-May deltas, dashed Last-period comparison line + legend, channel-mark mix, AI-drafted chip, merged bottom zone.
+- INTEGRATION DETAIL PAGES: status chip + check badge, per-integration sample-report section (metric rows + AI summary + honesty note), timeline steps, Permissions & scope (read-only OAuth), FAQ accordions, cross-link cards, dark CTA band; bad slug → 404.
+- HOME INTEGRATIONS: rebuilt as animated bento grid (wide Google/Meta cards with live mini-viz + data chips, GA4, dashed LinkedIn/TikTok coming-soon, wide Request-a-channel card → waitlist).
+- Tests: iterations 18/19/20 — backend 19/19 each; frontend 100% (cross-link 390px overflow found in 19, fixed + re-verified in 20; zero outstanding issues).

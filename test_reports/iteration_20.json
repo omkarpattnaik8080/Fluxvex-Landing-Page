@@ -1,0 +1,28 @@
+{
+  "summary": "Iteration 20 — new Integrations BENTO + mobile cross-link overflow fix + regression sweep all GREEN. Backend pytest suite 19/19 pass (test_fluxvex_api.py, iter20_results.xml). Frontend: home #integrations renders as the new bento grid — section-integrations present, integrations-qualifier visible, three supported cards (integration-card-google-ads, -meta-ads, -ga4) + two dashed Coming-soon cards (integration-card-linkedin-ads, -tiktok-ads with integration-soon-{linkedin-ads,tiktok-ads} chips reading 'Coming soon') + full-width More-channels card with integrations-more-cta. Google Ads card renders 6 mini equalizer bars + 'CONV +11.4%' chip. Meta Ads card renders a green animated sparkline (svg path present) + 'ROAS 2.1x' chip. LinkedIn/TikTok cards are rendered as DIVs (not <a>), confirmed non-navigable (tag=DIV, href=null). Supported cards navigate — Google Ads click → /integrations/google-ads. Hover produces y-shift (-translate-y-1) + indigo glow class. No horizontal overflow at 1440 (scrollWidth=clientWidth=1440). integrations-more-cta opens waitlist modal (dialog visible). CROSS-LINK FIX VERIFIED: /integrations/google-ads at 390px → document.scrollWidth=390 = clientWidth=390 (was 734 in iter-19). Hero report: hero-report-preview visible, 66 svg paths/polylines, 13 dashed strokes (Last-period line), CountUp settles to $48,210 / 1.24M / 34,880 / 1,204. Integration pages: google-ads has '$24,180' + '2.6x'; meta-ads has '$16,940'; ga4 has '21,480'. Waitlist E2E submitted (qa.bento.1792656600@testmail.dev) → 'You're on the list.' + 'Signup confirmed' + Done closes modal. Contact submit via contact-{name,email,message}-input + contact-submit-button → contact-success visible. Calculator shows 4 range sliders + Copy result button. Zero pageerror events observed on home or /integrations/google-ads.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home (headless)", "issues": ["Too many active WebGL contexts warnings in headless — expected per agent-note, not a user-visible issue."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/iter20_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "IntegrationsStrip.jsx is clean (~225 lines) with well-isolated MiniBars/MiniSpark/BentoCard subcomponents — fine as-is.",
+    "Integration.jsx cross-link min-w-0 fix verified at line ~333; mobile overflow fully resolved."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "100%", "frontend": "100%" },
+  "test_credentials": "Not needed for this run (admin flows untouched).",
+  "seed_data_creation": "Ephemeral waitlist entry qa.bento.1792656600@testmail.dev and contact entry qa.c.1792656600@testmail.dev — safe to prune.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration-20 scope (bento rebuild of IntegrationsStrip + /integrations/* mobile overflow fix) all verified green plus full regression (hero report, waitlist, contact, calculator, integration slug pages, backend suite). Nothing outstanding. For future runs, note the waitlist/contact testids: waitlist opens into role='dialog' with input[type=email] + 'Join the waitlist' button; success state exposes 'Done' button and 'Signup confirmed' chip. Contact uses contact-name-input / contact-email-input / contact-message-input / contact-submit-button → contact-success. Supported integration cards render as <a> (TapCTA → Link) and Coming-soon cards render as <div> so href is intentionally null. integrations-more-cta is a <button> that triggers useWaitlist().openWaitlist('integrations-more').",
+  "rca_of_the_issue": "N/A — all green this round. Prior iter-19 overflow RCA (missing min-w-0 on grid-item Link in Integration.jsx) remains fixed."
+}
