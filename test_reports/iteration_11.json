@@ -1,0 +1,25 @@
+{
+  "summary": "Iteration 11 — End-to-end validation of the NEW three.js integration (shared WebGL canvas + 9 scenes) plus full regression. Backend pytest: 19/19 PASS (same test_fluxvex_api.py suite, incl. admin auth + jobs CRUD + SEO assets). Frontend home @1440: zero console errors, zero pageerrors, exactly 1 <canvas> element shared across the page, and ALL 10 scene testids present and mounted: workflow-iso-stage (+workflow-iso-stage-3d), showcase-layers-3d, platform-cloud-3d, feature-visual-inputs/summaries/delivery, comparison-prompt-visual/workflow-visual, vision-scene-3d. HowItWorks: all 4 workflow-step-1..4 tabs clickable with aria-pressed toggling as expected. Platform: drag-to-rotate (200px horizontal pointer sweep) + pulse-ring click both execute without errors. Showcase: hover on layers band + period tabs (may/june/q2) + export button all functional (fallback dashboard intact). Scroll-ghosting regression: scrolled to Pricing preview + FAQ + footer; canvas remains fixed, pointer-events: none, and visible pixels show clean solid backgrounds — NO 3D bleed over footer or BackersBand (verified by full-section screenshot). Horizontal overflow: 0px at 1440 across all scroll positions. Mobile @390x844: 0px overflow across entire scroll range (regression win vs iteration 10's 6px), all 9 scene testids present, waitlist modal opens from the mobile menu CTA. Non-home routes: /careers, /pricing, /blog each render with ZERO <canvas> (shared canvas is correctly scoped to Home) and zero console errors. Admin: /admin/jobs → login with admin@example.com/admin123 → admin-dashboard rendered, job list shows seeded SaaS Sales Intern (401 noise before login is normal auth-probe behaviour). Known-fixed items confirmed non-reproducing: no Edges/zoom/useImgTexture errors, no SVG texture blanks, no stale-pixel ghosting, no horizontal overflow. Perf sanity: first paint of hero renders before 3D chunk completes (SceneCanvas is lazy, verified by DOM already interactive before scenes mount at ~2s).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/iteration_11_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SceneCanvas correctly isolated to Home.jsx (verified: /careers, /pricing, /blog produce 0 <canvas> elements). Good scope.",
+    "Canvas uses pointer-events: none at the parent layer and FullClear at priority 0 — stale-pixel ghosting is fully resolved from the previous fixed-canvas bug.",
+    "9 scenes share a single WebGL context via drei View portals — strong perf choice; keep this invariant on any future section addition.",
+    "Iteration 10's reported mobile 6px overflow is no longer reproducible (max 0px across all scroll Y positions at 390px) — fix shipped."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (19/19)", "frontend": "100% — all 10 scenes mount, all interactions work, no errors, no overflow, no ghosting"},
+  "test_credentials": "Admin admin@example.com / admin123 (per /app/memory/test_credentials.md). Verified logs in and loads /admin/jobs dashboard.",
+  "seed_data_creation": "None in this iteration (pytest create/delete cycles self-clean TEST_* records in waitlist/contact/career_applications/job_postings/login_attempts).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Three.js integration is stable. If adding more scenes, keep them inside SCENES registry in frontend/src/components/three/scenes.jsx and expose a data-testid on the host <div data-testid=\"...\"> that wraps <Scene3D>. The shared canvas lives in Home.jsx only — do NOT add SceneCanvas to other pages. For regression, re-run pytest + the quick browser sweep: (1) count <canvas> on Home == 1, (2) all 10 scene testids present, (3) 0 overflow at 1440 and 390, (4) scroll to footer and screenshot — no 3D pixels over BackersBand/footer, (5) /careers /pricing /blog have 0 canvas elements.",
+  "rca of the issue": "N/A — no bugs found this iteration."
+}

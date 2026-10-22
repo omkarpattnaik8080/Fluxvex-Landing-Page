@@ -1,5 +1,13 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 9 — Three.js Iso3D illustrations)
+- Interactive 3D for every requested section illustration via three.js + @react-three/fiber + @react-three/drei (installed with --ignore-engines; camera-controls wants Node 22 but works): HowItWorks stage, AiComparison ×2 (prompt loop VS pipeline), FeatureGrid ×3 islands, Platform orbit, Vision ecosystem, NEW Showcase "exploded layers" band (Connected data → Fluxvex AI → Branded delivery, fans apart on hover).
+- Architecture: ONE shared WebGL context on Home (drei View portals + View.Port; SceneCanvas fixed z-35 pointer-events-none, mounted lazily in Home.jsx only — other routes render 0 canvases). Scenes lazy-chunked (Scene3D + scenes + kit3d). FullClear at useFrame priority 0 clears the fixed canvas each frame — fixes drei View stale-pixel ghosting at old scroll positions.
+- Iso3D kit (components/three/kit3d.jsx): flat-vector isometric language preserved — cream grid ground, white tiles + hairline Edges, dashed accent wires + glowing packets, camera-facing canvas-texture billboards, pulse rings, SVG-data-URL textures with xmlns injection, Fluxvex PNG icon via rounded-clip canvas texture (useImgTexture).
+- Interactivity (DOM-driven input refs, raycast-free): cursor tilt, drag-to-rotate (pointer capture + touch-action pan-y so mobile scroll survives), hover speeds packets/starts orbit boost, click = pulse burst; reduced-motion = static scenes.
+- HowItWorks: 3D stage is step-driven (Authorized → client/period → assembling bar → Export/Schedule billboards); SVG IsoKit compositions retained as Suspense/WebGL fallbacks in all six sections.
+- Verified (iteration 11: 100%): backend 19/19; 1 canvas on Home, 10 scene testids, drag/pulse/hover/tabs OK, zero ghosting, 0px overflow at 1440 + 390 (fixed iter-10's 6px mobile overflow), /careers /pricing /blog /admin untouched, admin login OK.
+
 ## 2026-10-21 (session 8b — careers hero UI fix)
 - Fixed careers hero stats grid not centering under the centered heading (missing `mx-auto` — grid hugged the left edge, first card clipped at narrow viewports). Verified centered at 1083/1440/390 (grid center == viewport center, zero overflow).
 - Careers H1 now wraps at the sentence: `text-balance` + non-breaking space in "cover&nbsp;letter" → desktop breaks as "Don't send a cover letter." / "Send us a text." (no mid-compound split, no orphan "a text." line); mobile breaks into 3 semantic lines.
