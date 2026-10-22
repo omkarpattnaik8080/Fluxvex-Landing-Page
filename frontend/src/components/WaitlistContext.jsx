@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown, CircleAlert, CreditCard, Loader2, Mail, ShieldCheck } from "lucide-react";
@@ -32,7 +32,23 @@ function WaitlistForm({ source, interest, onDone }) {
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [error, setError] = useState("");
   const [more, setMore] = useState(() => !!interest && interest !== "Not sure yet");
+  const [position, setPosition] = useState(0);
   const emailRef = useRef(null);
+
+  /* After a successful signup, show the person's real place in line */
+  useEffect(() => {
+    if (status !== "success") return undefined;
+    let alive = true;
+    axios
+      .get(`${API}/waitlist/count`)
+      .then((r) => {
+        if (alive && r.data && Number.isFinite(r.data.count)) setPosition(r.data.count);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [status]);
 
   const set = (key, value) => setForm((f) => ({ ...f, [key]: value }));
   const toggleChannel = (c) =>
@@ -98,6 +114,17 @@ function WaitlistForm({ source, interest, onDone }) {
         >
           <Check className="h-3.5 w-3.5" /> Signup confirmed
         </motion.div>
+        {position > 0 && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0, duration: 0.5 }}
+            className="mt-2.5 text-xs text-ink-soft"
+            data-testid="waitlist-position"
+          >
+            You’re #{position} on the list.
+          </motion.p>
+        )}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

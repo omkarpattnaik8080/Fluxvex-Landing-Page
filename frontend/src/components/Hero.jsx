@@ -1,10 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import axios from "axios";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowDown, CalendarDays, CalendarClock, Lock, Palette, Plus, Check, Trophy, Sparkles } from "lucide-react";
 import { useWaitlist } from "@/components/WaitlistContext";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+/* Live social proof — real signup count from the DB; hidden entirely when zero. */
+function SignupPulse() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let alive = true;
+    axios
+      .get(`${API}/waitlist/count`)
+      .then((r) => {
+        if (alive && r.data && Number.isFinite(r.data.count)) setCount(r.data.count);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  if (count <= 0) return null;
+  return (
+    <motion.p
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 1.45 }}
+      className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.07] px-3.5 py-1.5 text-[12px] font-medium text-white/85 backdrop-blur-sm"
+      data-testid="hero-social-proof"
+    >
+      <span className="relative flex h-2 w-2" aria-hidden="true">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-mint opacity-60" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-mint" />
+      </span>
+      <span>
+        <span className="font-display font-semibold text-white">
+          <CountUp value={count} delay={1.5} />
+        </span>{" "}
+        {count === 1 ? "agency is" : "agencies are"} already on the list
+      </span>
+    </motion.p>
+  );
+}
 
 function CornerFastener({ className }) {
   return (
@@ -710,6 +753,8 @@ export default function Hero() {
               Free to join — no credit card needed
             </span>
           </motion.p>
+
+          <SignupPulse />
 
           <motion.div
             initial={{ opacity: 0, y: 64, rotateX: 10 }}

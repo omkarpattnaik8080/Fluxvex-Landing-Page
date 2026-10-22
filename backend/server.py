@@ -251,6 +251,7 @@ async def join_waitlist(input: WaitlistCreate, request: Request):
         "updated_at": _now_iso(),
     }
     await db.waitlist.update_one({"email": email}, {"$set": doc}, upsert=True)
+    _waitlist_count_cache.pop("total", None)  # keep the live pulse + "You're #N" honest
 
     sheet_status = await forward_to_sheets(
         "Submissions",
@@ -258,6 +259,21 @@ async def join_waitlist(input: WaitlistCreate, request: Request):
         [created_at, email, doc["agency_name"], doc["clients"], ", ".join(doc["channels"]), doc["interest"], doc["source"]],
     )
     return {"ok": True, "duplicate": bool(existing), "sheet_status": sheet_status}
+
+
+_waitlist_count_cache = {}
+
+
+@api_router.get("/waitlist/count")
+async def waitlist_count():
+    """Public signup total for social proof. 60s in-memory cache so bursts never hammer Mongo."""
+    now = time.time()
+    cached = _waitlist_count_cache.get("total")
+    if cached and now - cached[0] < 60:
+        return {"count": cached[1]}
+    total = await db.waitlist.count_documents({"email": {"$ne": ""}})
+    _waitlist_count_cache["total"] = (now, total)
+    return {"count": total}
 
 
 @api_router.post("/contact")

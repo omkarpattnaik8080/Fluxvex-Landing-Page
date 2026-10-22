@@ -141,3 +141,8 @@
 - INTEGRATION DETAIL PAGES: status chip + check badge, per-integration sample-report section (metric rows + AI summary + honesty note), timeline steps, Permissions & scope (read-only OAuth), FAQ accordions, cross-link cards, dark CTA band; bad slug → 404.
 - HOME INTEGRATIONS: rebuilt as animated bento grid (wide Google/Meta cards with live mini-viz + data chips, GA4, dashed LinkedIn/TikTok coming-soon, wide Request-a-channel card → waitlist).
 - Tests: iterations 18/19/20 — backend 19/19 each; frontend 100% (cross-link 390px overflow found in 19, fixed + re-verified in 20; zero outstanding issues).
+
+## 2026-10-22 (session 15 — Waitlist Pulse + sheets status)
+- Waitlist Pulse: new public GET /api/waitlist/count (60s TTL cache, instant invalidation on signup); hero shows live "N agencies are already on the list" pill (self-hiding at 0); waitlist success shows "You're #N on the list." — verified live 15→#16.
+- Google Sheets sync confirmed already wired in backend (GOOGLE_SHEETS_WEBAPP_URL env; waitlist/contact/careers forward; "not_configured" until user pastes their Apps Script Web App URL — no keys needed).
+- Pruned all QA-generated waitlist rows → public count starts at an honest 0; pulse hides until real signups.
