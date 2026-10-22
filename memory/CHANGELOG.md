@@ -164,3 +164,6 @@
 
 ## 2026-10-22 (session 17b — dark tone correction)
 - User rejected the blue-tinted #0B0B14 band bg → both dark bands (IntegrationsStrip, AiComparison) switched to the app's previous neutral dark #0B0B0D (footer tone, matches the reference image's flat charcoal); removed the indigo/violet glow orbs; kept subtle white top-light + fine-grid; flattened the wide CTA card gradient to neutral glass. Accent colors kept on interactive elements only. Verified: computed bg rgb(11,11,13), no overflow, renders clean.
+
+## 2026-10-22 (session 17c — AiComparison reverted to light)
+- User asked to keep the "The workflow needs / A prompt by itself" section as it was earlier, no dark bg → AiComparison.jsx fully restored to the original light version (SectionShell + SectionHeader, light prompt/workflow 3D cards, 3-column versus table with DrawnCheck in accent, light closing line). Dark integrations strip stays. Verified via screenshots: light bg, no overflow, all rows render.
