@@ -108,7 +108,7 @@ function EarningsCard() {
 function ReferralFeed() {
   const reduce = useReducedMotion();
   return (
-    <div className="flex h-full flex-col justify-center gap-4 rounded-2xl border border-line bg-[linear-gradient(160deg,#F3F1FF_0%,#FBFAFF_55%,#FDFDFA_100%)] p-7" aria-hidden="true">
+    <div className="flex h-full flex-col justify-center gap-4 rounded-2xl border border-line bg-[linear-gradient(160deg,#F3F1FF_0%,#FBFAFF_55%,#FDFDFA_100%)] p-7" data-testid="referral-feed" aria-hidden="true">
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40">Your dashboard, later</p>
       <motion.div
         initial={reduce ? false : { y: 18, opacity: 0 }}

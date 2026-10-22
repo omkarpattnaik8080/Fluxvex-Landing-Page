@@ -1,0 +1,21 @@
+{
+  "summary": "Frontend-only regression + feature verification for Fluxvex landing: new Affiliate 3D money-flow card, polished Integrations strip, and CrossFade3D fresh-load fix across all 8 Scene3D sections. All critical data-testids present, 0 console errors, no horizontal overflow at 1440 or 390. Fresh-load check: SVG base/3D is visible immediately on scroll to #workflow and #product (no blank frame). Affiliate 3D (affiliate-flow-3d) renders with 'How the money flows' and 'No T&C applied' HTML pills + '20% of every subscription payment' caption. affiliate-step-1..3, affiliate-earnings-card, affiliate-cta-button (opens waitlist), affiliate-contact-link all working. Integrations strip: integrations-status pill text='3 of 5 channels live at launch / LIVE', 'IN BUILD', '68%', '41%' present; integrations-more-cta works. Vision (vision-scene/3d/ai-block), Showcase KPIs, Platform cloud 3D all present. CTA click opens waitlist overlay.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Spec references a 'referral-feed' testid on the ReferralFeed card but no data-testid is set in Affiliate.jsx (component renders fine, just not addressable by tests). Low priority — add data-testid=\"referral-feed\" to the ReferralFeed root for future test stability."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All CrossFade3D sections work with 0 console errors. Cookie banner: click 'Accept all' first. The 'How the money flows' / 'No T&C applied' pills are mixed-case in HTML, not all-caps. ReferralFeed card has no data-testid.",
+  "rca of the issue": "N/A — no issues found."
+}
