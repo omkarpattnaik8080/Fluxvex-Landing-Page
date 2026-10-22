@@ -7,7 +7,7 @@ import { OrthographicCamera, Line, Edges } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { HelpCircle, MessageSquare, Repeat, Plug, SlidersHorizontal, Sparkles, Send } from "lucide-react";
-import { C, IsoWorld, Tile, Wire, Billboard, PulseRings, useSvgTexture, useTextTexture, useGlowTexture, useImgTexture } from "./kit3d";
+import { C, IsoWorld, Tile, Wire, Billboard, PulseRings, Beam, Chip, Burst, Satellite, useSvgTexture, useTextTexture, useGlowTexture, useImgTexture } from "./kit3d";
 
 /* ---------- shared bits ---------- */
 
@@ -20,7 +20,7 @@ export const WORLD = {
   featureDelivery: { w: 10.6, h: 5.4 },
   platform: { w: 11.4, h: 7 },
   vision: { w: 11, h: 6.6 },
-  layers: { w: 11, h: 4.2 },
+  layers: { w: 11, h: 5.0 },
 };
 
 function useBrandTextures() {
@@ -82,38 +82,56 @@ function AssemblingBar() {
 export function WorkflowScene({ input, reduce, visible, zoom, step = 0 }) {
   const [gTex, mTex, aTex, fxTex] = useBrandTextures();
   const sources = [
-    { tex: gTex, z: -1.6 },
-    { tex: mTex, z: 0 },
-    { tex: aTex, z: 1.6 },
+    { tex: gTex, z: -1.6, base: C.sky },
+    { tex: mTex, z: 0, base: C.blue },
+    { tex: aTex, z: 1.6, base: C.amber },
   ];
   const engineActive = step === 1 || step === 2 || step === 3;
+  const [stepBurst, setStepBurst] = useState(0);
+  useEffect(() => {
+    setStepBurst(performance.now());
+  }, [step]);
   return (
     <>
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce}>
         {sources.map((s, i) => (
-          <Tile key={i} position={[-3.3, 0, s.z]} size={[1.15, 0.2, 1.15]} texture={s.tex} dim={step !== 0} active={step === 0} />
+          <Tile key={i} position={[-3.3, 0, s.z]} size={[1.15, 0.2, 1.15]} texture={s.tex} dim={step !== 0} active={step === 0} base={s.base} />
         ))}
-        <Tile position={[0.3, 0, 0]} size={[1.75, 0.26, 1.75]} texture={fxTex} texScale={0.5} dim={step === 0} active={engineActive} />
-        <DocTile position={[3.6, 0, 0]} dim={step !== 3} active={step === 3} />
+        <Tile position={[0.3, 0, 0]} size={[1.75, 0.26, 1.75]} texture={fxTex} texScale={0.5} dim={step === 0} active={engineActive} base={C.accent} glowColor={engineActive ? C.violet : null} />
+        <DocTile position={[3.6, 0, 0]} dim={step !== 3} active={step === 3} base={step === 3 ? C.mint : null} />
         {sources.map((s, i) => (
           <Wire key={i} from={[-2.55, 0.05, s.z]} to={[-0.85, 0.05, 0]} active={step === 0} dim={step !== 0} delay={i * 0.2} period={1.4} />
         ))}
         <Wire from={[1.4, 0.05, 0]} to={[2.95, 0.05, 0]} active={step === 3} delay={0.1} period={1.4} />
+        {engineActive && (
+          <>
+            <Satellite radius={1.55} y={1.05} color={C.amber} phase={0} reduce={reduce} />
+            <Satellite radius={1.55} y={1.1} color={C.violet} phase={Math.PI} speed={-0.7} reduce={reduce} />
+            <Beam position={[0.3, 0, 0]} color={C.accent} />
+          </>
+        )}
+        {step === 0 && <Beam position={[-3.3, 0, 0]} color={C.sky} width={4.6} />}
+        {step === 3 && <Beam position={[3.6, 0, 0]} color={C.mint} />}
+        <Burst position={[0.3, 0.1, 0]} trigger={stepBurst} color={engineActive ? C.accent : C.sky} />
+        {step === 3 && <Burst position={[3.6, 0.2, 0]} trigger={stepBurst + 300} color={C.mint} />}
         <group key={step}>
           {step === 0 &&
             sources.map((s, i) => (
               <Billboard key={i} position={[-3.3, 1.55, s.z]} phase={i} reduce={reduce} fade={!reduce}
-                spec={{ lines: [{ text: "✓ Authorized", color: C.mint, size: 24 }], size: 24, h: 0.42 }} />
+                spec={{ lines: [{ text: "✓ Authorized", color: C.green, size: 24 }], size: 24, h: 0.42 }} />
             ))}
           {step === 1 && (
-            <Billboard position={[0.3, 2.0, 0]} reduce={reduce}
-              spec={{ lines: [{ text: "Northbeam Media · Client", size: 24 }, { text: "June 2025", color: C.accent, size: 21 }], size: 24, h: 0.78 }} />
+            <>
+              <Billboard position={[0.3, 2.0, 0]} reduce={reduce}
+                spec={{ lines: [{ text: "Northbeam Media · Client", size: 24 }, { text: "June 2025", color: C.accent, size: 21 }], size: 24, h: 0.78 }} />
+              <Chip position={[-3.3, 1.9, 1.6]} value="3" label="sources connected" color={C.sky} delay={0.35} reduce={reduce} />
+            </>
           )}
           {step === 2 && (
             <>
               <Billboard position={[0.3, 2.0, 0]} reduce={reduce}
-                spec={{ lines: [{ text: "Fluxvex is assembling…", size: 24 }, { text: "Campaign metrics · Channel results · Summary", size: 17, color: C.mint, weight: 600 }], size: 24, h: 0.82 }} />
+                spec={{ lines: [{ text: "Fluxvex is assembling…", size: 24 }, { text: "Campaign metrics · Channel results · Summary", size: 17, color: C.green, weight: 600 }], size: 24, h: 0.82 }} />
               <AssemblingBar />
             </>
           )}
@@ -121,6 +139,7 @@ export function WorkflowScene({ input, reduce, visible, zoom, step = 0 }) {
             <>
               <Billboard position={[3.6, 1.8, -0.5]} reduce={reduce} spec={{ pill: true, lines: [{ text: "Export PDF", color: "#FFFFFF", size: 22 }], h: 0.5 }} />
               <Billboard position={[3.6, 1.15, 0.6]} reduce={reduce} spec={{ lines: [{ text: "Schedule send", color: C.soft, size: 21 }], size: 21, h: 0.44 }} />
+              <Chip position={[1.9, 2.0, -1.3]} value="2.4x" label="ROAS · June" color={C.mint} delay={0.3} reduce={reduce} />
             </>
           )}
         </group>
@@ -175,7 +194,7 @@ export function PromptScene({ input, reduce, zoom }) {
   );
 }
 
-export function PipelineScene({ input, reduce, zoom }) {
+export function PipelineScene({ input, reduce, zoom, visible }) {
   const texs = [
     useIconTexture(Plug, "ic-plug"),
     useIconTexture(SlidersHorizontal, "ic-sld"),
@@ -184,7 +203,15 @@ export function PipelineScene({ input, reduce, zoom }) {
   ];
   const loopGlow = useGlowTexture(C.accent);
   const xs = [-3.9, -1.3, 1.3, 3.9];
+  const bases = [C.accent, C.violet, C.amber, C.mint];
   const pkt = useRef(null);
+  const [burst, setBurst] = useState(0);
+  useEffect(() => {
+    if (reduce || !visible) return undefined;
+    setBurst(performance.now());
+    const id = setInterval(() => setBurst(performance.now()), 3200);
+    return () => clearInterval(id);
+  }, [reduce, visible]);
   useFrame((s) => {
     if (!pkt.current || reduce) return;
     const tt = (s.clock.elapsedTime / 3) % 1;
@@ -195,8 +222,9 @@ export function PipelineScene({ input, reduce, zoom }) {
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} ground={18}>
         {xs.map((x, i) => (
-          <Tile key={i} position={[x, 0, 0]} size={[1.2, 0.2, 1.2]} texture={texs[i]} texScale={0.55} active={i === 2} />
+          <Tile key={i} position={[x, 0, 0]} size={[1.2, 0.2, 1.2]} texture={texs[i]} texScale={0.55} active={i === 2} base={bases[i]} glowColor={i === 2 ? C.amber : null} />
         ))}
+        <Burst position={[3.9, 0.15, 0]} trigger={burst} color={C.mint} />
         {xs.slice(0, -1).map((x, i) => (
           <Wire key={i} from={[x + 0.85, 0.05, 0]} to={[xs[i + 1] - 0.85, 0.05, 0]} delay={i * 0.25} period={1.3} />
         ))}
@@ -277,17 +305,19 @@ function ReportBoard() {
 export function FeatureSourcesScene({ input, reduce, visible, zoom }) {
   const [gTex, mTex, aTex, fxTex] = useBrandTextures();
   const zs = [-1.6, 0, 1.6];
+  const bases = [C.sky, C.blue, C.amber];
   return (
     <>
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} ground={14}>
         {zs.map((z, i) => (
-          <Tile key={i} position={[-3.5, 0, z]} size={[1.1, 0.2, 1.1]} texture={[gTex, mTex, aTex][i]} />
+          <Tile key={i} position={[-3.5, 0, z]} size={[1.1, 0.2, 1.1]} texture={[gTex, mTex, aTex][i]} base={bases[i]} />
         ))}
         {zs.map((z, i) => (
           <Wire key={i} from={[-2.75, 0.05, z]} to={[-1.25, 0.05, 0]} delay={i * 0.2} period={1.4} />
         ))}
-        <Tile position={[-0.4, 0, 0]} size={[1.4, 0.24, 1.4]} texture={fxTex} texScale={0.5} active />
+        <Tile position={[-0.4, 0, 0]} size={[1.4, 0.24, 1.4]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.violet} />
+        <Satellite radius={1.35} y={0.95} color={C.violet} phase={0.6} reduce={reduce} />
         <Wire from={[0.5, 0.05, 0]} to={[1.7, 0.05, 0]} delay={0.5} period={1.5} />
         <ReportBoard />
       </IsoWorld>
@@ -298,6 +328,7 @@ export function FeatureSourcesScene({ input, reduce, visible, zoom }) {
 export function FeatureAiScene({ input, reduce, visible, zoom }) {
   const [gTex, mTex, aTex, fxTex] = useBrandTextures();
   const zs = [-1.6, 0, 1.6];
+  const bases = [C.sky, C.blue, C.amber];
   const [dotFrame, setDotFrame] = useState(0);
   useEffect(() => {
     if (reduce || !visible) return undefined;
@@ -309,15 +340,19 @@ export function FeatureAiScene({ input, reduce, visible, zoom }) {
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} ground={14}>
         {zs.map((z, i) => (
-          <Tile key={i} position={[-3.5, 0, z]} size={[1.1, 0.2, 1.1]} texture={[gTex, mTex, aTex][i]} />
+          <Tile key={i} position={[-3.5, 0, z]} size={[1.1, 0.2, 1.1]} texture={[gTex, mTex, aTex][i]} base={bases[i]} />
         ))}
         {zs.map((z, i) => (
           <Wire key={i} from={[-2.75, 0.05, z]} to={[-1.2, 0.05, 0]} delay={i * 0.2} period={1.4} />
         ))}
-        <Tile position={[-0.4, 0, 0]} size={[1.45, 0.26, 1.45]} texture={fxTex} texScale={0.5} active />
+        <Tile position={[-0.4, 0, 0]} size={[1.45, 0.26, 1.45]} texture={fxTex} texScale={0.5} active base={C.violet} glowColor={C.violet} />
+        <Satellite radius={1.4} y={1.0} color={C.violet} phase={0} reduce={reduce} />
+        <Satellite radius={1.4} y={1.05} color={C.amber} phase={Math.PI} speed={-0.8} reduce={reduce} />
+        <Beam position={[-0.4, 0, 0]} color={C.violet} />
         <Billboard position={[2.9, 1.9, -0.7]} reduce={reduce} spec={{ lines: [{ text: "Meta Ads · ROAS 2.4x", size: 22 }], size: 22, h: 0.5 }} />
         <Billboard position={[2.9, 1.1, 0.9]} reduce={reduce} fade={!reduce}
           spec={{ lines: [{ text: "AI · drafting summary" + "·".repeat(dotFrame + 1), size: 22 }], size: 22, h: 0.5 }} />
+        <Chip position={[2.4, 2.4, 0.2]} value="+24%" label="channel results" color={C.mint} delay={0.4} reduce={reduce} />
       </IsoWorld>
     </>
   );
@@ -379,6 +414,7 @@ export function FeatureDeliveryScene({ input, reduce, visible, zoom }) {
           <mesh position={[0, 0.09, 0]}>
             <boxGeometry args={[1.05, 0.18, 1.35]} />
             <meshBasicMaterial color={C.white} />
+            <Edges threshold={15} color={C.hairline} />
           </mesh>
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.185, 0]}>
             <planeGeometry args={[0.62, 0.84]} />
@@ -386,7 +422,7 @@ export function FeatureDeliveryScene({ input, reduce, visible, zoom }) {
           </mesh>
         </group>
         <Wire from={[-2.85, 0.05, 0]} to={[-1.2, 0.05, 0]} period={1.3} />
-        <Tile position={[-0.4, 0, 0]} size={[1.3, 0.24, 1.3]} texture={spk} texScale={0.55} active />
+        <Tile position={[-0.4, 0, 0]} size={[1.3, 0.24, 1.3]} texture={spk} texScale={0.55} active base={C.violet} glowColor={C.violet} />
         <Wire from={[0.45, 0.05, 0]} to={[2.0, 0.05, 0]} delay={0.4} period={1.3} />
         <group position={[3.0, 0, 0]}>
           <mesh position={[0, 0.09, 0]}>
@@ -399,6 +435,7 @@ export function FeatureDeliveryScene({ input, reduce, visible, zoom }) {
             <meshBasicMaterial map={reqTex} transparent depthWrite={false} />
           </mesh>
         </group>
+        <Beam position={[3.0, 0, 0]} color={C.mint} />
         <Billboard position={[-2.3, 1.9, 0.9]} reduce={reduce}
           spec={{ lines: [{ text: "Generating report…", size: 22 }, { text: "3 integrations live", size: 17, color: C.accent, weight: 700 }], size: 22, h: 0.8 }} />
         <Dial position={[3.0, 1.6, -0.9]} />
@@ -454,13 +491,18 @@ export function PlatformScene({ input, reduce, visible, zoom }) {
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} dragClamp={1.1} ground={18}>
         <PulseRings position={[0, 0.03, 0]} input={input} />
-        <Tile position={[0, 0, 0]} size={[1.9, 0.28, 1.9]} texture={fxTex} texScale={0.5} active />
+        <Tile position={[0, 0, 0]} size={[1.9, 0.28, 1.9]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.violet} />
+        <Burst position={[0, 0.3, 0]} input={input} color={C.amber} count={10} />
+        <Satellite radius={1.45} y={1.15} color={C.amber} phase={0.4} reduce={reduce} />
+        <Satellite radius={1.45} y={1.2} color={C.violet} phase={Math.PI} speed={-0.75} reduce={reduce} />
+        <Satellite radius={1.45} y={1.1} color={C.sky} phase={Math.PI * 0.55} speed={1.15} size={0.11} reduce={reduce} />
         <group ref={orbit}>
           {[gTex, mTex, aTex].map((tex, i) => {
             const a = (i * Math.PI * 2) / 3;
+            const orbitBases = [C.sky, C.blue, C.amber];
             return (
               <group key={i} position={[Math.cos(a) * radius, 0, Math.sin(a) * radius]}>
-                <Tile size={[1.2, 0.2, 1.2]} texture={tex} />
+                <Tile size={[1.2, 0.2, 1.2]} texture={tex} base={orbitBases[i]} />
                 <Billboard position={[0, 1.25, 0]} reduce={reduce} phase={i * 1.3}
                   spec={{ lines: [{ text: names[i], size: 20 }], size: 20, h: 0.42 }} />
               </group>
@@ -471,10 +513,12 @@ export function PlatformScene({ input, reduce, visible, zoom }) {
           ))}
         </group>
         <Wire from={[1.0, 0.05, 0]} to={[3.6, 0.05, 0]} delay={0.5} period={1.5} />
-        <DocTile position={[4.4, 0, 0]} />
+        <DocTile position={[4.4, 0, 0]} base={C.mint} />
         <Billboard position={[4.4, 1.9, 0]} reduce={reduce} phase={2}
-          spec={{ lines: [{ text: "✓ Client report ready", color: C.mint, size: 22 }], size: 22, h: 0.5 }} />
+          spec={{ lines: [{ text: "✓ Client report ready", color: C.green, size: 22 }], size: 22, h: 0.5 }} />
         <Billboard position={[4.4, 1.2, 1.1]} reduce={reduce} spec={{ pill: true, lines: [{ text: "Export PDF", color: "#FFFFFF", size: 20 }], h: 0.46 }} />
+        <Chip position={[-2.9, 2.2, -1.4]} value="2.4x" label="ROAS · June" color={C.mint} delay={0.3} reduce={reduce} phase={1} />
+        <Chip position={[-2.6, 1.5, 1.8]} value="+38%" label="conversions" color={C.accent} delay={0.7} reduce={reduce} phase={2.2} />
       </IsoWorld>
     </>
   );
@@ -490,17 +534,21 @@ export function VisionScene({ input, reduce, visible, zoom }) {
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} dragClamp={0.8} ground={18}>
         {zs.map((z, i) => (
-          <Tile key={i} position={[-3.8, 0, z]} size={[1.15, 0.2, 1.15]} texture={[gTex, mTex, aTex][i]} />
+          <Tile key={i} position={[-3.8, 0, z]} size={[1.15, 0.2, 1.15]} texture={[gTex, mTex, aTex][i]} base={[C.sky, C.blue, C.amber][i]} />
         ))}
         {zs.map((z, i) => (
           <Wire key={i} from={[-3.0, 0.05, z]} to={[-1.0, 0.05, 0]} delay={i * 0.2} period={1.4} />
         ))}
-        <Tile position={[-0.15, 0, 0]} size={[1.6, 0.26, 1.6]} texture={fxTex} texScale={0.5} active />
+        <Tile position={[-0.15, 0, 0]} size={[1.6, 0.26, 1.6]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.violet} />
+        <Satellite radius={1.5} y={1.1} color={C.amber} phase={1.2} reduce={reduce} />
+        <Satellite radius={1.5} y={1.15} color={C.violet} phase={Math.PI + 1.2} speed={-0.8} reduce={reduce} />
+        <Beam position={[-0.15, 0, 0]} color={C.accent} />
         <Wire from={[0.9, 0.05, 0]} to={[2.5, 0.05, 0]} delay={0.6} period={1.4} />
-        <DocTile position={[3.3, 0, 0]} />
+        <DocTile position={[3.3, 0, 0]} base={C.mint} />
         <Billboard position={[-0.2, 2.2, 1.4]} reduce={reduce} phase={0} spec={{ lines: [{ text: "One connected pipeline", size: 21 }], size: 21, h: 0.46 }} />
-        <Billboard position={[0.2, 2.0, -1.2]} reduce={reduce} phase={1.4} spec={{ lines: [{ text: "✓ Fluxvex AI · drafting", color: C.mint, size: 21 }], size: 21, h: 0.46 }} />
+        <Billboard position={[0.2, 2.0, -1.2]} reduce={reduce} phase={1.4} spec={{ lines: [{ text: "✓ Fluxvex AI · drafting", color: C.green, size: 21 }], size: 21, h: 0.46 }} />
         <Billboard position={[3.3, 1.7, 1.0]} reduce={reduce} phase={2.6} spec={{ lines: [{ text: "On schedule", size: 21 }], size: 21, h: 0.44 }} />
+        <Chip position={[-2.2, 2.4, -1.6]} value="5 → 500" label="clients, one workflow" color={C.violet} delay={0.5} reduce={reduce} phase={0.8} />
       </IsoWorld>
     </>
   );
@@ -514,19 +562,25 @@ export function LayersScene({ input, reduce, visible, zoom }) {
     ctx.beginPath();
     ctx.roundRect(4, 4, w - 8, h - 8, 22);
     ctx.fill();
-    ctx.strokeStyle = "rgba(16,16,20,0.10)";
-    ctx.lineWidth = 3;
-    ctx.stroke();
+    ctx.fillStyle = C.accent;
+    ctx.beginPath();
+    ctx.roundRect(4, 4, w - 8, 74, 22);
+    ctx.fill();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = '700 30px "Inter Tight", Inter, sans-serif';
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.fillText("CONNECTED DATA", 36, 42);
     for (let r = 0; r < 3; r++) {
-      const y = 90 + r * 130;
-      ctx.fillStyle = "rgba(16,16,20,0.06)";
+      const y = 120 + r * 112;
+      ctx.fillStyle = ["rgba(56,189,248,0.16)", "rgba(47,125,246,0.14)", "rgba(245,197,24,0.18)"][r];
       ctx.beginPath();
       ctx.roundRect(36, y, 130, 56, 14);
       ctx.fill();
-      ctx.fillStyle = r === 0 ? "rgba(61,67,232,0.5)" : "rgba(16,16,20,0.13)";
-      ctx.fillRect(196, y + 10, w - 260, 16);
-      ctx.fillStyle = "rgba(16,16,20,0.09)";
-      ctx.fillRect(196, y + 38, w - 380, 12);
+      ctx.fillStyle = "rgba(16,16,20,0.30)";
+      ctx.fillRect(196, y + 8, w - 260, 16);
+      ctx.fillStyle = "rgba(16,16,20,0.16)";
+      ctx.fillRect(196, y + 36, w - 380, 12);
     }
   });
   const aiTex = useCanvasTexture(720, 470, (ctx, w, h) => {
@@ -534,80 +588,97 @@ export function LayersScene({ input, reduce, visible, zoom }) {
     ctx.beginPath();
     ctx.roundRect(4, 4, w - 8, h - 8, 22);
     ctx.fill();
-    ctx.strokeStyle = "rgba(61,67,232,0.25)";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.fillStyle = C.accent;
+    ctx.fillStyle = C.violet;
     ctx.beginPath();
-    ctx.roundRect(36, 40, 250, 62, 31);
+    ctx.roundRect(4, 4, w - 8, 74, 22);
     ctx.fill();
     ctx.fillStyle = "#FFFFFF";
     ctx.font = '700 30px "Inter Tight", Inter, sans-serif';
     ctx.textBaseline = "middle";
-    ctx.textAlign = "center";
-    ctx.fillText("FLUXVEX AI", 161, 73);
-    ctx.fillStyle = "rgba(16,16,20,0.12)";
-    [40, 128, 216].forEach((x, i) => {
+    ctx.textAlign = "left";
+    ctx.fillText("FLUXVEX AI", 36, 42);
+    ctx.fillStyle = "rgba(123,92,255,0.12)";
+    [120, 204, 288].forEach((y, i) => {
       ctx.beginPath();
-      ctx.roundRect(36, 150 + i * 84, w - 72 - i * 60, 44, 12);
+      ctx.roundRect(36, y, w - 72 - i * 60, 50, 14);
       ctx.fill();
     });
+    ctx.fillStyle = C.violet;
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.arc(58, 145 + i * 84, 9, 0, Math.PI * 2);
+      ctx.fill();
+    }
   });
   const brandTex = useCanvasTexture(720, 470, (ctx, w, h) => {
     ctx.fillStyle = "#FFFFFF";
     ctx.beginPath();
     ctx.roundRect(4, 4, w - 8, h - 8, 22);
     ctx.fill();
-    ctx.strokeStyle = "rgba(16,16,20,0.10)";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.fillStyle = C.accent;
-    ctx.fillRect(36, 40, w - 72, 54);
-    ctx.fillStyle = C.ink;
+    ctx.fillStyle = C.mint;
     ctx.beginPath();
-    ctx.roundRect(36, 120, 56, 56, 10);
+    ctx.roundRect(4, 4, w - 8, 74, 22);
     ctx.fill();
     ctx.fillStyle = "#FFFFFF";
     ctx.font = '700 30px "Inter Tight", Inter, sans-serif';
     ctx.textBaseline = "middle";
-    ctx.fillText("N", 58, 149);
-    ctx.fillStyle = "rgba(16,16,20,0.12)";
-    [120, 196, 272].forEach((y, i) => {
+    ctx.textAlign = "left";
+    ctx.fillText("BRANDED DELIVERY", 36, 42);
+    ctx.fillStyle = C.accent;
+    ctx.fillRect(36, 110, w - 72, 46);
+    ctx.fillStyle = C.ink;
+    ctx.beginPath();
+    ctx.roundRect(36, 186, 56, 56, 10);
+    ctx.fill();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = '700 30px "Inter Tight", Inter, sans-serif';
+    ctx.textAlign = "center";
+    ctx.fillText("N", 64, 215);
+    ctx.fillStyle = "rgba(16,16,20,0.14)";
+    [196, 258, 320].forEach((y, i) => {
       ctx.beginPath();
-      ctx.roundRect(110, y, w - 146 - i * 70, 40, 10);
+      ctx.roundRect(110, y, w - 146 - i * 70, 36, 10);
       ctx.fill();
     });
   });
   const grp = useRef(null);
-  const labelData = [
-    { text: "Connected data", color: C.soft },
-    { text: "Fluxvex AI", color: C.accent },
-    { text: "Branded delivery", color: C.mint },
-  ];
   const labelTex = [
     useTextTexture({ lines: [{ text: "Connected data", size: 22, color: C.soft }], size: 22, h: 0.44 }),
-    useTextTexture({ lines: [{ text: "Fluxvex AI", size: 22, color: C.accent }], size: 22, h: 0.44 }),
+    useTextTexture({ lines: [{ text: "Fluxvex AI", size: 22, color: C.violet }], size: 22, h: 0.44 }),
     useTextTexture({ lines: [{ text: "Branded delivery", size: 22, color: C.mint }], size: 22, h: 0.44 }),
+  ];
+  const chipTex = [
+    useTextTexture({ lines: [{ text: "3 sources · one schema", size: 19, weight: 700, color: C.accent }], pill: true, h: 0.4 }),
+    useTextTexture({ lines: [{ text: "Drafts · flags anomalies", size: 19, weight: 700, color: C.violet }], pill: true, h: 0.4 }),
+    useTextTexture({ lines: [{ text: "Your logo · your voice", size: 19, weight: 700, color: C.mint }], pill: true, h: 0.4 }),
   ];
   const sep = useRef(1);
   useFrame((s, dt) => {
     if (!grp.current) return;
-    const target = input.hover && !reduce ? 1.6 : 1;
+    const target = input.hover && !reduce ? 1.48 : 1;
     sep.current += (target - sep.current) * Math.min(1, dt * 6);
     grp.current.children.forEach((child, i) => {
-      if (child.userData.baseY !== undefined) child.position.y = child.userData.baseY * sep.current + (reduce ? 0 : Math.sin(s.clock.elapsedTime * 0.9 + i * 1.1) * 0.05);
+      if (child.userData.baseY !== undefined) {
+        /* fan pivots around the middle layer so nothing clips the frame */
+        child.position.y = (child.userData.baseY - 1.14) * sep.current + 1.14 + (reduce ? 0 : Math.sin(s.clock.elapsedTime * 0.9 + i * 1.1) * 0.05);
+      }
     });
   });
   const slabs = [dataTex, aiTex, brandTex];
+  const plate = [C.accent, C.violet, C.mint];
   return (
     <>
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} interactive={false} ground={14}>
         <group ref={grp}>
           {slabs.map((tex, i) => {
-            const baseY = 0.3 + i * 0.85;
+            const baseY = 0.34 + i * 0.9;
             return (
               <group key={i} userData={{ baseY }} position={[0, baseY, 0]}>
+                <mesh position={[0, -0.09, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                  <planeGeometry args={[4.35, 2.94]} />
+                  <meshBasicMaterial color={plate[i]} transparent opacity={0.28} depthWrite={false} />
+                </mesh>
                 <mesh>
                   <boxGeometry args={[4.1, 0.14, 2.7]} />
                   <meshBasicMaterial color={C.white} />
@@ -617,12 +688,17 @@ export function LayersScene({ input, reduce, visible, zoom }) {
                   <planeGeometry args={[3.9, 2.52]} />
                   <meshBasicMaterial map={tex} transparent depthWrite={false} />
                 </mesh>
-                <sprite position={[2.95, 0.1, 0]} scale={[0.44 * (labelTex[i].aspect || 3), 0.44, 1]}>
+                <sprite position={[2.75, 0.1, -0.3]} scale={[0.44 * (labelTex[i].aspect || 3), 0.44, 1]}>
                   <spriteMaterial map={labelTex[i]} transparent depthWrite={false} />
+                </sprite>
+                <sprite position={[-2.5, 0.02, (i - 1) * 1.35]} scale={[0.4 * (chipTex[i].aspect || 4), 0.4, 1]}>
+                  <spriteMaterial map={chipTex[i]} transparent depthWrite={false} opacity={0.95} />
                 </sprite>
               </group>
             );
           })}
+          <Satellite radius={2.9} y={1.9} color={C.amber} phase={0.8} size={0.11} reduce={reduce} speed={-1.2} />
+          <Satellite radius={2.9} y={2.0} color={C.sky} phase={Math.PI * 0.7} size={0.1} reduce={reduce} speed={1.4} />
         </group>
       </IsoWorld>
     </>

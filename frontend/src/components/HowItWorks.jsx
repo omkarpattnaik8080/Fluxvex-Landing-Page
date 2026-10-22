@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
-import { Check, ChevronRight, Pause, Play, Plug, FolderOpen, Sparkles, Send } from "lucide-react";
+import { Check, ChevronRight, Plug, FolderOpen, Sparkles, Send } from "lucide-react";
 import { SectionShell } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
@@ -196,23 +196,19 @@ function IsoStage({ step }) {
 
 export default function HowItWorks() {
   const [active, setActive] = useState(0);
-  const [auto, setAuto] = useState(true);
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { amount: 0.3 });
   const reduce = useReducedMotion();
   const { openWaitlist } = useWaitlist();
 
-  /* Auto-advance the tour through all four steps while the section is on screen */
+  /* The tour plays itself while the section is on screen — no play button needed */
   useEffect(() => {
-    if (!auto || !inView || reduce) return undefined;
+    if (!inView || reduce) return undefined;
     const id = setInterval(() => setActive((a) => (a + 1) % STEPS.length), AUTO_MS);
     return () => clearInterval(id);
-  }, [auto, inView, reduce]);
+  }, [inView, reduce]);
 
-  const goTo = (i) => {
-    setActive(i);
-    setAuto(false);
-  };
+  const goTo = (i) => setActive(i);
 
   return (
     <SectionShell id="workflow" className="!px-0 !py-0">
@@ -289,26 +285,15 @@ export default function HowItWorks() {
                 </TapCTA>
               </motion.div>
             </AnimatePresence>
-            <div className="mt-10 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2" aria-hidden="true">
-                {STEPS.map((_, i) => (
-                  <motion.span
-                    key={i}
-                    animate={{ width: i === active ? 32 : 12, backgroundColor: i === active ? "#3D43E8" : "rgba(16,16,20,0.15)" }}
-                    transition={{ type: "spring", stiffness: 260, damping: 26 }}
-                    className="h-1 rounded-full"
-                  />
-                ))}
-              </div>
-              <button
-                onClick={() => setAuto((a) => !a)}
-                className="flex items-center gap-1.5 rounded-full border border-line bg-page px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-soft transition-colors hover:border-accent/40 hover:text-accent"
-                data-testid="workflow-autoplay-toggle"
-                aria-pressed={auto}
-              >
-                {auto ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
-                {auto ? "Auto-playing" : "Play tour"}
-              </button>
+            <div className="mt-10 flex items-center gap-2" aria-hidden="true">
+              {STEPS.map((_, i) => (
+                <motion.span
+                  key={i}
+                  animate={{ width: i === active ? 32 : 12, backgroundColor: i === active ? "#3D43E8" : "rgba(16,16,20,0.15)" }}
+                  transition={{ type: "spring", stiffness: 260, damping: 26 }}
+                  className="h-1 rounded-full"
+                />
+              ))}
             </div>
           </div>
 

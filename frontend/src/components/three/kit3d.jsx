@@ -11,11 +11,17 @@ export const C = {
   accent: "#3D43E8",
   ink: "#0B0B0D",
   soft: "#5B5F68",
-  mint: "#0E8A3E",
+  mint: "#10B981",
+  green: "#0E8A3E",
   white: "#FFFFFF",
   dim: "#EDEBE4",
   hairline: "#C6C4BD",
   hairlineActive: "#8B8FE0",
+  amber: "#F5C518",
+  violet: "#7B5CFF",
+  sky: "#38BDF8",
+  coral: "#FB7185",
+  blue: "#2F7DF6",
 };
 
 const texCache = new Map();
@@ -217,10 +223,10 @@ export function IsoWorld({ children, input, reduce, interactive = true, dragClam
 }
 
 /* White tile with hairline edges + optional top decal + active halo */
-export function Tile({ position = [0, 0, 0], size = [1, 0.2, 1], texture, texScale = 0.62, active = false, dim = false, hoverLift = 0.12, interactive = true }) {
+export function Tile({ position = [0, 0, 0], size = [1, 0.2, 1], texture, texScale = 0.62, active = false, dim = false, hoverLift = 0.12, interactive = true, base = null, glowColor = null }) {
   const grp = useRef(null);
   const halo = useRef(null);
-  const glow = useGlowTexture(C.accent);
+  const glow = useGlowTexture(glowColor || C.accent);
   const [hovered, setHovered] = useState(false);
   const lift = useRef(0);
   useFrame((_, dt) => {
@@ -240,6 +246,12 @@ export function Tile({ position = [0, 0, 0], size = [1, 0.2, 1], texture, texSca
   const w = Math.hypot(size[0], size[2]) * 1.25;
   return (
     <group position={position}>
+      {base && !dim && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.012, 0]}>
+          <planeGeometry args={[size[0] * 1.18, size[2] * 1.18]} />
+          <meshBasicMaterial color={base} transparent opacity={0.9} depthWrite={false} />
+        </mesh>
+      )}
       <group ref={grp}
         onPointerOver={interactive ? (e) => { e.stopPropagation(); setHovered(true); } : undefined}
         onPointerOut={interactive ? () => setHovered(false) : undefined}>
@@ -360,5 +372,116 @@ export function PulseRings({ position = [0, 0.02, 0], input, burst = true }) {
         <meshBasicMaterial color={C.accent} transparent opacity={0} depthWrite={false} />
       </mesh>
     </group>
+  );
+}
+
+/* Volumetric light column under/around a tile (two crossed additive planes) */
+export function Beam({ position = [0, 0, 0], height = 2.4, width = 1.3, color = C.accent, opacity = 0.2 }) {
+  const m1 = useRef(null);
+  const m2 = useRef(null);
+  const glow = useGlowTexture(color);
+  useFrame((s) => {
+    const o = opacity * (0.8 + Math.sin(s.clock.elapsedTime * 1.7) * 0.2);
+    if (m1.current) m1.current.opacity = o;
+    if (m2.current) m2.current.opacity = o * 0.7;
+  });
+  return (
+    <group position={[position[0], height / 2, position[2]]}>
+      <mesh>
+        <planeGeometry args={[width, height]} />
+        <meshBasicMaterial ref={m1} map={glow} color={color} transparent opacity={0} depthWrite={false} side={THREE.DoubleSide} blending={THREE.AdditiveBlending} />
+      </mesh>
+      <mesh rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[width, height]} />
+        <meshBasicMaterial ref={m2} map={glow} color={color} transparent opacity={0} depthWrite={false} side={THREE.DoubleSide} blending={THREE.AdditiveBlending} />
+      </mesh>
+    </group>
+  );
+}
+
+/* Floating KPI chip — big value + small label */
+export function Chip({ position, value, label, color = C.accent, delay = 0, reduce = false, phase = 0 }) {
+  const tex = useTextTexture({
+    lines: [
+      { text: value, size: 30, weight: 700, color, align: "left" },
+      { text: label, size: 16, weight: 600, color: C.soft, align: "left" },
+    ],
+    size: 30,
+    h: 0.72,
+  });
+  const s = useRef(null);
+  const o = useRef(0);
+  useFrame((state, dt) => {
+    const sp = s.current;
+    if (!sp) return;
+    const t = state.clock.elapsedTime;
+    const want = t > delay ? 1 : 0;
+    o.current += (want - o.current) * Math.min(1, dt * 5);
+    sp.material.opacity = o.current;
+    if (!reduce) sp.position.y = position[1] + Math.sin(t * 1.4 + phase) * 0.06;
+  });
+  const h = 0.72;
+  return <sprite ref={s} position={position} scale={[h * (tex.aspect || 3), h, 1]}><spriteMaterial map={tex} transparent depthWrite={false} opacity={0} /></sprite>;
+}
+
+/* Particle burst — fires on `trigger` (timestamp) or input.pulseAt changes */
+export function Burst({ position = [0, 0, 0], input, trigger = 0, color = C.accent, count = 9 }) {
+  const refs = useRef([]);
+  const glow = useGlowTexture(color);
+  const last = useRef(0);
+  const start = useRef(-1);
+  useFrame(() => {
+    const now = trigger || (input && input.pulseAt) || 0;
+    if (now && now !== last.current) {
+      last.current = now;
+      start.current = performance.now();
+    }
+    const t = start.current < 0 ? 1 : (performance.now() - start.current) / 900;
+    refs.current.forEach((r, i) => {
+      if (!r.current) return;
+      if (t >= 1) {
+        r.current.visible = false;
+        return;
+      }
+      r.current.visible = true;
+      const a = (i / count) * Math.PI * 2 + 0.4;
+      const d = 0.25 + t * 1.7;
+      r.current.position.set(position[0] + Math.cos(a) * d, position[1] + 0.15 + Math.sin(t * Math.PI) * 0.85, position[2] + Math.sin(a) * d);
+      r.current.material.opacity = (1 - t) * 0.95;
+    });
+  });
+  return (
+    <>
+      {Array.from({ length: count }).map((_, i) => (
+        <sprite
+          key={i}
+          ref={(r) => (refs.current[i] = r)}
+          scale={[0.2, 0.2, 1]}
+          visible={false}
+        >
+          <spriteMaterial map={glow} transparent depthWrite={false} blending={THREE.AdditiveBlending} opacity={0} />
+        </sprite>
+      ))}
+    </>
+  );
+}
+
+/* Tiny orbiting octahedron satellite */
+export function Satellite({ radius = 1.35, speed = 0.9, color = C.amber, size = 0.13, phase = 0, y = 0.85, reduce = false, bob = true }) {
+  const ref = useRef(null);
+  useFrame((s) => {
+    if (!ref.current) return;
+    const a = s.clock.elapsedTime * (reduce ? 0 : speed) + phase;
+    ref.current.position.set(Math.cos(a) * radius, y + (bob && !reduce ? Math.sin(a * 2) * 0.09 : 0), Math.sin(a) * radius);
+    if (!reduce) {
+      ref.current.rotation.y = a * 1.4;
+      ref.current.rotation.x = a * 0.9;
+    }
+  });
+  return (
+    <mesh ref={ref}>
+      <octahedronGeometry args={[size, 0]} />
+      <meshBasicMaterial color={color} />
+    </mesh>
   );
 }

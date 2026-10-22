@@ -138,16 +138,33 @@ export default function Showcase() {
       {/* Iso3D — the report's three layers, exploded; hover fans them apart */}
       <Reveal>
         <div
-          className="relative mb-5 h-[190px] overflow-hidden rounded-2xl border border-line bg-[#F7F6F2] sm:h-[230px]"
+          className="relative mb-5 overflow-hidden rounded-2xl border border-line bg-[linear-gradient(135deg,#FBFAF6_0%,#F1EFE8_100%)] shadow-[0_40px_90px_-40px_rgba(20,21,122,0.35)]"
           data-testid="showcase-layers-3d"
         >
-          <div className="fine-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
-          <Suspense fallback={null}>
-            <Scene3D scene="layers" className="absolute inset-0" />
-          </Suspense>
-          <span className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-page/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
-            Connected data · Fluxvex AI · Branded delivery
-          </span>
+          <div className="fine-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent via-violet-500 to-emerald-400" aria-hidden="true" />
+          <div className="relative flex flex-col justify-between gap-3 px-6 pt-5 sm:flex-row sm:items-start sm:px-8">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">Three layers, one frame</p>
+              <p className="mt-1 max-w-md text-[13px] leading-relaxed text-ink-soft">
+                Connected data feeds Fluxvex AI, which fills the branded delivery your client reads.
+              </p>
+            </div>
+            <span className="hidden items-center gap-1.5 rounded-full border border-line bg-page px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft sm:flex">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" aria-hidden="true" /> Hover to fan the layers
+            </span>
+          </div>
+          <div className="relative h-[230px] sm:h-[260px]">
+            <Suspense
+              fallback={
+                <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                  <span className="h-2 w-2 animate-ping rounded-full bg-accent/60" />
+                </div>
+              }
+            >
+              <Scene3D scene="layers" className="absolute inset-0" />
+            </Suspense>
+          </div>
         </div>
       </Reveal>
       <Reveal>
