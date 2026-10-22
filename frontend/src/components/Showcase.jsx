@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Download, ChevronDown, Sparkles } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import TapCTA from "@/components/ui/TapCTA";
+
+const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
 const PERIODS = {
   may: {
@@ -133,6 +135,21 @@ export default function Showcase() {
         title="A report your client can understand at a glance."
         copy="One frame holds the whole story: what was spent, what came back, and what it means—labeled, sourced, and ready to send. Switch the period to see the report update itself."
       />
+      {/* Iso3D — the report's three layers, exploded; hover fans them apart */}
+      <Reveal>
+        <div
+          className="relative mb-5 h-[190px] overflow-hidden rounded-2xl border border-line bg-[#F7F6F2] sm:h-[230px]"
+          data-testid="showcase-layers-3d"
+        >
+          <div className="fine-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+          <Suspense fallback={null}>
+            <Scene3D scene="layers" className="absolute inset-0" />
+          </Suspense>
+          <span className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-page/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+            Connected data · Fluxvex AI · Branded delivery
+          </span>
+        </div>
+      </Reveal>
       <Reveal>
         <div
           ref={ref}

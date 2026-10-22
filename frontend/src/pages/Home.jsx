@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
@@ -23,10 +24,16 @@ import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import Seo from "@/components/Seo";
 
+/* Shared WebGL layer for the Iso3D scenes — lazy so three.js stays out of the main bundle */
+const SceneCanvas = lazy(() => import("@/components/three/SceneCanvas"));
+
 export default function Home() {
   return (
     <>
       <Seo path="/" />
+      <Suspense fallback={null}>
+        <SceneCanvas />
+      </Suspense>
       <Navbar />
       <main>
         <Hero />

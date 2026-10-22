@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Plug, Sparkles, CalendarClock, ArrowRight, FileText, PenLine, Receipt, Zap } from "lucide-react";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
@@ -8,6 +9,8 @@ import TapCTA from "@/components/ui/TapCTA";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { useWaitlist } from "@/components/WaitlistContext";
+
+const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
 const PILLARS = [
   {
@@ -73,7 +76,7 @@ const AI_CAPABILITIES = [
   { text: "An AI account manager that runs day-to-day client communication—saving what a full-time manager costs", plan: true },
 ];
 
-function VisionScene() {
+function VisionSceneLegacy() {
   return (
     <IsoPlane w={330} h={246} scale="scale-[0.78] sm:scale-100 lg:scale-[1.18]" className="mx-auto h-full">
       <IsoTile x={16} y={18} w={54} h={54}>
@@ -124,7 +127,14 @@ export default function Vision() {
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <div className="overflow-x-clip" data-testid="vision-scene">
-            <VisionScene />
+            <Suspense fallback={<VisionSceneLegacy />}>
+              <Scene3D
+                scene="vision"
+                testid="vision-scene-3d"
+                fallback={<VisionSceneLegacy />}
+                className="mx-auto h-[400px] w-full sm:h-[440px] lg:h-[470px]"
+              />
+            </Suspense>
           </div>
         </Reveal>
         <div className="space-y-4">

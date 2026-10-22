@@ -1,126 +1,109 @@
 {
-  "theme_and_identity": {
-    "colors": {
-      "neutrals": "#F4F2ED (warm-cream background)",
-      "accent": "#3D43E8 (royal blue)",
-      "accent_tint": "#EEF0FF (light tint)",
-      "dark": "#0B0B0D (dark ink, for footer/dark panels)",
-      "success_accents": "#43D675 (mint), #F5D748 (yellow) for small pops",
-      "forbidden": ["purple/violet gradients", "dark theme switch"]
-    },
-    "typography": {
-      "headings": "Inter Tight (display/headings/buttons)",
-      "body": "Inter",
-      "accents": "Caveat (sticky notes only)"
-    },
-    "visual_style": {
-      "motif": "Cream-3D",
-      "elements": ["white cards", "soft big shadows", "dashed connectors", "hatch bands", "pressed tiles"],
-      "icons": "Lucide only (NO emojis)",
-      "animations": ["framer-motion everywhere", "custom CinematicText masked line reveals for section headings", "Reveal on scroll (whileInView, once)", "Hover lift on cards"]
-    },
-    "constraints": {
-      "mobile": "390px is first-class",
-      "testing": "Keep ALL data-testid attributes intact",
-      "copy": "Do not fabricate metrics, certifications, or prices"
-    }
+  "theme": "light",
+  "typography": {
+    "headings": "Inherit from existing setup, ensure tight tracking (`tracking-tight`) for large sizes.",
+    "body": "Inherit from existing setup, maintain high legibility (`leading-relaxed`).",
+    "labels": "Use 3D DOM overlays (`<Html>` from `@react-three/drei`) for all text inside 3D canvases to keep it crisp, accessible, and easily selectable. Use uppercase + wide tracking (`tracking-[0.2em]`) for overlines."
   },
-  "section_order_home_jsx": [
-    "Hero (Problem/Attention)",
-    "Marquee (Social Proof)",
-    "Problem (Agitate)",
-    "Outcome (Solution)",
-    "HowItWorks (Mechanism)",
-    "Showcase (Proof/Tour)",
-    "Platform (Mechanism)",
-    "FeatureGrid (Features)",
-    "AiComparison (Objection)",
-    "Consistency (Value/Operations)",
-    "RoiCalculator (Value)",
-    "IntegrationsStrip (Trust)",
-    "Testimonial (Trust)",
-    "SecuritySection (Objection/Trust)",
-    "PricingPreview (Pricing)",
-    "Faq (FAQ)",
-    "FinalCta (Final CTA)",
-    "BackersBand (Trust)",
-    "Footer"
+  "colors": {
+    "primary": "#3D43E8",
+    "background_main": "#FFFFFF",
+    "background_alt": "#F4F2ED",
+    "ink": "#0B0B0D",
+    "success_mint": "#10B981"
+  },
+  "visual_enhancers": {
+    "isometric_3d": "Orthographic projection to perfectly match existing SVG angles. No perspective distortion.",
+    "materials": "Flat shading only. Use `meshBasicMaterial` to prevent realistic lighting, shadows, or glossy gradients. The aesthetic must remain strictly vector-like.",
+    "hairlines": "Use Drei's `<Edges>` or `EdgesGeometry` with color `#0B0B0D` and thin line width to replicate the exact SVG stroke look.",
+    "glow": "For glowing packets on wires, use pure colors with bloom post-processing, or fake it using bright flat colors with a soft HTML radial shadow behind them."
+  },
+  "3d_libraries": [
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+    "framer-motion-3d"
   ],
-  "components_to_update": {
-    "AiComparison.jsx": {
-      "instructions_to_main_agent": [
-        "Redesign PromptVisual and WorkflowVisual into equal-height, side-by-side (grid-cols-2), aesthetic, premium animated illustration diagrams.",
-        "Ensure diagrams are not tiny/cramped. Use cream-3D card styles (white bg, soft big shadows).",
-        "Add framer-motion animations (flowing data packets, pulsing dots, staggered reveals).",
-        "Redesign the Comparison Table: 3 columns (Need, General AI, Fluxvex).",
-        "Highlight the Fluxvex column (bg-accent-tint, accent borders).",
-        "Add hover states to table rows (hover:bg-surface/80). Stagger row animations on scroll.",
-        "Use checkmark (Check) for Fluxvex features and neutral glyphs (Minus) for AI assistant limitations.",
-        "Make the table header feel sticky.",
-        "Keep testids: ai-comparison-table, comparison-need-1..6, comparison-prompt-visual, comparison-workflow-visual, ai-comparison-close."
-      ]
+  "scenes": {
+    "features_section": {
+      "composition": "3 separate isometric islands (SOURCES, FLUXVEX AI, DELIVERY).",
+      "camera": "OrthographicCamera, positioned at [10, 10, 10] looking at [0,0,0].",
+      "motion": {
+        "idle": "Islands slowly float (sine wave on Y axis).",
+        "hover": "Target island lifts slightly, drop shadow softens.",
+        "drag": "Slight tilt/rotation of the island (clamped to +/- 15 degrees) using cursor mapping."
+      },
+      "labels": "<Html> billboards floating above elements with 'data-testid' attributes."
     },
-    "Hero.jsx": {
-      "instructions_to_main_agent": [
-        "Add an animated 'AI Insights' element to fill the empty space: a floating chip or stream beside/above the dashboard.",
-        "The AI element should show an animated typing/summary line or cycling insight cards (e.g., 'Drafting June performance summary...').",
-        "Increase premium animations using framer-motion (spring physics, staggered floaters).",
-        "Keep the texture background, white dashboard preview, and integration chips.",
-        "Keep testids: hero-join-waitlist-button, hero-see-how-it-works-link, hero-report-preview, etc."
-      ]
+    "why_a_prompt_isnt_a_reporting_system": {
+      "composition": "Split view. Left: Messy, chaotic dashed wires looping (Claude representation). Right: Clean, straight, organized pipeline (Fluxvex).",
+      "camera": "OrthographicCamera.",
+      "motion": {
+        "idle": "Chaotic particles moving wildly on left, smooth synchronized glowing packets moving on right.",
+        "hover": "Messy wires repel cursor (spring physics). Pipeline wires glow brighter on hover."
+      }
     },
-    "Consistency.jsx": {
-      "instructions_to_main_agent": [
-        "Make rows more engaging/premium. Convert the simple list into pressed-tile cards or cream-3D panels with hover states (lift and shadow).",
-        "Enhance illustrations (RowDoc, RowBrand, RowStrategy): make them larger, add richer SVG animations, and ensure they feel premium.",
-        "Keep testids: operations-row-01..03."
-      ]
+    "how_it_works": {
+      "composition": "Sequential pipeline: Source tiles (Google Ads, Meta) -> Hub -> Report Doc.",
+      "camera": "OrthographicCamera. Pan camera or sequence reveal based on scroll.",
+      "motion": {
+        "idle": "Packets continuously traverse dashed lines.",
+        "hover": "Hovering a node pauses the local packet flow, node expands, reveals detailed `<Html>` tooltip."
+      }
     },
-    "SecuritySection.jsx": {
-      "instructions_to_main_agent": [
-        "Add a prominent supporting illustration (e.g., an animated shield or vault motif with orbiting tokens) in the cream-3D style.",
-        "Enhance the 'Planned' control list into a grid of pressable-like tiles (hover lift, soft shadow).",
-        "Keep the honest 'Planned' chips and the quote panel.",
-        "Keep testids: security-control-1..8, security-approach-link."
-      ]
+    "inside_fluxvex": {
+      "composition": "Dashboard representation separated into isometric Z-layers.",
+      "camera": "OrthographicCamera.",
+      "motion": {
+        "idle": "Layers sit mostly flat.",
+        "hover": "Hovering expands the gap between Z-layers (parallax effect), demonstrating depth and architecture."
+      }
     },
-    "FinalCta.jsx": {
-      "instructions_to_main_agent": [
-        "Add an engaging supporting illustration (e.g., animated report cards assembling, orbiting brand marks, or an insight ticker).",
-        "Keep the blue poster identity and corner fasteners.",
-        "Keep testids: final-cta-join-waitlist-button, final-cta-explore-pricing-link."
-      ]
+    "platform": {
+      "composition": "Central Fluxvex AI Hub with orbiting source tiles connected by dashed wires.",
+      "camera": "OrthographicCamera.",
+      "motion": {
+        "idle": "Slow continuous orbital rotation of the source tiles around the hub.",
+        "drag": "User can grab and spin the entire orbit.",
+        "click": "Clicking a source tile centers it and reveals its data points."
+      }
     },
-    "Platform.jsx": {
-      "instructions_to_main_agent": [
-        "Keep the CloudVisual but make the section more engaging.",
-        "Add an animated stat/feature strip with mini-visuals, OR upgrade the accordion rows with mini animated visuals inside the expanded state.",
-        "Ensure animations use framer-motion.",
-        "Keep testids: platform-cta-button, platform-accordion-1..3, platform-cloud-visual, platform-cloud-icons, platform-cloud-badge, platform-stats, platform-stat-1..4."
-      ]
-    },
-    "Showcase.jsx": {
-      "instructions_to_main_agent": [
-        "Replace the static dashed 'Insight area' card with an ANIMATED 'AI insights' area.",
-        "Include a typing/streaming summary line, cycling insight chips, and an AI sparkle mark.",
-        "Label it clearly as 'illustrative/sample' data.",
-        "Keep testids: showcase-mockup, showcase-kpi-*, showcase-sample-badge, showcase-export-button."
-      ]
-    },
-    "FeatureGrid.jsx": {
-      "instructions_to_main_agent": [
-        "Add premium polish: hover lift on cards, animated dashed connectors.",
-        "Use richer framing (cream-3D styling, hatch bands).",
-        "Keep the exact reference diagrams (VisualInputs, VisualSummaries, VisualDelivery) but enhance their animations and depth.",
-        "Keep testids: section-features, feature-card-1..3, feature-visual-inputs/summaries/delivery."
-      ]
+    "our_vision": {
+      "composition": "Grand overarching scene. Hub, Docs, floating 'Authorized', 'Client-ready' billboards.",
+      "camera": "OrthographicCamera, zoomed out to show the full ecosystem.",
+      "motion": {
+        "idle": "Billboards gently bob.",
+        "hover": "Cursor movement tilts the entire scene slightly (parallax on mouse move)."
+      }
     }
   },
-  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
-    "Do not invent new colors or gradients. Stick strictly to the specified light warm-cream theme and royal blue accent.",
-    "Use layered shadows (ambient + direct) for depth, following the cream-3D motif.",
-    "Ensure all interactive elements have hover states (color shift, slight transform).",
-    "Preserve all existing data-testid attributes exactly as they are for automated testing.",
-    "Ensure the layout is perfectly responsive, prioritizing mobile (390px viewport)."
-  ]
+  "performance_rules": {
+    "dpr": "Cap at 2. `<Canvas dpr={[1, 2]}>`",
+    "context": "Use `@react-three/drei`'s `<View>` component to share a single WebGL context across the entire page while rendering in multiple DOM nodes. If `<View>` is too complex for setup, use separate canvases but heavily optimize.",
+    "visibility": "Pause rendering when offscreen. Use `frameloop='demand'` if scenes are mostly static, but since they have traveling packets, use `frameloop='always'` but early return in `useFrame` if an IntersectionObserver marks the canvas as off-screen.",
+    "geometry": "InstancedMesh for repeated elements like data packets to reduce draw calls."
+  },
+  "accessibility_and_fallback": {
+    "reduced_motion": "Detect `@media (prefers-reduced-motion)`. If true, disable idle floating and travelling packets.",
+    "webgl_fallback": "Keep the existing SVG `<IsoKit>` components as fallback if WebGL fails to initialize or is disabled.",
+    "dom_labels": "Because text is rendered in the DOM via `<Html>`, screen readers can access it. Ensure `aria-hidden='true'` on the Canvas itself, and handle focus manually on the DOM overlays."
+  },
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "You are writing for a React 19 CRA environment (use .js / .jsx, not .tsx unless configured).",
+    "DO NOT use generic 3D looks (no PBR, no gloss, no shadows baked into textures). The aesthetic is strict flat vector isometric.",
+    "Ensure all DOM overlay elements (buttons, billboards, labels) have `data-testid` attributes. Example: `data-testid='how-it-works-hub-label'`.",
+    "When positioning `<Html>` components from Drei, use `center` and `transform` props for crisp UI.",
+    "Use Tailwind for styling all `<Html>` DOM nodes, preserving the exact #3D43E8 and #F4F2ED brand colors.",
+    "Never use fully transparent backgrounds behind text in the `<Html>` popups; always give them a solid background (e.g., `#FFFFFF`) with a 1px border (`#0B0B0D`) to stand out.",
+    "To achieve isometric dashed wires, use Drei's `<Line>` component with `dashed={true}`, or build a custom line material.",
+    "Implement mouse-driven tilt using `framer-motion-3d` or raw `useFrame` math with `THREE.MathUtils.lerp` for smooth dampening. Target 60fps."
+  ],
+  "instructions_to_main_agent": {
+    "step_1": "Install dependencies: `yarn add three @react-three/fiber @react-three/drei framer-motion-3d`.",
+    "step_2": "Create a new `Iso3DKit.jsx` (or `.js`) equivalent to the old `IsoKit.jsx`. It should contain reusable `IsoPlane`, `IsoWire`, `IsoHub`, `IsoBillboard` implemented as R3F components.",
+    "step_3": "Setup a master `<Canvas>` or implement IntersectionObserver logic to only run `useFrame` animations when the user is actively viewing a section.",
+    "step_4": "Migrate `FeaturesGrid`, `HowItWorks`, `Platform`, `Vision`, and `WhyAiComparison` one by one, replacing the SVG components with the 3D `<Canvas>` wrapped components.",
+    "step_5": "Verify `data-testid` is present on all `<Html>` overlays and interactive elements.",
+    "step_6": "Test on mobile viewport (scale down zoom, disable expensive hover listeners)."
+  }
 }

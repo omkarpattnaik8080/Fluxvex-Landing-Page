@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import { BarChart3, TrendingUp, Users, Zap, Database, Sparkles, Bell } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
@@ -5,6 +6,8 @@ import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
+
+const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
 const SCENE_SCALE = "scale-[0.72] sm:scale-90 lg:scale-105";
 
@@ -17,10 +20,9 @@ function Cursor() {
 }
 
 /* Card 1 — sources feed the hub; the report-section list floats beside it */
-function VisualInputs() {
+function LegacyInputs() {
   return (
-    <div className="h-full" data-testid="feature-visual-inputs">
-      <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
+    <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
         <IsoTile x={12} y={20} w={44} h={44}>
           <GoogleAdsMark size={16} />
         </IsoTile>
@@ -60,15 +62,13 @@ function VisualInputs() {
           </div>
         </IsoBillboard>
       </IsoPlane>
-    </div>
   );
 }
 
 /* Card 2 — channels stream into Fluxvex AI, which drafts the summary */
-function VisualSummaries() {
+function LegacySummaries() {
   return (
-    <div className="h-full" data-testid="feature-visual-summaries">
-      <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
+    <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
         <IsoTile x={12} y={20} w={44} h={44}>
           <GoogleAdsMark size={16} />
         </IsoTile>
@@ -102,15 +102,13 @@ function VisualSummaries() {
           </span>
         </IsoBillboard>
       </IsoPlane>
-    </div>
   );
 }
 
 /* Card 3 — request → AI generation → client-ready in seconds */
-function VisualDelivery() {
+function LegacyDelivery() {
   return (
-    <div className="h-full" data-testid="feature-visual-delivery">
-      <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
+    <IsoPlane w={340} h={210} scale={SCENE_SCALE} className="h-full">
         <IsoTile x={16} y={78} w={44} h={52} float={false}>
           <span className="flex h-10 w-8 flex-col gap-[3px] p-1" aria-hidden="true">
             <span className="flex h-4 w-4 items-center justify-center rounded bg-ink font-display text-[7px] font-bold text-white">N</span>
@@ -160,9 +158,23 @@ function VisualDelivery() {
           </span>
         </IsoBillboard>
       </IsoPlane>
+  );
+}
+
+/* Interactive Iso3D cards — legacy SVG kept as WebGL fallback */
+function Scene({ scene, legacy, testid }) {
+  return (
+    <div className="h-full" data-testid={testid}>
+      <Suspense fallback={legacy}>
+        <Scene3D scene={scene} fallback={legacy} className="h-full w-full" />
+      </Suspense>
     </div>
   );
 }
+
+const VisualInputs = () => <Scene scene="featureSources" legacy={<LegacyInputs />} testid="feature-visual-inputs" />;
+const VisualSummaries = () => <Scene scene="featureAi" legacy={<LegacySummaries />} testid="feature-visual-summaries" />;
+const VisualDelivery = () => <Scene scene="featureDelivery" legacy={<LegacyDelivery />} testid="feature-visual-delivery" />;
 
 const CARDS = [
   {

@@ -1,8 +1,11 @@
+import { lazy, Suspense } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check, HelpCircle, LayoutTemplate, MessageSquare, Minus, Plug, RefreshCw, Repeat, Send, SlidersHorizontal, Sparkles, Users } from "lucide-react";
 import { IsoTile, IsoWire, IsoBillboard, PLANE } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+
+const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
 const ROWS = [
   { icon: Plug, need: "Connect to the agency's live accounts", ai: "Depends on available connectors, permissions, and setup", fx: "Designed around supported advertising and analytics integrations" },
@@ -64,8 +67,22 @@ function PromptVisual() {
       </div>
 
       <div className="relative flex flex-1 items-center justify-center">
-        <div className="scale-[0.85] sm:scale-100">
-          <div className="relative h-[230px] w-[230px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
+        <Suspense fallback={<PromptSceneLegacy />}>
+          <Scene3D scene="prompt" fallback={<PromptSceneLegacy />} className="absolute inset-0" />
+        </Suspense>
+      </div>
+
+      <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
+        Answers the question—then waits for the next instruction, every cycle.
+      </p>
+    </div>
+  );
+}
+
+function PromptSceneLegacy() {
+  return (
+    <div className="scale-[0.85] sm:scale-100">
+      <div className="relative h-[230px] w-[230px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
             {/* dashed loop on the plane with an orbiting packet */}
             <div className="absolute left-[45px] top-[45px] h-[140px] w-[140px] rounded-full border border-dashed border-black/25" aria-hidden="true" />
             <motion.div
@@ -97,25 +114,13 @@ function PromptVisual() {
                 ))}
               </span>
             </IsoBillboard>
-          </div>
-        </div>
       </div>
-
-      <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
-        Answers the question—then waits for the next instruction, every cycle.
-      </p>
     </div>
   );
 }
 
 /* Workflow scene — one dependable diagonal pipeline with packets */
 function WorkflowVisual() {
-  const nodes = [
-    { icon: Plug, label: "Connect" },
-    { icon: SlidersHorizontal, label: "Define" },
-    { icon: Sparkles, label: "Generate" },
-    { icon: Send, label: "Deliver" },
-  ];
   return (
     <div
       className="relative flex h-full min-h-[340px] flex-col overflow-hidden rounded-xl border border-accent-border bg-accent-tint/60 p-6"
@@ -131,8 +136,28 @@ function WorkflowVisual() {
       </div>
 
       <div className="relative flex flex-1 items-center justify-center">
-        <div className="scale-[0.78] sm:scale-95">
-          <div className="relative h-[180px] w-[300px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
+        <Suspense fallback={<WorkflowSceneLegacy />}>
+          <Scene3D scene="pipeline" fallback={<WorkflowSceneLegacy />} className="absolute inset-0" />
+        </Suspense>
+      </div>
+
+      <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
+        Runs the same dependable loop on schedule, without being asked.
+      </p>
+    </div>
+  );
+}
+
+function WorkflowSceneLegacy() {
+  const nodes = [
+    { icon: Plug, label: "Connect" },
+    { icon: SlidersHorizontal, label: "Define" },
+    { icon: Sparkles, label: "Generate" },
+    { icon: Send, label: "Deliver" },
+  ];
+  return (
+    <div className="scale-[0.78] sm:scale-95">
+      <div className="relative h-[180px] w-[300px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
             {/* pipeline wires with packets */}
             <IsoWire from={[54, 90]} to={[86, 90]} delay={0} />
             <IsoWire from={[134, 90]} to={[166, 90]} delay={0.3} />
@@ -153,13 +178,7 @@ function WorkflowVisual() {
             <IsoBillboard x={120} y={148}>
               <span className="text-[11px] font-semibold text-ink">Same dependable loop, every cycle</span>
             </IsoBillboard>
-          </div>
-        </div>
       </div>
-
-      <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
-        Runs the same dependable loop on schedule, without being asked.
-      </p>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { Check, ChevronRight, Pause, Play, Plug, FolderOpen, Sparkles, Send } from "lucide-react";
 import { SectionShell } from "@/components/SectionShell";
@@ -8,6 +8,8 @@ import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/Integration
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
 import TapCTA from "@/components/ui/TapCTA";
+
+const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
 const AUTO_MS = 3800;
 
@@ -93,7 +95,7 @@ function DocSheet() {
   );
 }
 
-function IsoStage({ step }) {
+function IsoStageLegacy({ step }) {
   const sources = [
     { mark: <GoogleAdsMark size={17} />, key: "g" },
     { mark: <MetaMark size={17} />, key: "m" },
@@ -102,14 +104,13 @@ function IsoStage({ step }) {
   const srcPos = [52, 122, 192];
   const engineActive = step === 1 || step === 2 || step === 3;
   return (
-    <div className="flex h-[460px] items-center justify-center overflow-hidden" data-testid="workflow-iso-stage">
-      <motion.div
-        key={step}
-        initial={{ opacity: 0.3 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.45, ease: "easeOut" }}
-        className="relative scale-[0.78] sm:scale-95 lg:scale-110"
-      >
+    <motion.div
+      key={step}
+      initial={{ opacity: 0.3 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="relative scale-[0.78] sm:scale-95 lg:scale-110"
+    >
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-44 w-80 -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-black/[0.05] blur-2xl" aria-hidden="true" />
         <div className="relative h-[280px] w-[280px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
           {/* wires */}
@@ -172,7 +173,23 @@ function IsoStage({ step }) {
             </Billboard>
           )}
         </div>
-        </motion.div>
+      </motion.div>
+  );
+}
+
+/* Interactive Iso3D stage — SVG IsoStage kept as WebGL fallback */
+function IsoStage({ step }) {
+  return (
+    <div className="flex h-[460px] items-center justify-center overflow-hidden" data-testid="workflow-iso-stage">
+      <Suspense fallback={<IsoStageLegacy step={step} />}>
+        <Scene3D
+          scene="workflow"
+          props={{ step }}
+          testid="workflow-iso-stage-3d"
+          fallback={<IsoStageLegacy step={step} />}
+          className="h-full w-full"
+        />
+      </Suspense>
     </div>
   );
 }

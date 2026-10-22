@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronDown, ChevronRight, Link2, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { HubIllustration, PadlockIllustration, RiffleIllustration } from "@/components/hairline/Illustrations";
@@ -9,6 +9,8 @@ import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { useWaitlist } from "@/components/WaitlistContext";
 import TapCTA from "@/components/ui/TapCTA";
+
+const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
 const ACCORDION = [
   { icon: Link2, title: "Seamless integrations", desc: "Connect reporting sources without workflow interruptions.", mini: "integrations" },
@@ -71,7 +73,7 @@ function CountUp({ value }) {
   return <span ref={ref}>{n}</span>;
 }
 
-function CloudVisual() {
+function CloudVisualLegacy() {
   const LABELS = ["Google Ads", "Meta Ads", "Google Analytics 4"];
   const marks = [<GoogleAdsMark size={16} key="g" />, <MetaMark size={16} key="m" />, <GA4Mark size={16} key="a" />];
   return (
@@ -193,9 +195,11 @@ export default function Platform() {
             </div>
           </div>
 
-          {/* right cloud visual */}
+          {/* right cloud visual — interactive Iso3D orbit, SVG fallback */}
           <div className="fine-grid relative flex items-center justify-center bg-[#F7F6F2] p-10 min-h-[400px] sm:p-14">
-            <CloudVisual />
+            <Suspense fallback={<CloudVisualLegacy />}>
+              <Scene3D scene="platform" testid="platform-cloud-3d" fallback={<CloudVisualLegacy />} className="absolute inset-0" />
+            </Suspense>
           </div>
         </div>
 
