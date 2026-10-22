@@ -1,10 +1,22 @@
 /* Scene3D — renders an Iso3D scene into the shared page canvas via drei <View>.
-   Falls back to the original SVG composition when WebGL is unavailable. */
-import { useEffect, useRef, useState } from "react";
+   Falls back to the original SVG composition when WebGL is unavailable or a
+   scene throws at render time (per-view error boundary keeps one bad scene
+   from taking down the page). */
+import { Component, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { View, OrthographicCamera } from "@react-three/drei";
 import { useReducedMotion } from "framer-motion";
 import { SCENES, WORLD } from "./scenes";
+
+class SceneBoundary extends Component {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
 
 function SceneHost({ scene, props, input, reduce, visible, zoom }) {
   const Scene = SCENES[scene];
@@ -113,16 +125,24 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
       };
 
   return (
-    <View
-      track={ref}
-      ref={ref}
-      visible={inView}
-      className={`iso3d-host ${className}`}
-      style={{ touchAction: "pan-y", ...style }}
-      data-testid={testid}
-      {...handlers}
+    <SceneBoundary
+      fallback={
+        <div className={className} style={style} data-testid={testid}>
+          {typeof fallback === "function" ? fallback() : fallback}
+        </div>
+      }
     >
-      {size && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} />}
-    </View>
+      <View
+        track={ref}
+        ref={ref}
+        visible={inView}
+        className={`iso3d-host ${className}`}
+        style={{ touchAction: "pan-y", ...style }}
+        data-testid={testid}
+        {...handlers}
+      >
+        {size && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} />}
+      </View>
+    </SceneBoundary>
   );
 }

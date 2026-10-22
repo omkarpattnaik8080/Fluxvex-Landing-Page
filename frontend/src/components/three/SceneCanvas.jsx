@@ -1,5 +1,8 @@
 /* SceneCanvas — ONE shared WebGL context for every Iso3D view on the page.
-   Fixed layer above section backgrounds, pointer-events none, transparent clear. */
+   Fixed layer above section backgrounds, pointer-events none, transparent clear.
+   If WebGL is unavailable the canvas never mounts and every Scene3D falls back
+   to its SVG composition — the page must never crash. */
+import { useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { View } from "@react-three/drei";
 
@@ -17,7 +20,18 @@ function FullClear() {
   return null;
 }
 
+function detectWebGL() {
+  try {
+    const c = document.createElement("canvas");
+    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+  } catch (e) {
+    return false;
+  }
+}
+
 export default function SceneCanvas() {
+  const [glOk] = useState(detectWebGL);
+  if (!glOk) return null;
   return (
     <div className="pointer-events-none fixed inset-0 z-[35]" aria-hidden="true">
       <Canvas

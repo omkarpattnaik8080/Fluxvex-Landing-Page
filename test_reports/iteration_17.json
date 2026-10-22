@@ -1,0 +1,26 @@
+{
+  "summary": "Iteration 17 testing: NEW outcome 3D scenes, redesigned dark roadmap panel, Reveal/content-visibility regressions. Backend 19/19 pass. Frontend: 3D outcome scenes render live (all 4 cards show distinct 3D content, mint scan bar on card 02 moves between frames, chips '3 → 1 one workflow'/'✓ Same structure'/'✓ Client-ready'/'✓ Cadence locked' all present and not overlapping tiles, visual zones bottom-aligned at y=731 identically). Roadmap panel renders with THE AGENCY LOOP pill, BUILDING NOW chip, FUTURE PLAN chips, dark glass cards. Reveal system: no stuck-invisible sections after full scroll-through. Anchor nav (ROI calculator) lands near calculator (top=130, within tolerance). Calculator sliders+Copy work. Pricing currency toggle (USD/INR) works, blurred prices intentional. No horizontal overflow at 1440 or 390. ZERO page errors on home or pricing. One real bug: when WebGL context creation fails, the entire site crashes to a top-level error boundary ('Something went wrong. Please refresh the page.') instead of falling back to the legacy SVG diagrams per spec.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Outcome / Scene3D", "issue": "WebGL fallback is broken. When WebGL context is unavailable (getContext('webgl'|'webgl2') returns null), the three.js renderer throws a render-time error that propagates past the <Suspense fallback={SVGFallback}> wrapper and is caught by the top-level app error boundary, replacing the ENTIRE page with 'Something went wrong. Please refresh the page.' Suspense only catches lazy-loading promises, not render errors. The spec requires outcome cards to show legacy SVG diagrams in this scenario. Fix: wrap Scene3D (or the Outcome Scene wrapper) in a React ErrorBoundary that renders the SVG fallback on error, and/or detect WebGL support at mount time and short-circuit to SVG before mounting <Canvas>/<View>.", "selector": "#outcome [class*='min-h-'] canvas / Scene wrapper in Outcome.jsx", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/iteration_17.xml"],
+  "action_items": [
+    "Add a React ErrorBoundary around the Scene3D/Three.js View in Outcome.jsx (and ideally in any other 3D-using component) that renders the SVG fallback on render error. Alternatively, do a cheap WebGL feature-detect (create a throwaway canvas, call getContext('webgl2')||getContext('webgl'); if null, set a context flag and render SVG directly). Suspense is insufficient because WebGL failures are synchronous render errors, not thrown promises."
+  ],
+  "critical_code_review_comments": [
+    "Outcome.jsx uses <Suspense fallback={SVGFallback}>; this only handles the lazy chunk load path, not Three.js runtime errors. A dedicated ErrorBoundary is needed for graceful WebGL degradation.",
+    "The shared drei <View> design (single fixed canvas) means a single WebGL failure takes down ALL 3D-using sections simultaneously, amplifying the blast radius of the issue above."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "90%"},
+  "test_credentials": "admin@example.com / admin123 (not exercised this iteration — admin untouched)",
+  "seed_data_creation": "none",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "After the WebGL-fallback fix lands, re-run the WebGL-blocked scenario by overriding HTMLCanvasElement.prototype.getContext to return null for 'webgl'/'webgl2'/'experimental-webgl' only (NOT 2d) via page.add_init_script BEFORE page.goto; expected: #outcome visual zones each contain an <svg> fallback diagram, rest of the page renders normally, no 'Something went wrong' overlay. All other iteration-17 checks (3D scenes render, scan bar moves, roadmap panel, Reveal, anchors, calculator, pricing, no overflow, 0 pageerrors) are passing."
+}
