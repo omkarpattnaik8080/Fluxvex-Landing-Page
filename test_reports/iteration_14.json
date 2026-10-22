@@ -1,0 +1,21 @@
+{
+  "summary": "Iteration 14 — Features section illustration audit after scenes.jsx + kit3d.jsx fixes. Backend pytest 19/19 PASS (SEO, waitlist, careers, contact, admin JWT auth + jobs CRUD, dynamic careers listing). Frontend @1440 Features section (section-features): all three testids feature-visual-inputs / -summaries / -delivery render at 404x300px inside their 485px feature-card-1/2/3 columns. Card 1 Unified data hub shows the three colored-base source tiles with Google Ads / Meta / GA4 logos, blue hub (correctly differentiated from card 2's violet), dashed wires and the branded report doc with rows/pills. Card 2 AI-written summaries shows the violet glowing hub plus three staggered readable tags down the iso diagonal: 'Meta Ads · ROAS 2.4x', '+24% channel results', 'AI · drafting summary·' — no collisions / no overlap. Card 3 Quick response delivery shows the request→AI→branded doc chain with a visible mint base plate under the branded tile, the rewritten screen-space Dial (clean blue ring + rotating accent arc + '00:03' center text, no broken dotted-torus), and the enlarged 'Generating report… / 3 integrations live' billboard — NO green stain blob (Beam successfully removed). Only 1 shared <canvas> on Home @1440 (confirms shared renderer still works). Hover on feature-card-1 reacts (packet speed up / tile lift) without breaking layout — card bounds stable. Mobile @390x844: all three feature-visuals render at 348x300 stacked, 1 canvas, 0 horizontal overflow, tags remain legible after scene lazy-load (~3s). Regression: 0 canvas on /careers /pricing /blog. Admin login admin@example.com/admin123 at /admin/jobs works — 'SaaS Sales Intern LIVE' listing visible, Post job form present, Log out button present. No JS pageerrors. Minor console warnings only: deprecated THREE.Clock, 'Too many active WebGL contexts' (expected during initial multi-scene mount — resolves to 1 canvas), container position hint from framer-motion (pre-existing, not from this iteration).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/iteration_14_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Dial rewrite as screen-space sprites (ring + rotating arc + depthTest=false text) renders crisply at the 300px scene scale — previous broken dotted-torus is gone and the '00:03' text is sharp.",
+    "Mint base plate under card 3's branded doc is subtle but visible; delivery hub color distinction (green/mint vs card 2 violet vs card 1 blue) now reads clearly across the three cards.",
+    "Card 2 tag restaggering (ROAS 2.25/-0.5, chip 1.57/0.3, AI drafting 0.92/1.1) removes the earlier collisions — all three tags readable simultaneously with no z-fighting.",
+    "WORLD tightening 10.6x5.6 → 9.6x5.2 effectively enlarges illustrations ~15% within the 300px cards without clipping the iso diagonal."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (19/19)", "frontend": "100% — illustration audit verified, no issues"},
+  "test_credentials": "Admin admin@example.com / admin123 — verified working at /admin/jobs.",
+  "seed_data_creation": "None; pytest self-cleans TEST_* records.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Features section illustrations now verified post-audit. For next regression: (1) feature-visual-inputs/summaries/delivery present and 404x300 @1440 inside their feature-card-1/2/3, (2) card 3 shows '00:03' dial text and no green stain blob, (3) card 2's three tags do not overlap, (4) card 1 hub is blue (not violet, differentiated from card 2), (5) 1 canvas on Home / 0 on /careers /pricing /blog, (6) 0 horizontal overflow @1440 and @390, (7) admin login still works.",
+  "rca of the issue": "N/A — no bugs found; the Features audit fixes landed cleanly."
+}

@@ -98,6 +98,11 @@ export function useTextTexture(spec) {
     c.height = h;
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
+      if (spec.shadow) {
+        ctx.shadowColor = "rgba(16,16,20,0.30)";
+        ctx.shadowBlur = 11 * s;
+        ctx.shadowOffsetY = 4 * s;
+      }
       if (spec.pill) {
         ctx.fillStyle = spec.bg || C.accent;
         roundRect(ctx, 0, 0, w, h, h / 2);
@@ -106,11 +111,14 @@ export function useTextTexture(spec) {
         ctx.fillStyle = spec.bg || "#FFFFFF";
         roundRect(ctx, 0, 0, w, h, 12 * s);
         ctx.fill();
-        ctx.strokeStyle = spec.border || "rgba(16,16,20,0.10)";
+        ctx.strokeStyle = spec.border || "rgba(16,16,20,0.14)";
         ctx.lineWidth = 1.5 * s;
         roundRect(ctx, 0.75 * s, 0.75 * s, w - 1.5 * s, h - 1.5 * s, 11.5 * s);
         ctx.stroke();
       }
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
       ctx.textBaseline = "middle";
       lines.forEach((l, i) => {
         ctx.font = font(l.weight || spec.weight || 600, l.size || spec.size || 26);
@@ -131,6 +139,8 @@ export function useTextTexture(spec) {
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 4;
+    tex.generateMipmaps = false;
+    tex.minFilter = THREE.LinearFilter;
     tex.aspect = w / h;
     return tex;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -316,7 +326,7 @@ export function Wire({ from, to, active = true, dim = false, delay = 0, period =
 
 /* Screen-facing label billboard (canvas text sprite) */
 export function Billboard({ position = [0, 1.4, 0], spec, bob = 0.05, phase = 0, fade = true, reduce = false, scale = 1 }) {
-  const tex = useTextTexture(spec);
+  const tex = useTextTexture({ ...spec, shadow: true });
   const s = useRef(null);
   const o = useRef(0);
   useFrame((state, dt) => {
@@ -329,8 +339,8 @@ export function Billboard({ position = [0, 1.4, 0], spec, bob = 0.05, phase = 0,
   });
   const h = (spec.h || 0.52) * scale;
   return (
-    <sprite ref={s} position={position} scale={[h * (tex.aspect || 3), h, 1]}>
-      <spriteMaterial map={tex} transparent depthWrite={false} opacity={0} />
+    <sprite ref={s} position={position} scale={[h * (tex.aspect || 3), h, 1]} renderOrder={20}>
+      <spriteMaterial map={tex} transparent depthWrite={false} depthTest={false} opacity={0} />
     </sprite>
   );
 }
@@ -402,26 +412,22 @@ export function Beam({ position = [0, 0, 0], height = 2.4, width = 1.3, color = 
 /* Floating KPI chip — big value + small label */
 export function Chip({ position, value, label, color = C.accent, delay = 0, reduce = false, phase = 0 }) {
   const tex = useTextTexture({
+    shadow: true,
     lines: [
-      { text: value, size: 30, weight: 700, color, align: "left" },
-      { text: label, size: 17, weight: 600, color: C.soft, align: "left" },
+      { text: value, size: 34, weight: 700, color, align: "left" },
+      { text: label, size: 20, weight: 700, color: "#474A52", align: "left" },
     ],
-    size: 30,
-    h: 0.85,
+    size: 34,
+    h: 0.95,
   });
   const s = useRef(null);
-  const o = useRef(0);
-  useFrame((state, dt) => {
+  useFrame((state) => {
     const sp = s.current;
     if (!sp) return;
-    const t = state.clock.elapsedTime;
-    const want = t > delay ? 1 : 0;
-    o.current += (want - o.current) * Math.min(1, dt * 5);
-    sp.material.opacity = o.current;
-    if (!reduce) sp.position.y = position[1] + Math.sin(t * 1.4 + phase) * 0.06;
+    if (!reduce) sp.position.y = position[1] + Math.sin(state.clock.elapsedTime * 1.4 + phase) * 0.06;
   });
-  const h = 0.85;
-  return <sprite ref={s} position={position} scale={[h * (tex.aspect || 3), h, 1]}><spriteMaterial map={tex} transparent depthWrite={false} opacity={0} /></sprite>;
+  const h = 0.95;
+  return <sprite ref={s} position={position} scale={[h * (tex.aspect || 3), h, 1]} renderOrder={20}><spriteMaterial map={tex} transparent depthWrite={false} depthTest={false} opacity={1} /></sprite>;
 }
 
 /* Particle burst — fires on `trigger` (timestamp) or input.pulseAt changes */

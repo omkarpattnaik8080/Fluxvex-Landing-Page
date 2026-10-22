@@ -14,10 +14,10 @@ export const WORLD = {
   workflow: { w: 10.6, h: 6.6 },
   prompt: { w: 7.6, h: 6.4 },
   pipeline: { w: 11, h: 5.6 },
-  featureSources: { w: 9.6, h: 5.2 },
-  featureAi: { w: 9.6, h: 5.2 },
+  featureSources: { w: 8.8, h: 5.0 },
+  featureAi: { w: 8.8, h: 5.0 },
   featureDelivery: { w: 9.6, h: 5.2 },
-  platform: { w: 11.4, h: 7 },
+  platform: { w: 10.4, h: 7 },
   vision: { w: 11, h: 6.6 },
   layers: { w: 10, h: 5.0 },
 };
@@ -133,7 +133,7 @@ export function WorkflowScene({ input, reduce, visible, zoom, step = 0 }) {
             <>
               <Billboard position={[0.3, 2.0, 0]} reduce={reduce}
                 spec={{ lines: [{ text: "Northbeam Media · Client", size: 24 }, { text: "June 2025", color: C.accent, size: 21 }], size: 24, h: 0.78 }} />
-              <Chip position={[-3.3, 1.9, 1.6]} value="3" label="sources connected" color={C.sky} delay={0.35} reduce={reduce} />
+              <Chip position={[-3.3, 2.5, 1.6]} value="3" label="sources connected" color={C.sky} delay={0.35} reduce={reduce} />
             </>
           )}
           {step === 2 && (
@@ -312,30 +312,122 @@ function ReportBoard() {
 
 export function FeatureSourcesScene({ input, reduce, visible, zoom }) {
   const [gTex, mTex, aTex, fxTex] = useBrandTextures();
-  const zs = [-1.6, 0, 1.6];
-  const bases = [C.sky, C.blue, C.amber];
+  const sources = [
+    { tex: gTex, pos: [0.3, 0, -3.0], base: C.sky, from: [0.35, 0.05, -1.9], to: [0.38, 0.05, -1.0] },
+    { tex: mTex, pos: [-2.9, 0, 0.7], base: C.blue, from: [-1.12, 0.05, 0.32], to: [-0.53, 0.05, 0.2] },
+    { tex: aTex, pos: [-1.8, 0, 2.7], base: C.amber, from: [-1.14, 0.05, 1.88], to: [-0.22, 0.05, 0.76] },
+  ];
   return (
     <>
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} ground={14}>
-        {zs.map((z, i) => (
-          <Tile key={i} position={[-3.5, 0, z]} size={[1.1, 0.2, 1.1]} texture={[gTex, mTex, aTex][i]} base={bases[i]} />
+        <PulseRings position={[0.4, 0.025, 0]} input={input} />
+        <Beam position={[0.4, 0, 0]} color={C.accent} height={2.1} width={1.5} opacity={0.13} />
+        {sources.map((s, i) => (
+          <Tile key={i} position={s.pos} size={[1.1, 0.2, 1.1]} texture={s.tex} base={s.base} />
         ))}
-        {zs.map((z, i) => (
-          <Wire key={i} from={[-2.75, 0.05, z]} to={[-1.25, 0.05, 0]} delay={i * 0.2} period={1.4} />
+        {sources.map((s, i) => (
+          <Wire key={i} from={s.from} to={s.to} delay={i * 0.22} period={1.4} />
         ))}
-        <Tile position={[-0.4, 0, 0]} size={[1.4, 0.24, 1.4]} texture={fxTex} texScale={0.5} active base={C.accent} />
-        <Satellite radius={1.35} y={0.95} color={C.violet} phase={0.6} reduce={reduce} />
-        <Wire from={[0.5, 0.05, 0]} to={[1.7, 0.05, 0]} delay={0.5} period={1.5} />
+        <Tile position={[0.4, 0, 0]} size={[1.7, 0.3, 1.7]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.accent} />
+        <Satellite radius={1.6} y={0.95} color={C.violet} phase={0.6} reduce={reduce} />
+        <Satellite radius={1.6} y={1.02} color={C.amber} phase={Math.PI + 0.6} speed={-0.75} reduce={reduce} />
+        <Wire from={[1.3, 0.05, 0.12]} to={[1.8, 0.05, 0.08]} delay={0.55} period={1.5} />
         <ReportBoard />
+        <Chip position={[0.4, 2.35, 0]} value="3 → 1" label="sources · one schema" color={C.accent} delay={0.4} reduce={reduce} />
       </IsoWorld>
     </>
   );
 }
 
+/* Drafting document — skeleton lines fill in with violet ink, one by one */
+function DraftDoc({ reduce }) {
+  const tex = useCanvasTexture(760, 560, (ctx, w, h) => {
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.roundRect(4, 4, w - 8, h - 8, 24);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(16,16,20,0.10)";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.fillStyle = "rgba(16,16,20,0.92)";
+    ctx.font = '700 46px "Inter Tight", Inter, sans-serif';
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillText("June summary", 48, 92);
+    ctx.fillStyle = "rgba(16,16,20,0.07)";
+    [200, 300, 400].forEach((y, i) => {
+      ctx.beginPath();
+      ctx.roundRect(48, y - 22, [600, 430, 510][i], 44, 22);
+      ctx.fill();
+    });
+  });
+  const barTex = useCanvasTexture(160, 24, (ctx) => {
+    ctx.fillStyle = C.violet;
+    ctx.beginPath();
+    ctx.roundRect(0, 0, 160, 24, 12);
+    ctx.fill();
+  });
+  const LINES = [
+    { z: -0.269, w: 2.01 },
+    { z: 0.011, w: 1.44 },
+    { z: 0.247, w: 1.71 },
+  ];
+  const bars = useRef([]);
+  const pen = useRef(null);
+  const glow = useGlowTexture(C.violet);
+  useFrame((s) => {
+    const T = 4.8;
+    const t = reduce ? LINES.length : ((s.clock.elapsedTime % T) / T) * LINES.length;
+    const idx = Math.min(LINES.length - 1, Math.floor(t));
+    const prog = Math.min(1, t - idx);
+    bars.current.forEach((b, i) => {
+      if (!b) return;
+      const p = i < idx ? 1 : i === idx ? Math.max(0.02, prog) : 0;
+      b.visible = p > 0.02;
+      b.scale.x = Math.max(0.001, p);
+      b.position.x = -1.12 + (LINES[i].w * p) / 2;
+    });
+    if (pen.current) {
+      const on = !reduce && prog > 0.02 && prog < 0.99;
+      pen.current.visible = on;
+      if (on) pen.current.position.set(-1.12 + (LINES[idx].w * prog) / 2 + 0.07, 0.17, LINES[idx].z);
+    }
+  });
+  return (
+    <group position={[1.55, 0, 0.15]}>
+      <mesh position={[0, 0.06, 0]}>
+        <boxGeometry args={[2.75, 0.12, 2.05]} />
+        <meshBasicMaterial color={C.white} />
+        <Edges threshold={15} color={C.hairline} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.125, 0]}>
+        <planeGeometry args={[2.55, 1.88]} />
+        <meshBasicMaterial map={tex} transparent depthWrite={false} />
+      </mesh>
+      {LINES.map((ln, i) => (
+        <mesh
+          key={i}
+          ref={(r) => (bars.current[i] = r)}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[-1.12 + ln.w / 2, 0.135, ln.z]}
+          scale={[0.001, 1, 1]}
+          visible={false}
+        >
+          <planeGeometry args={[ln.w, 0.15]} />
+          <meshBasicMaterial map={barTex} transparent depthWrite={false} opacity={0.9} />
+        </mesh>
+      ))}
+      <sprite ref={pen} position={[0, 0.17, 0]} scale={[0.42, 0.42, 1]} renderOrder={12} visible={false}>
+        <spriteMaterial map={glow} transparent depthWrite={false} depthTest={false} blending={THREE.AdditiveBlending} opacity={0.95} />
+      </sprite>
+    </group>
+  );
+}
+
 export function FeatureAiScene({ input, reduce, visible, zoom }) {
   const [gTex, mTex, aTex, fxTex] = useBrandTextures();
-  const zs = [-1.6, 0, 1.6];
+  const zs = [-1.5, 0, 1.5];
   const bases = [C.sky, C.blue, C.amber];
   const [dotFrame, setDotFrame] = useState(0);
   useEffect(() => {
@@ -348,19 +440,24 @@ export function FeatureAiScene({ input, reduce, visible, zoom }) {
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} ground={14}>
         {zs.map((z, i) => (
-          <Tile key={i} position={[-3.5, 0, z]} size={[1.1, 0.2, 1.1]} texture={[gTex, mTex, aTex][i]} base={bases[i]} />
+          <Tile key={i} position={[-3.6, 0, z]} size={[0.95, 0.18, 0.95]} texture={[gTex, mTex, aTex][i]} base={bases[i]} />
         ))}
         {zs.map((z, i) => (
-          <Wire key={i} from={[-2.75, 0.05, z]} to={[-1.2, 0.05, 0]} delay={i * 0.2} period={1.4} />
+          <Wire key={i} from={[-3.05, 0.05, z * 0.6]} to={[-2.02, 0.05, 0]} delay={i * 0.2} period={1.4} />
         ))}
-        <Tile position={[-0.4, 0, 0]} size={[1.45, 0.26, 1.45]} texture={fxTex} texScale={0.5} active base={C.violet} glowColor={C.violet} />
-        <Satellite radius={1.4} y={1.0} color={C.violet} phase={0} reduce={reduce} />
-        <Satellite radius={1.4} y={1.05} color={C.amber} phase={Math.PI} speed={-0.8} reduce={reduce} />
-        <Beam position={[-0.4, 0, 0]} color={C.violet} />
-        <Billboard position={[2.85, 2.25, -0.5]} reduce={reduce} spec={{ lines: [{ text: "Meta Ads · ROAS 2.4x", size: 24 }], size: 24, h: 0.58 }} />
-        <Billboard position={[2.5, 0.92, 1.1]} reduce={reduce} fade={!reduce}
+        <Tile position={[-1.35, 0, 0]} size={[1.3, 0.26, 1.3]} texture={fxTex} texScale={0.5} active base={C.violet} glowColor={C.violet} />
+        <Wire from={[-0.65, 0.05, 0]} to={[0.14, 0.05, 0.1]} delay={0.45} period={1.4} />
+        <DraftDoc reduce={reduce} />
+        <Beam position={[1.55, 0, 0.15]} color={C.violet} height={2.7} width={2.1} opacity={0.12} />
+        <group position={[1.55, 0, 0.15]}>
+          <Satellite radius={2.05} y={1.3} color={C.amber} phase={0.8} reduce={reduce} />
+          <Satellite radius={2.05} y={1.38} color={C.sky} phase={Math.PI + 0.8} speed={-0.8} size={0.11} reduce={reduce} />
+        </group>
+        <Billboard position={[-1.35, 1.75, 0]} reduce={reduce}
           spec={{ lines: [{ text: "AI · drafting summary" + "·".repeat(dotFrame + 1), size: 24 }], size: 24, h: 0.58 }} />
-        <Chip position={[2.6, 1.57, 0.3]} value="+24%" label="channel results" color={C.mint} delay={0.4} reduce={reduce} />
+        <Billboard position={[2.45, 1.85, -0.85]} reduce={reduce} phase={1.2}
+          spec={{ lines: [{ text: "Meta Ads · ROAS 2.4x", size: 24 }], size: 24, h: 0.58 }} />
+        <Chip position={[-0.9, 0.95, 2.6]} value="+24%" label="channel results" color={C.mint} delay={0.4} reduce={reduce} />
       </IsoWorld>
     </>
   );
@@ -511,7 +608,7 @@ export function PlatformScene({ input, reduce, visible, zoom }) {
   const names = ["Google Ads", "Meta Ads", "GA4"];
   return (
     <>
-      <Cam zoom={zoom} />
+      <Cam zoom={zoom} target={[0.5, 0.55, 0]} />
       <IsoWorld input={input} reduce={reduce} dragClamp={1.1} ground={18}>
         <PulseRings position={[0, 0.03, 0]} input={input} />
         <Tile position={[0, 0, 0]} size={[1.9, 0.28, 1.9]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.violet} />
@@ -540,8 +637,8 @@ export function PlatformScene({ input, reduce, visible, zoom }) {
         <Billboard position={[4.4, 1.9, 0]} reduce={reduce} phase={2}
           spec={{ lines: [{ text: "✓ Client report ready", color: C.green, size: 22 }], size: 22, h: 0.5 }} />
         <Billboard position={[4.4, 1.2, 1.1]} reduce={reduce} spec={{ pill: true, lines: [{ text: "Export PDF", color: "#FFFFFF", size: 20 }], h: 0.46 }} />
-        <Chip position={[-2.9, 2.2, -1.4]} value="2.4x" label="ROAS · June" color={C.mint} delay={0.3} reduce={reduce} phase={1} />
-        <Chip position={[-2.6, 1.5, 1.8]} value="+38%" label="conversions" color={C.accent} delay={0.7} reduce={reduce} phase={2.2} />
+        <Chip position={[-4.55, 2.0, -1.1]} value="2.4x" label="ROAS · June" color={C.mint} delay={0.3} reduce={reduce} phase={1} />
+        <Chip position={[-4.0, 1.45, 1.75]} value="+38%" label="conversions" color={C.accent} delay={0.7} reduce={reduce} phase={2.2} />
       </IsoWorld>
     </>
   );
