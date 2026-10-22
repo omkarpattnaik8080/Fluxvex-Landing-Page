@@ -103,3 +103,10 @@
 - Careers page rebuilt: floating hero badges (PPO up to ₹6 LPA / US·UK·India remote / founding-team replies), GSAP roles ticker, NEW "How hiring works" 3-step animated timeline (draw-line + pulsing step dots), answer-first hero paragraph (liftable by answer engines), 5 FAQs (added "Which markets can I apply for?" + "Who can apply?") matched 1:1 to FAQPage JSON-LD, JobPosting JSON-LD ×3 (INTERN, TELECOMMUTE, directApply) retained.
 - SEO/AEO/GEO: keyword-rich honest copy (SaaS sales internship, guaranteed PPO, ₹6 LPA, markets), per-route title/canonical/og, sitemap 21 URLs + llms.txt already include /careers.
 - Verified: clean compile, 3 roles/3 steps/5 FAQs render, GSAP ticker runs, no overflow at 1440 or 390.
+
+## 2026-10-22 — Session 10: calculator + pricing redesign, distinct feature diagrams
+- RoiCalculator: fmhy-style card (Live-tool toolbar + Copy result w/ clipboard fallback, in-card heading, workload/assumption sliders, dark hero load card, yearly-toll + With-Fluxvex-donut + Where-you-land YOU-bar cards). All roi-* testids preserved.
+- Pricing page: centered hero, USD/INR toggle, gray tray w/ transparent Starter + white Most-Popular Growth (conic blob, ✦ badge), LockedPrice blur+lock+shimmer, black pill CTAs → waitlist preselect, iridescent "Not sure" CTA card. Pricing remains locked/coming-soon.
+- kit3d: useTextTexture drop-shadow support; Chip enlarged (34/20 bold, opaque) + Billboard shadows — fixes ghosted-look overlays.
+- scenes.jsx: FeatureSourcesScene → radial convergence (triangle sources, pulse rings, beam, chip "3 → 1 sources · one schema"); FeatureAiScene → drafting composition (DraftDoc with violet ink bars typing on a June-summary doc, beam, satellites, separated tags); PlatformScene chips restored in clear space; world sizes tightened (platform 10.4w, features 8.8w).
+- Tests: iteration 15 — backend 19/19, frontend 9/9 ACs, 0 console errors.
