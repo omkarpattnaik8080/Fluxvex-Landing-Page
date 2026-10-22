@@ -24,7 +24,7 @@ export default function SceneCanvas() {
         orthographic
         eventSource={document.getElementById("root")}
         eventPrefix="client"
-        dpr={[1, 1.75]}
+        dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         camera={{ position: [14, 14, 14], zoom: 45, near: -100, far: 500 }}
         onCreated={({ gl }) => gl.setClearAlpha(0)}

@@ -545,6 +545,17 @@ async def startup_seed():
 
     await db.login_attempts.create_index("identifier")
 
+    # Perf: hot-path indexes (dedupe lookups, admin listings, public job fetch)
+    await db.waitlist.create_index("email")
+    await db.waitlist.create_index("created_at")
+    await db.contact_messages.create_index("email")
+    await db.contact_messages.create_index("created_at")
+    await db.career_applications.create_index("email")
+    await db.career_applications.create_index("created_at")
+    await db.job_postings.create_index("slug")
+    await db.job_postings.create_index("active")
+    await db.users.create_index("email")
+
     # Seed the current job openings only when the collection is empty.
     if await db.job_postings.count_documents({}) == 0:
         now = _now_iso()

@@ -25,6 +25,7 @@ export const C = {
 };
 
 const texCache = new Map();
+const textTexCache = new Map();
 
 function svgToTexture(svg, key) {
   if (texCache.has(key)) return texCache.get(key);
@@ -79,10 +80,13 @@ export function useImgTexture(url, key) {
   }, [url, key]);
 }
 
-/* Rounded-rect + text drawn to a canvas texture (crisp at 3x) */
+/* Rounded-rect + text drawn to a canvas texture (crisp at 3x).
+   Module-level cache: identical specs across mounts/scenes reuse one GPU texture. */
 export function useTextTexture(spec) {
   const key = JSON.stringify(spec);
   return useMemo(() => {
+    const cached = textTexCache.get(key);
+    if (cached) return cached;
     const s = 3;
     const pad = 14 * s;
     const font = (w, size) => `${w} ${size * s}px "Inter Tight", Inter, sans-serif`;
@@ -142,6 +146,7 @@ export function useTextTexture(spec) {
     tex.generateMipmaps = false;
     tex.minFilter = THREE.LinearFilter;
     tex.aspect = w / h;
+    textTexCache.set(key, tex);
     return tex;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);

@@ -2,6 +2,7 @@ import { Component, lazy, Suspense, useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
+import gsap from "gsap";
 import { WaitlistProvider } from "@/components/WaitlistContext";
 import Home from "@/pages/Home";
 
@@ -57,12 +58,11 @@ function ScrollManager() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
     const lenis = new Lenis({ lerp: 0.11, smoothWheel: true });
-    let raf;
-    const loop = (t) => {
-      lenis.raf(t);
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
+    /* One rAF for everything: GSAP ticker drives Lenis so scroll + marquees
+       update in the same frame — no competing loops, no mid-frame jank. */
+    const rafFn = (time) => lenis.raf(time * 1000);
+    gsap.ticker.add(rafFn);
+    gsap.ticker.lagSmoothing(0);
     const onClick = (e) => {
       const a = e.target.closest && e.target.closest('a[href*="#"]');
       if (!a) return;
@@ -80,7 +80,7 @@ function ScrollManager() {
     };
     document.addEventListener("click", onClick);
     return () => {
-      cancelAnimationFrame(raf);
+      gsap.ticker.remove(rafFn);
       document.removeEventListener("click", onClick);
       lenis.destroy();
     };
