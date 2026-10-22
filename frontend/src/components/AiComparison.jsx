@@ -258,11 +258,10 @@ function ScoreStrip() {
 
 export default function AiComparison() {
   return (
-    <section id="why" className="relative overflow-hidden bg-[#0B0B14]" data-testid="section-why">
-      {/* ambient glows + fine grid */}
-      <div className="pointer-events-none absolute -left-32 top-16 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.2),transparent_70%)] blur-3xl" aria-hidden="true" />
-      <div className="pointer-events-none absolute -bottom-24 right-0 h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(123,92,255,0.14),transparent_70%)] blur-3xl" aria-hidden="true" />
-      <div className="fine-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+    <section id="why" className="relative overflow-hidden bg-[#0B0B0D]" data-testid="section-why">
+      {/* subtle top light + fine grid — flat neutral dark, like the reference */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_100%_at_50%_0%,rgba(255,255,255,0.06),transparent_70%)]" aria-hidden="true" />
+      <div className="fine-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-[1280px] px-5 py-20 lg:px-8 lg:py-28">
         {/* header */}

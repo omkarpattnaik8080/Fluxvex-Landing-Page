@@ -315,11 +315,10 @@ function PipelineStatus() {
 export default function IntegrationsStrip() {
   const { openWaitlist } = useWaitlist();
   return (
-    <section id="integrations" className="relative overflow-hidden bg-[#0B0B14]" data-testid="section-integrations">
-      {/* ambient glows + fine grid */}
-      <div className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.22),transparent_70%)] blur-3xl" aria-hidden="true" />
-      <div className="pointer-events-none absolute -right-28 bottom-0 h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(123,92,255,0.16),transparent_70%)] blur-3xl" aria-hidden="true" />
-      <div className="fine-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+    <section id="integrations" className="relative overflow-hidden bg-[#0B0B0D]" data-testid="section-integrations">
+      {/* subtle top light + fine grid — flat neutral dark, like the reference */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_100%_at_50%_0%,rgba(255,255,255,0.06),transparent_70%)]" aria-hidden="true" />
+      <div className="fine-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-20">
         {/* split header: headline left, live pipeline status right */}
@@ -410,7 +409,7 @@ export default function IntegrationsStrip() {
             item={{ mark: <TikTokMark size={24} />, name: "TikTok Ads", desc: "Short-form video results, after the initial launch." }}
           />
           <Reveal delay={0.3} className="h-full sm:col-span-2 lg:col-span-6">
-            <div className="group flex flex-col items-start justify-between gap-5 rounded-2xl border border-white/[0.08] bg-gradient-to-r from-[#5D63FF]/[0.14] via-white/[0.03] to-[#7B5CFF]/[0.12] p-6 transition-[border-color] duration-300 hover:border-[#8A8FFF]/50 sm:flex-row sm:items-center sm:p-7">
+            <div className="group flex flex-col items-start justify-between gap-5 rounded-2xl border border-white/[0.08] bg-white/[0.045] p-6 transition-[border-color,background-color] duration-300 hover:border-[#8A8FFF]/50 hover:bg-white/[0.06] sm:flex-row sm:items-center sm:p-7">
               <div className="flex min-w-0 items-center gap-4">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/[0.14] bg-white/[0.06] text-[#A3A8FF]">
                   <Plus className="h-5 w-5" />
