@@ -9,22 +9,19 @@ import { GoogleAdsMark, MetaMark, GA4Mark, LinkedInMark, TikTokMark } from "@/co
 
 const slugOf = (name) => name.toLowerCase().replace(/\s+/g, "-");
 
-const SOFT = "#A3A8FF"; /* the accent's dark-surface tone, as used in the AI-core band */
-
-/* LIVE pill — reads clearly on the dark band */
 function LivePill() {
   return (
-    <span className="flex items-center gap-1.5 rounded-full bg-mint/15 px-2.5 py-1 text-[10px] font-bold tracking-wide text-mint" aria-hidden="true">
-      <span className="h-1.5 w-1.5 rounded-full bg-mint shadow-[0_0_8px_2px_rgba(67,214,117,0.45)] animate-pulse-dot" /> LIVE
+    <span className="flex items-center gap-1.5 rounded-full bg-[#0E8A3E]/10 px-2.5 py-1 text-[10px] font-bold tracking-wide text-[#0E8A3E]" aria-hidden="true">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] shadow-[0_0_0_3px_rgba(67,214,117,0.18)] animate-pulse-dot" /> LIVE
     </span>
   );
 }
 
-/* Nested viz panel — the reference's "Growth" panel anatomy */
+/* Floating white viz panel — the reference's floating "Growth" chip anatomy */
 function VizPanel({ label, children }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 pb-3.5 pt-3">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{label}</p>
+    <div className="relative overflow-hidden rounded-xl border border-black/[0.06] bg-white/90 px-4 pb-3.5 pt-3 shadow-[0_18px_36px_-20px_rgba(16,16,20,0.3)]">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-black/40">{label}</p>
       <div className="mt-2.5">{children}</div>
     </div>
   );
@@ -38,7 +35,7 @@ function MiniBars({ delay = 0 }) {
       {bars.map((h, i) => (
         <motion.span
           key={i}
-          className={`w-2.5 rounded-t-sm ${i === bars.length - 1 ? "bg-gradient-to-t from-mint/25 to-mint shadow-[0_0_14px_rgba(67,214,117,0.35)]" : "bg-gradient-to-t from-accent/20 to-[#6B70FF]"}`}
+          className={`w-2.5 rounded-t-sm ${i === bars.length - 1 ? "bg-gradient-to-t from-mint/30 to-[#0E8A3E]" : "bg-gradient-to-t from-accent/15 to-accent/60"}`}
           style={{ height: `${h}%`, transformOrigin: "bottom" }}
           initial={{ scaleY: 0 }}
           whileInView={{ scaleY: 1 }}
@@ -46,8 +43,8 @@ function MiniBars({ delay = 0 }) {
           transition={{ duration: 0.6, delay: delay + i * 0.07, ease: [0.25, 1, 0.5, 1] }}
         />
       ))}
-      <span className="ml-2 flex items-center gap-1.5 self-start rounded-md bg-mint/15 px-2 py-1 text-[10px] font-bold text-mint">
-        <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> CONV +11.4%
+      <span className="ml-2 flex items-center gap-1.5 self-start rounded-md bg-[#0E8A3E]/10 px-2 py-1 text-[10px] font-bold text-[#0E8A3E]">
+        <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> CONV +11.4%
       </span>
     </div>
   );
@@ -61,7 +58,7 @@ function MiniSpark({ delay = 0 }) {
         <motion.path
           d="M2 34 C 20 30, 30 36, 46 26 S 78 12, 96 14 S 114 8, 118 6"
           fill="none"
-          stroke="#43D675"
+          stroke="#0E8A3E"
           strokeWidth="2"
           strokeLinecap="round"
           initial={{ pathLength: 0 }}
@@ -73,34 +70,34 @@ function MiniSpark({ delay = 0 }) {
           cx="118"
           cy="6"
           r="3"
-          fill="#43D675"
+          fill="#0E8A3E"
           initial={{ opacity: 0, scale: 0 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: delay + 1.1, type: "spring", stiffness: 300 }}
         />
       </svg>
-      <span className="flex items-center gap-1.5 self-start rounded-md bg-mint/15 px-2 py-1 text-[10px] font-bold text-mint">
-        <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> ROAS 2.1x
+      <span className="flex items-center gap-1.5 self-start rounded-md bg-[#0E8A3E]/10 px-2 py-1 text-[10px] font-bold text-[#0E8A3E]">
+        <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> ROAS 2.1x
       </span>
     </div>
   );
 }
 
-/* Donut for the GA4 card — session share by channel, painted in on view */
+/* Donut for the GA4 card */
 function MiniDonut({ delay = 0 }) {
   const R = 15.5;
   const CIRC = 2 * Math.PI * R;
   const segs = [
-    { p: 0.44, c: SOFT },
+    { p: 0.44, c: "#3D43E8" },
     { p: 0.33, c: "#7B5CFF" },
-    { p: 0.23, c: "#43D675" },
+    { p: 0.23, c: "#0E8A3E" },
   ];
   let acc = 0;
   return (
     <div className="flex h-12 items-center gap-3" aria-hidden="true" data-testid="ga4-donut-viz">
       <svg viewBox="0 0 40 40" className="h-11 w-11 -rotate-90">
-        <circle cx="20" cy="20" r={R} fill="none" stroke="rgba(255,255,255,0.09)" strokeWidth="5" />
+        <circle cx="20" cy="20" r={R} fill="none" stroke="rgba(16,16,20,0.07)" strokeWidth="5" />
         {segs.map((s, i) => {
           const off = acc;
           acc += s.p;
@@ -123,8 +120,8 @@ function MiniDonut({ delay = 0 }) {
           );
         })}
       </svg>
-      <span className="flex items-center gap-1.5 rounded-md bg-mint/15 px-2 py-1 text-[10px] font-bold text-mint">
-        <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> SESSIONS +18.2%
+      <span className="flex items-center gap-1.5 rounded-md bg-[#0E8A3E]/10 px-2 py-1 text-[10px] font-bold text-[#0E8A3E]">
+        <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> SESSIONS +18.2%
       </span>
     </div>
   );
@@ -134,13 +131,13 @@ function MiniDonut({ delay = 0 }) {
 function SoonProgress({ pct, label, delay = 0, testid }) {
   return (
     <div aria-hidden="true" data-testid={testid}>
-      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">
+      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-black/40">
         <span>{label}</span>
-        <span className="text-white/70">{pct}%</span>
+        <span className="text-black/60">{pct}%</span>
       </div>
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-black/[0.07]">
         <motion.div
-          className="h-full rounded-full bg-[repeating-linear-gradient(45deg,#5D63FF_0_5px,#8A8FFF_5px_10px)]"
+          className="h-full rounded-full bg-[repeating-linear-gradient(45deg,#3D43E8_0_5px,#7B7FFF_5px_10px)]"
           initial={{ width: 0 }}
           whileInView={{ width: `${pct}%` }}
           viewport={{ once: true }}
@@ -151,11 +148,11 @@ function SoonProgress({ pct, label, delay = 0, testid }) {
   );
 }
 
-/* The flow rail — channels → Fluxvex AI → branded report, with live packets */
+/* The flow card — soft wash strip: channels → Fluxvex AI → branded report */
 function RailPacket({ delay = 0 }) {
   return (
     <motion.span
-      className="absolute -top-[3px] left-0 h-1.5 w-1.5 rounded-full bg-[#A3A8FF] shadow-[0_0_8px_2px_rgba(123,127,255,0.55)]"
+      className="absolute -top-[3px] left-0 h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgba(61,67,232,0.35)]"
       animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
       transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay }}
       aria-hidden="true"
@@ -166,14 +163,17 @@ function RailPacket({ delay = 0 }) {
 function SyncRail() {
   return (
     <Reveal delay={0.1}>
-      <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-4" data-testid="integrations-sync-rail">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">The flow</span>
+      <div
+        className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-line bg-[linear-gradient(120deg,#EEF0FF_0%,#FDFDFA_50%,#EAF6E9_100%)] px-5 py-4"
+        data-testid="integrations-sync-rail"
+      >
+        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40">The flow</span>
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
           <span className="flex -space-x-1.5" aria-hidden="true">
             {[<GoogleAdsMark size={14} key="g" />, <MetaMark size={14} key="m" />, <GA4Mark size={14} key="a" />].map((m, i) => (
               <motion.span
                 key={i}
-                className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.07]"
+                className="flex h-7 w-7 items-center justify-center rounded-lg border border-line bg-white shadow-sm"
                 initial={{ opacity: 0, scale: 0.6 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -183,23 +183,23 @@ function SyncRail() {
               </motion.span>
             ))}
           </span>
-          <span className="text-[12px] font-medium text-white/55">Your channels</span>
-          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-[#7B7FFF]/50 sm:block" aria-hidden="true">
+          <span className="text-[12px] font-medium text-ink-soft">Your channels</span>
+          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-accent/40 sm:block" aria-hidden="true">
             <RailPacket delay={0} />
           </span>
-          <span className="flex items-center gap-2 rounded-full bg-accent px-3 py-1.5 shadow-[0_10px_28px_-10px_rgba(93,99,255,0.7)]">
+          <span className="flex items-center gap-2 rounded-full bg-accent px-3 py-1.5 shadow-[0_12px_26px_-10px_rgba(61,67,232,0.55)]">
             <FluxvexMark size={15} />
             <span className="text-[12px] font-semibold text-white">Fluxvex AI</span>
           </span>
-          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-[#7B7FFF]/50 sm:block" aria-hidden="true">
+          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-accent/40 sm:block" aria-hidden="true">
             <RailPacket delay={0.9} />
           </span>
-          <span className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5">
+          <span className="flex items-center gap-2 rounded-full bg-ink px-3 py-1.5">
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
-              <rect x="5" y="3" width="14" height="18" rx="2" stroke="#101014" strokeWidth="1.8" />
-              <path d="M9 8h6M9 12h6M9 16h4" stroke="#101014" strokeWidth="1.8" strokeLinecap="round" />
+              <rect x="5" y="3" width="14" height="18" rx="2" stroke="#FFFFFF" strokeWidth="1.8" />
+              <path d="M9 8h6M9 12h6M9 16h4" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
-            <span className="text-[12px] font-semibold text-ink">Branded report</span>
+            <span className="text-[12px] font-semibold text-white">Branded report</span>
           </span>
         </div>
       </div>
@@ -210,30 +210,25 @@ function SyncRail() {
 function BentoCard({ item, soon = false, i, viz = null, progress = null, className = "" }) {
   const hrefSlug = item.href ? item.href.split("/").pop() : slugOf(item.name);
   const testid = `integration-card-${hrefSlug}`;
-  const cardCls = `group relative flex h-full flex-col gap-3.5 overflow-hidden rounded-2xl border p-6 transition-[border-color,box-shadow,transform,background-color] duration-300 hover:-translate-y-1 ${
+  const cardCls = `group relative flex h-full flex-col gap-3.5 overflow-hidden rounded-2xl border p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 ${
     soon
-      ? "border-dashed border-white/[0.16] bg-white/[0.02]"
-      : "border-white/[0.08] bg-white/[0.035] hover:border-[#8A8FFF]/50 hover:bg-white/[0.055] hover:shadow-[0_44px_84px_-44px_rgba(93,99,255,0.6)]"
+      ? "border-dashed border-black/20 bg-surface/80"
+      : "border-line hover:border-accent/40 hover:shadow-[0_40px_80px_-40px_rgba(61,67,232,0.45)]"
   }`;
 
   const body = (
     <>
-      {/* hover glow */}
-      <span
-        className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[#5D63FF]/[0.16] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
-        aria-hidden="true"
-      />
       <div className="relative flex items-start justify-between">
         <span
-          className={`flex h-12 w-12 items-center justify-center rounded-xl border transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110 ${
-            soon ? "border-dashed border-white/[0.2] opacity-80" : "border-white/[0.12] bg-white/[0.06] shadow-[0_10px_24px_-12px_rgba(0,0,0,0.7)]"
+          className={`flex h-12 w-12 items-center justify-center rounded-xl border bg-white transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110 ${
+            soon ? "border-dashed border-black/20 opacity-80" : "border-line shadow-[0_10px_24px_-12px_rgba(16,16,20,0.35)]"
           }`}
         >
           {item.mark}
         </span>
         {soon ? (
           <span
-            className="rounded-full border border-dashed border-white/[0.2] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/45"
+            className="rounded-full border border-dashed border-black/25 bg-page px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-black/50"
             data-testid={`integration-soon-${slugOf(item.name)}`}
           >
             Coming soon
@@ -243,17 +238,17 @@ function BentoCard({ item, soon = false, i, viz = null, progress = null, classNa
         )}
       </div>
       <div className="relative">
-        <p className="text-base font-semibold text-white">{item.name}</p>
-        <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/55">{item.desc}</p>
+        <p className="text-base font-semibold text-ink">{item.name}</p>
+        <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-soft">{item.desc}</p>
       </div>
       {viz}
       {progress}
       {soon ? (
-        <span className="mt-auto flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40">
-          <ThumbsUp className="h-3 w-3 text-mint/70" /> Top community request
+        <span className="mt-auto flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-black/35">
+          <ThumbsUp className="h-3 w-3 text-[#0E8A3E]/70" /> Top community request
         </span>
       ) : (
-        <span className="relative mt-auto inline-flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A3A8FF]">
+        <span className="relative mt-auto inline-flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent">
           Integration details
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </span>
@@ -276,74 +271,48 @@ function BentoCard({ item, soon = false, i, viz = null, progress = null, classNa
   );
 }
 
-/* Header-side live status module */
-function PipelineStatus() {
-  return (
-    <Reveal delay={0.1} className="w-full lg:max-w-[340px]">
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5" data-testid="integrations-status">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">Pipeline status</span>
-          <span className="flex items-center gap-1.5 rounded-full bg-mint/15 px-2 py-0.5 text-[10px] font-bold text-mint">
-            <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" aria-hidden="true" /> LIVE
-          </span>
-        </div>
-        <p className="mt-3 flex items-baseline gap-2">
-          <span className="font-display text-4xl font-semibold tracking-tight text-white">3</span>
-          <span className="text-[13px] text-white/50">of 5 channels live at launch</span>
-        </p>
-        <div className="mt-3.5 flex gap-1" aria-hidden="true">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <motion.span
-              key={i}
-              className={`h-1.5 flex-1 rounded-full ${i < 3 ? "bg-[#6B70FF] shadow-[0_0_10px_rgba(107,112,255,0.5)]" : "border border-dashed border-white/25"}`}
-              initial={{ scaleX: 0, opacity: 0 }}
-              whileInView={{ scaleX: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.25 + i * 0.09, ease: [0.25, 1, 0.5, 1] }}
-              style={{ transformOrigin: "left" }}
-            />
-          ))}
-        </div>
-        <p className="mt-3 text-[11.5px] leading-relaxed text-white/45">
-          Google Ads, Meta Ads and GA4 connect at launch. LinkedIn Ads and TikTok Ads follow right after.
-        </p>
-      </div>
-    </Reveal>
-  );
-}
-
 export default function IntegrationsStrip() {
   const { openWaitlist } = useWaitlist();
   return (
-    <section id="integrations" className="relative overflow-hidden bg-[#0B0B0D]" data-testid="section-integrations">
-      {/* subtle top light + fine grid — flat neutral dark, like the reference */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_100%_at_50%_0%,rgba(255,255,255,0.06),transparent_70%)]" aria-hidden="true" />
-      <div className="fine-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
-
-      <div className="relative mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-20">
-        {/* split header: headline left, live pipeline status right */}
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <Reveal className="max-w-xl">
-            <span
-              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.05] px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-[#A3A8FF]"
-              data-testid="integrations-qualifier"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-[#A3A8FF] animate-pulse-dot" aria-hidden="true" />
-              Initial integration focus
+    <section id="integrations" className="bg-page" data-testid="section-integrations">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-20">
+        {/* centered header — reference style */}
+        <Reveal className="flex flex-col items-center text-center">
+          <span
+            className="inline-flex items-center gap-2 rounded-full border border-[#0E8A3E]/25 bg-[#EAF6E9] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0E8A3E]"
+            data-testid="integrations-qualifier"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" />
+            Initial integration focus
+          </span>
+          <CinematicText
+            as="h2"
+            className="mt-5 max-w-2xl font-display text-3xl font-semibold leading-[1.06] tracking-tighter2 text-ink sm:text-4xl"
+          >
+            One reporting workflow. The channels your clients already use.
+          </CinematicText>
+          <p className="mt-4 max-w-xl text-[15px] leading-[1.7] text-ink-soft">
+            Connect each channel once—every report pulls from the same governed pipeline. No exports, no stale
+            screenshots, no rebuilds.
+          </p>
+          {/* live status chips — folded into the header */}
+          <div
+            className="mt-5 flex flex-wrap items-center justify-center gap-2.5"
+            data-testid="integrations-status"
+          >
+            <span className="flex -space-x-1.5" aria-hidden="true">
+              {[<GoogleAdsMark size={13} key="g" />, <MetaMark size={13} key="m" />, <GA4Mark size={13} key="a" />].map((m, i) => (
+                <span key={i} className="flex h-6 w-6 items-center justify-center rounded-full border border-line bg-white shadow-sm">
+                  {m}
+                </span>
+              ))}
             </span>
-            <CinematicText
-              as="h2"
-              className="mt-5 font-display text-3xl font-semibold leading-[1.06] tracking-tighter2 text-white sm:text-4xl"
-            >
-              One reporting workflow. The channels your clients already use.
-            </CinematicText>
-            <p className="mt-4 text-[15px] leading-[1.7] text-white/55">
-              Connect each channel once—every report pulls from the same governed pipeline. No exports, no stale
-              screenshots, no rebuilds.
-            </p>
-          </Reveal>
-          <PipelineStatus />
-        </div>
+            <span className="rounded-full border border-line bg-white px-3 py-1 text-[11.5px] font-semibold text-ink shadow-sm">
+              3 of 5 channels live at launch
+            </span>
+            <LivePill />
+          </div>
+        </Reveal>
 
         {/* the flow — channels into AI into branded report */}
         <SyncRail />
@@ -351,7 +320,7 @@ export default function IntegrationsStrip() {
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
           <BentoCard
             i={0}
-            className="sm:col-span-2 lg:col-span-3"
+            className="sm:col-span-2 lg:col-span-3 border-line bg-[linear-gradient(150deg,#EEF0FF_0%,#FBFBFF_48%,#EAF6E9_100%)]"
             viz={
               <VizPanel label="Conversions this month">
                 <MiniBars delay={0.3} />
@@ -366,7 +335,7 @@ export default function IntegrationsStrip() {
           />
           <BentoCard
             i={1}
-            className="sm:col-span-2 lg:col-span-3"
+            className="sm:col-span-2 lg:col-span-3 border-line bg-[linear-gradient(150deg,#F3F1FF_0%,#FBFAFF_50%,#EEF0FF_100%)]"
             viz={
               <VizPanel label="Efficiency trend">
                 <MiniSpark delay={0.4} />
@@ -381,7 +350,7 @@ export default function IntegrationsStrip() {
           />
           <BentoCard
             i={2}
-            className="lg:col-span-2"
+            className="lg:col-span-2 border-line bg-[linear-gradient(150deg,#EAF6E9_0%,#F7FBF5_55%,#FDFDF8_100%)]"
             viz={
               <VizPanel label="Session mix">
                 <MiniDonut delay={0.35} />
@@ -408,20 +377,27 @@ export default function IntegrationsStrip() {
             progress={<SoonProgress pct={41} label="In build" delay={0.45} testid="soon-progress-tiktok-ads" />}
             item={{ mark: <TikTokMark size={24} />, name: "TikTok Ads", desc: "Short-form video results, after the initial launch." }}
           />
+          {/* the anchor card — deep green, like the reference's evidence card */}
           <Reveal delay={0.3} className="h-full sm:col-span-2 lg:col-span-6">
-            <div className="group flex flex-col items-start justify-between gap-5 rounded-2xl border border-white/[0.08] bg-white/[0.045] p-6 transition-[border-color,background-color] duration-300 hover:border-[#8A8FFF]/50 hover:bg-white/[0.06] sm:flex-row sm:items-center sm:p-7">
-              <div className="flex min-w-0 items-center gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/[0.14] bg-white/[0.06] text-[#A3A8FF]">
+            <div
+              className="group relative flex flex-col items-start justify-between gap-5 overflow-hidden rounded-2xl bg-[radial-gradient(120%_160%_at_85%_0%,#1E7A3C_0%,#0C2E1B_70%)] p-6 sm:flex-row sm:items-center sm:p-7"
+            >
+              <span
+                className="pointer-events-none absolute -right-10 -top-16 h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(67,214,117,0.35),transparent_70%)] blur-2xl"
+                aria-hidden="true"
+              />
+              <div className="relative flex min-w-0 items-center gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-mint">
                   <Plus className="h-5 w-5" />
                 </span>
-                <p className="max-w-xl text-[14px] leading-relaxed text-white/60">
-                  More channels land after launch—LinkedIn Ads and TikTok Ads are in the pipeline. Tell us which one
-                  your agency needs next.
+                <p className="max-w-xl text-[14.5px] leading-relaxed text-white/85">
+                  More channels land after launch—LinkedIn Ads and TikTok Ads are in the pipeline.{" "}
+                  <span className="font-semibold text-mint">Tell us which one your agency needs next.</span>
                 </p>
               </div>
               <TapCTA
                 onClick={() => openWaitlist("integrations-more")}
-                className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-white px-5 font-display text-[13px] font-semibold text-ink transition-colors hover:bg-white/85"
+                className="relative inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-white px-5 font-display text-[13px] font-semibold text-ink transition-colors hover:bg-mint/90"
                 testid="integrations-more-cta"
               >
                 Request a channel

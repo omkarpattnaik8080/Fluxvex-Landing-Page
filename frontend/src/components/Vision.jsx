@@ -481,19 +481,19 @@ export default function Vision() {
         </Reveal>
       </div>
 
-      {/* state-of-the-art AI capabilities — the core, dark band */}
+      {/* state-of-the-art AI capabilities — the core, soft premium panel */}
       <Reveal>
         <div
-          className="relative mt-14 overflow-hidden rounded-[24px] bg-[#0B0B14] p-8 sm:p-10"
+          className="relative mt-14 overflow-hidden rounded-[24px] border border-line bg-[linear-gradient(140deg,#F1F0FF_0%,#FBFAFF_45%,#EAF6E9_100%)] p-8 sm:p-10"
           data-testid="vision-ai-block"
         >
-          <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.4),transparent_70%)] blur-3xl" aria-hidden="true" />
-          <div className="pointer-events-none absolute -bottom-28 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(123,92,255,0.3),transparent_70%)] blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.12),transparent_70%)] blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-28 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(67,214,117,0.14),transparent_70%)] blur-3xl" aria-hidden="true" />
           <div className="fine-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
 
           <div className="relative flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center">
             <div className="max-w-sm">
-              <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#5D63FF] to-[#8A5CFF] text-white shadow-[0_20px_40px_-12px_rgba(93,99,255,0.8)]">
+              <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#5D63FF] to-[#8A5CFF] text-white shadow-[0_20px_40px_-12px_rgba(93,99,255,0.7)]">
                 <Zap className="h-5 w-5" />
                 {!reduce && (
                   <motion.span
@@ -504,20 +504,20 @@ export default function Vision() {
                   />
                 )}
               </span>
-              <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45">The AI core</p>
-              <h3 className="mt-2.5 font-display text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.24em] text-accent">The AI core</p>
+              <h3 className="mt-2.5 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
                 State-of-the-art AI at the core
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-white/55">
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                 One AI engine learns your accounts and your voice—drafting the work, flagging what matters, and
                 leaving every final call to your team.
               </p>
-              <div className="mt-7 flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-2.5 font-mono text-[11px] text-white/60">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-mint animate-pulse-dot" aria-hidden="true" />
+              <div className="mt-7 flex items-center gap-2.5 rounded-xl border border-line bg-white/85 px-3.5 py-2.5 font-mono text-[11px] text-ink-soft shadow-[0_16px_32px_-20px_rgba(16,16,20,0.35)]">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" />
                 <span>Fluxvex AI · drafting Northbeam—June</span>
                 {!reduce && (
                   <motion.span
-                    className="h-3.5 w-[7px] bg-[#A3A8FF]"
+                    className="h-3.5 w-[7px] bg-accent"
                     animate={{ opacity: [1, 0, 1] }}
                     transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
                     aria-hidden="true"
@@ -540,16 +540,16 @@ export default function Vision() {
                     hidden: { opacity: 0, y: 14 },
                     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 26 } },
                   }}
-                  className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-4 text-[13.5px] font-medium leading-snug text-white/85 transition-[border-color,background-color] duration-300 hover:border-[#5D63FF]/50 hover:bg-white/[0.07]"
+                  className="group flex items-start gap-3 rounded-xl border border-line bg-white/85 p-4 text-[13.5px] font-medium leading-snug text-ink shadow-[0_18px_36px_-24px_rgba(16,16,20,0.35)] transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_24px_48px_-24px_rgba(61,67,232,0.45)]"
                   data-testid={`vision-ai-capability${c.plan ? "-future" : ""}`}
                 >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/[0.06] transition-colors duration-300 group-hover:border-[#5D63FF]/50">
-                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#A3A8FF]" />
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-accent-border bg-accent-tint transition-colors duration-300 group-hover:bg-accent group-hover:text-white">
+                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-accent group-hover:text-white" />
                   </span>
                   <span>
                     {c.text}
                     {c.plan && (
-                      <span className="ml-2 inline-block rounded-full border border-white/15 bg-white/[0.06] px-2 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-[0.12em] text-white/55">
+                      <span className="ml-2 inline-block rounded-full border border-line bg-surface px-2 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-[0.12em] text-ink-soft">
                         Future plan
                       </span>
                     )}
