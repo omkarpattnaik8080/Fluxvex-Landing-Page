@@ -20,6 +20,10 @@ export const WORLD = {
   platform: { w: 10.4, h: 7 },
   vision: { w: 11, h: 6.6 },
   layers: { w: 10, h: 5.0 },
+  outcomePull: { w: 6.6, h: 4.0 },
+  outcomeConsistent: { w: 7.2, h: 3.6 },
+  outcomeBrand: { w: 6.2, h: 3.8 },
+  outcomeSchedule: { w: 6.2, h: 3.8 },
 };
 
 function useBrandTextures() {
@@ -825,6 +829,225 @@ export function LayersScene({ input, reduce, visible, zoom }) {
   );
 }
 
+/* ---------- Outcome — four compact workflow scenes ---------- */
+
+/* Aligned report slab (shared by the consistency scene) */
+function StandardDoc({ position }) {
+  const tex = useCanvasTexture(360, 470, (ctx, w, h) => {
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.roundRect(2, 2, w - 4, h - 4, 18);
+    ctx.fill();
+    ctx.fillStyle = "rgba(61,67,232,0.55)";
+    ctx.fillRect(22, 24, w - 44, 20);
+    ctx.fillStyle = "rgba(16,16,20,0.14)";
+    ctx.fillRect(22, 62, w - 90, 10);
+    ctx.fillStyle = "rgba(16,16,20,0.09)";
+    ctx.fillRect(22, 84, w - 60, 10);
+    ctx.fillRect(22, 106, w - 130, 10);
+  });
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.09, 0]}>
+        <boxGeometry args={[1.05, 0.18, 1.4]} />
+        <meshBasicMaterial color={C.white} />
+        <Edges threshold={15} color={C.hairline} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.185, 0]}>
+        <planeGeometry args={[0.66, 0.86]} />
+        <meshBasicMaterial map={tex} transparent depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
+export function OutcomePullScene({ input, reduce, zoom }) {
+  const [gTex, mTex, aTex, fxTex] = useBrandTextures();
+  const sources = [
+    { tex: gTex, pos: [-2.0, 0, -1.0], base: C.sky },
+    { tex: mTex, pos: [-2.4, 0, 0.4], base: C.blue },
+    { tex: aTex, pos: [-1.9, 0, 1.8], base: C.amber },
+  ];
+  return (
+    <>
+      <Cam zoom={zoom} />
+      <IsoWorld input={input} reduce={reduce} ground={10}>
+        <PulseRings position={[0.3, 0.02, 0.2]} input={input} />
+        {sources.map((s, i) => (
+          <Tile key={i} position={s.pos} size={[0.85, 0.16, 0.85]} texture={s.tex} base={s.base} />
+        ))}
+        {sources.map((s, i) => (
+          <Wire key={i} from={[s.pos[0] + 0.6, 0.05, s.pos[2] * 0.55]} to={[-0.05, 0.05, 0.2]} delay={i * 0.22} period={1.3} />
+        ))}
+        <Tile position={[0.3, 0, 0.2]} size={[1.15, 0.22, 1.15]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.accent} />
+        <Satellite radius={1.15} y={0.8} color={C.violet} phase={0.4} size={0.1} reduce={reduce} />
+        <Wire from={[1.0, 0.05, 0.2]} to={[2.0, 0.05, 0.2]} delay={0.5} period={1.4} />
+        <DocTile position={[2.55, 0, 0.2]} />
+        <Chip position={[0.9, 1.8, -0.2]} value="3 → 1" label="one workflow" color={C.accent} delay={0.3} reduce={reduce} />
+      </IsoWorld>
+    </>
+  );
+}
+
+export function OutcomeConsistentScene({ input, reduce, zoom }) {
+  const xs = [-2.1, 0, 2.1];
+  const scan = useRef(null);
+  useFrame((s) => {
+    if (!scan.current) return;
+    const t = (s.clock.elapsedTime % 2.8) / 2.8;
+    scan.current.position.z = -1.9 + t * 3.8;
+    scan.current.material.opacity = 0.5 * Math.sin(t * Math.PI);
+  });
+  return (
+    <>
+      <Cam zoom={zoom} />
+      <IsoWorld input={input} reduce={reduce} ground={10}>
+        {xs.map((x, i) => (
+          <StandardDoc key={i} position={[x, 0, 0]} />
+        ))}
+        <mesh ref={scan} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.2, 0]}>
+          <planeGeometry args={[6.8, 0.22]} />
+          <meshBasicMaterial color={C.mint} transparent opacity={0} depthWrite={false} />
+        </mesh>
+        <Billboard position={[0, 1.9, 0]} reduce={reduce}
+          spec={{ lines: [{ text: "✓ Same structure", color: C.green, size: 21 }], size: 21, h: 0.48 }} />
+        <Satellite radius={2.5} y={0.9} color={C.mint} phase={0.9} size={0.1} reduce={reduce} />
+      </IsoWorld>
+    </>
+  );
+}
+
+export function OutcomeBrandScene({ input, reduce, zoom }) {
+  const brandTex = useCanvasTexture(560, 400, (ctx, w, h) => {
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.roundRect(2, 2, w - 4, h - 4, 20);
+    ctx.fill();
+    ctx.fillStyle = C.accent;
+    ctx.beginPath();
+    ctx.roundRect(26, 26, 64, 64, 14);
+    ctx.fill();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = '700 40px "Inter Tight", Inter, sans-serif';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("N", 58, 60);
+    ctx.fillStyle = "rgba(61,67,232,0.55)";
+    ctx.fillRect(110, 34, w - 140, 14);
+    ctx.fillStyle = "rgba(16,16,20,0.13)";
+    ctx.fillRect(110, 62, w - 190, 10);
+    ctx.fillStyle = "rgba(16,16,20,0.09)";
+    ctx.fillRect(26, 116, w - 52, 10);
+    ctx.fillRect(26, 138, w - 100, 10);
+    ctx.fillRect(26, 160, w - 72, 10);
+    ctx.strokeStyle = C.accent;
+    ctx.lineWidth = 5;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(w - 200, 190);
+    ctx.lineTo(w - 150, 160);
+    ctx.lineTo(w - 110, 172);
+    ctx.lineTo(w - 60, 130);
+    ctx.stroke();
+  });
+  const lift = useRef(null);
+  useFrame((s) => {
+    if (!lift.current || reduce) return;
+    lift.current.position.y = 0.06 + Math.sin(s.clock.elapsedTime * 1.2) * 0.035;
+  });
+  return (
+    <>
+      <Cam zoom={zoom} />
+      <IsoWorld input={input} reduce={reduce} ground={10}>
+        <group ref={lift}>
+          <mesh position={[0, 0.1, 0]}>
+            <boxGeometry args={[2.3, 0.2, 1.7]} />
+            <meshBasicMaterial color={C.white} />
+            <Edges threshold={15} color={C.hairline} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.205, 0]}>
+            <planeGeometry args={[2.14, 1.53]} />
+            <meshBasicMaterial map={brandTex} transparent depthWrite={false} />
+          </mesh>
+        </group>
+        <Satellite radius={1.9} y={1.05} color={C.violet} phase={0.2} reduce={reduce} />
+        <Satellite radius={1.9} y={1.12} color={C.amber} phase={Math.PI + 0.2} speed={-0.85} size={0.1} reduce={reduce} />
+        <Billboard position={[1.45, 1.85, -0.75]} reduce={reduce}
+          spec={{ lines: [{ text: "✓ Client-ready", color: C.green, size: 21 }], size: 21, h: 0.48 }} />
+        <Beam position={[0, 0, 0]} color={C.accent} height={2.0} width={1.9} opacity={0.1} />
+      </IsoWorld>
+    </>
+  );
+}
+
+export function OutcomeScheduleScene({ input, reduce, zoom }) {
+  const calTex = useCanvasTexture(560, 400, (ctx, w, h) => {
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.roundRect(2, 2, w - 4, h - 4, 20);
+    ctx.fill();
+    ctx.fillStyle = C.accent;
+    ctx.beginPath();
+    ctx.roundRect(2, 2, w - 4, 64, 20);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.beginPath();
+    ctx.roundRect(30, 20, 120, 28, 14);
+    ctx.fill();
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 8; c++) {
+        const x = 48 + c * 62;
+        const y = 128 + r * 78;
+        if (r === 1 && c === 4) {
+          ctx.fillStyle = C.accent;
+          ctx.beginPath();
+          ctx.roundRect(x - 22, y - 22, 44, 44, 12);
+          ctx.fill();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.beginPath();
+          ctx.arc(x, y, 7, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = "rgba(16,16,20,0.14)";
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+  });
+  const pulse = useRef(null);
+  useFrame((s) => {
+    if (!pulse.current) return;
+    const t = (s.clock.elapsedTime % 2.2) / 2.2;
+    pulse.current.scale.setScalar(0.8 + t * 1.6);
+    pulse.current.material.opacity = (1 - t) * 0.7;
+  });
+  return (
+    <>
+      <Cam zoom={zoom} />
+      <IsoWorld input={input} reduce={reduce} ground={10}>
+        <mesh position={[0, 0.1, 0]}>
+          <boxGeometry args={[2.3, 0.2, 1.7]} />
+          <meshBasicMaterial color={C.white} />
+          <Edges threshold={15} color={C.hairline} />
+        </mesh>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.205, 0]}>
+          <planeGeometry args={[2.14, 1.53]} />
+          <meshBasicMaterial map={calTex} transparent depthWrite={false} />
+        </mesh>
+        <mesh ref={pulse} rotation={[-Math.PI / 2, 0, 0]} position={[0.06, 0.22, 0.02]}>
+          <ringGeometry args={[0.16, 0.2, 32]} />
+          <meshBasicMaterial color={C.accent} transparent opacity={0} depthWrite={false} />
+        </mesh>
+        <Billboard position={[1.5, 1.8, -0.7]} reduce={reduce}
+          spec={{ lines: [{ text: "✓ Cadence locked", color: C.green, size: 21 }], size: 21, h: 0.48 }} />
+        <Satellite radius={1.85} y={1.0} color={C.sky} phase={0.7} size={0.1} reduce={reduce} />
+      </IsoWorld>
+    </>
+  );
+}
+
 /* ---------- scene registry ---------- */
 export const SCENES = {
   workflow: WorkflowScene,
@@ -836,6 +1059,10 @@ export const SCENES = {
   platform: PlatformScene,
   vision: VisionScene,
   layers: LayersScene,
+  outcomePull: OutcomePullScene,
+  outcomeConsistent: OutcomeConsistentScene,
+  outcomeBrand: OutcomeBrandScene,
+  outcomeSchedule: OutcomeScheduleScene,
 };
 
 /* ---------- shared doc tile ---------- */

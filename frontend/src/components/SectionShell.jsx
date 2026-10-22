@@ -3,7 +3,11 @@ import { Reveal } from "@/components/Reveal";
 
 export const SectionShell = ({ id, children, className = "" }) => (
   <section id={id} className={`border-t border-line ${className}`} data-testid={`section-${id || "unnamed"}`}>
-    <div className="mx-auto max-w-[1280px] px-5 py-20 lg:px-8 lg:py-28">{children}</div>
+    <div
+      className="mx-auto max-w-[1280px] px-5 py-20 lg:px-8 lg:py-28 [content-visibility:auto] [contain-intrinsic-size:auto_500px]"
+    >
+      {children}
+    </div>
   </section>
 );
 

@@ -35,7 +35,6 @@ const STAGES = [
   {
     icon: FileText,
     chip: "Building now",
-    chipStyle: "border-mint/40 bg-mint/10 text-[#0E8A3E]",
     highlight: true,
     title: "Client reporting",
     desc: "The launch focus. Automated, branded client reports from Google Ads, Meta Ads, and GA4—AI-drafted summaries, approved by your team, delivered on schedule.",
@@ -44,7 +43,6 @@ const STAGES = [
   {
     icon: PenLine,
     chip: "Future plan",
-    chipStyle: "border-accent/30 bg-accent-tint/60 text-accent",
     title: "Proposal making",
     desc: "AI-assisted proposals drafted from a prospect's real performance data—scope, deliverables, and pricing suggestions your team refines and sends.",
     testid: "vision-roadmap-proposals",
@@ -52,7 +50,6 @@ const STAGES = [
   {
     icon: Receipt,
     chip: "Future plan",
-    chipStyle: "border-accent/30 bg-accent-tint/60 text-accent",
     title: "Invoicing",
     desc: "Invoices generated from delivered work—retainers, reporting cycles, and ad spend—closing the loop from proposal to payment in one system.",
     testid: "vision-roadmap-invoicing",
@@ -60,7 +57,6 @@ const STAGES = [
   {
     icon: Sparkles,
     chip: "Future plan",
-    chipStyle: "border-accent/30 bg-accent-tint/60 text-accent",
     title: "AI account manager",
     desc: "An AI account manager that runs day-to-day client communication—status updates, answers, and reporting calls—replacing a role most agencies pay lakhs for every year.",
     testid: "vision-roadmap-ai-account-manager",
@@ -157,100 +153,100 @@ export default function Vision() {
         </div>
       </div>
 
-      {/* agency OS roadmap: reporting → proposals → invoicing */}
+      {/* agency OS roadmap — dark launch sequence */}
       <div className="mt-16" data-testid="vision-roadmap">
-        <Reveal>
-          <div className="flex flex-col items-center gap-3 text-center">
-            <h3 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-              One system for the whole agency loop
-            </h3>
-            <p className="max-w-2xl text-[15px] leading-[1.7] text-ink-soft">
-              Reporting is where Fluxvex begins. From there, the same connected pipeline and AI core extend to the
-              work on either side of it—winning the engagement and getting paid for it.
-            </p>
-          </div>
-        </Reveal>
+        <div className="relative overflow-hidden rounded-[24px] bg-[#0B0B14] px-6 py-12 sm:px-10 sm:py-14">
+          {/* ambience */}
+          <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.35),transparent_70%)] blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(123,92,255,0.28),transparent_70%)] blur-3xl" aria-hidden="true" />
+          <div className="fine-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
 
-        {/* animated progress line (desktop) */}
-        <div className="relative mx-auto mt-10 hidden h-px max-w-3xl lg:block" aria-hidden="true">
-          <motion.div
-            className="absolute inset-x-0 top-0 h-px origin-left bg-gradient-to-r from-transparent via-accent/50 to-transparent"
-            initial={reduce ? false : { scaleX: 0 }}
-            whileInView={reduce ? {} : { scaleX: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 1.1, ease: [0.19, 1, 0.22, 1] }}
-          />
-          {!reduce && (
-            <motion.span
-              className="absolute -top-[3px] h-[7px] w-[7px] rounded-full bg-accent shadow-[0_0_10px_2px_rgba(61,67,232,0.45)]"
-              initial={{ left: "0%", opacity: 0 }}
-              whileInView={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.6, ease: "easeInOut" }}
-            />
-          )}
-        </div>
-
-        <div className="relative mt-8 grid gap-5 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4 lg:gap-6">
-          {STAGES.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.1} className="relative h-full">
-              <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="h-full">
-                <div
-                  className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-7 ${
-                    s.highlight
-                      ? "border-accent/40 bg-page shadow-[0_32px_64px_-28px_rgba(61,67,232,0.45)]"
-                      : "border-line bg-page shadow-[0_24px_50px_-32px_rgba(16,16,20,0.35)]"
-                  }`}
-                  data-testid={s.testid}
-                >
-                  {s.highlight && (
-                    <span
-                      className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(60%_50%_at_50%_0%,rgba(61,67,232,0.08),transparent_75%)]"
-                      aria-hidden="true"
-                    />
-                  )}
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-surface text-accent">
-                      <s.icon className="h-5 w-5" strokeWidth={1.8} />
-                    </span>
-                    <span
-                      className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${s.chipStyle}`}
-                    >
-                      {s.highlight && <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" />}
-                      {s.chip}
-                    </span>
-                  </div>
-                  <h4 className="mt-5 font-display text-xl font-semibold tracking-tight text-ink">
-                    <span className="mr-2 text-sm font-bold text-black/30">{`0${i + 1}`}</span>
-                    {s.title}
-                  </h4>
-                  <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink-soft">{s.desc}</p>
-                </div>
-              </motion.div>
-              {i < STAGES.length - 1 && (
-                <span
-                  className="absolute -right-[26px] top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-page text-accent shadow-[0_10px_20px_-8px_rgba(16,16,20,0.3)] lg:flex"
-                  aria-hidden="true"
-                >
-                  <ArrowRight className="h-4 w-4" />
-                  {!reduce && (
-                    <motion.span
-                      className="absolute inset-0 rounded-full border border-accent/50"
-                      animate={{ scale: [1, 1.45], opacity: [0.8, 0] }}
-                      transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut", delay: i * 0.5 }}
-                    />
-                  )}
+          <div className="relative">
+            <Reveal>
+              <div className="flex flex-col items-center gap-4 text-center">
+                <span className="flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" aria-hidden="true" />
+                  The agency loop
                 </span>
-              )}
+                <h3 className="max-w-2xl font-display text-3xl font-semibold leading-[1.05] tracking-tighter2 text-white sm:text-4xl">
+                  One system for the whole agency loop
+                </h3>
+                <p className="max-w-2xl text-[15px] leading-[1.7] text-white/55">
+                  Reporting is where Fluxvex begins. From there, the same connected pipeline and AI core extend to the
+                  work on either side of it—winning the engagement and getting paid for it.
+                </p>
+              </div>
             </Reveal>
-          ))}
+
+            <div className="relative mt-12">
+              {/* glowing connector — passes behind the icon tiles like circuit nodes */}
+              <div className="pointer-events-none absolute inset-x-10 top-[49px] hidden h-px lg:block" aria-hidden="true">
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-[#5D63FF]/60 to-transparent" />
+                {!reduce && (
+                  <motion.span
+                    className="absolute -top-[3px] h-[7px] w-[7px] rounded-full bg-[#A3A8FF] shadow-[0_0_12px_3px_rgba(93,99,255,0.65)]"
+                    animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+                    transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                )}
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+                {STAGES.map((s, i) => (
+                  <Reveal key={s.title} delay={i * 0.1} className="h-full">
+                    <motion.div whileHover={reduce ? undefined : { y: -6 }} transition={{ type: "spring", stiffness: 280, damping: 22 }} className="h-full">
+                      <div
+                        className="group relative flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm transition-[border-color,background-color] duration-300 hover:border-[#5D63FF]/50 hover:bg-white/[0.07]"
+                        data-testid={s.testid}
+                      >
+                        <span
+                          className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(93,99,255,0.16),transparent_75%)]"
+                          aria-hidden="true"
+                        />
+                        <div className="relative flex items-center justify-between gap-3">
+                          <span className={`relative flex h-11 w-11 items-center justify-center rounded-xl border text-white ${s.highlight ? "border-mint/40 bg-mint/10" : "border-white/15 bg-white/[0.06]"}`}>
+                            <s.icon className="h-5 w-5" strokeWidth={1.8} />
+                            {s.highlight && !reduce && (
+                              <motion.span
+                                className="absolute inset-0 rounded-xl border border-mint/50"
+                                animate={{ scale: [1, 1.35], opacity: [0.7, 0] }}
+                                transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
+                          <span
+                            className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${
+                              s.highlight ? "border-mint/40 bg-mint/10 text-[#4ADE80]" : "border-white/15 bg-white/[0.06] text-white/60"
+                            }`}
+                          >
+                            {s.highlight && <span className="h-1.5 w-1.5 rounded-full bg-[#4ADE80] animate-pulse-dot" aria-hidden="true" />}
+                            {s.chip}
+                          </span>
+                        </div>
+                        <h4 className="relative mt-6 font-display text-xl font-semibold tracking-tight text-white">
+                          <span className="mr-2 text-sm font-bold text-white/30">{`0${i + 1}`}</span>
+                          {s.title}
+                        </h4>
+                        <p className="relative mt-2.5 text-[14.5px] leading-relaxed text-white/55">{s.desc}</p>
+                        <div className="relative mt-auto pt-6">
+                          <span className={`block h-0.5 w-10 rounded-full ${s.highlight ? "bg-mint" : "bg-[#5D63FF]"}`} />
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+
+            <Reveal delay={0.2}>
+              <p className="mt-8 text-center text-xs leading-relaxed text-white/40">
+                Client reporting ships at launch; proposals and invoicing are future plans on the same AI core—built
+                with waitlist feedback shaping the order.
+              </p>
+            </Reveal>
+          </div>
         </div>
-        <Reveal delay={0.2}>
-          <p className="mt-6 text-center text-xs text-black/45">
-            Client reporting ships at launch; proposals and invoicing are future plans on the same AI core—built
-            with waitlist feedback shaping the order.
-          </p>
-        </Reveal>
       </div>
 
       {/* state-of-the-art AI capabilities */}

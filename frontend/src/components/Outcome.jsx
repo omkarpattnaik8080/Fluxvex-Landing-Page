@@ -1,7 +1,9 @@
-import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
 import { Database, LayoutTemplate, Palette, CalendarClock } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+
+const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
 function DiagramConverge() {
   return (
@@ -31,15 +33,8 @@ function DiagramConsistent() {
           <path d={`M${22 + i * 64} 24h${28}M${22 + i * 64} 32h${36}M${22 + i * 64} 40h${20}`} stroke="#D5D8FF" strokeWidth="2.6" strokeLinecap="round" />
         </g>
       ))}
-      <motion.circle
-        cx="110" cy="10" r="8" fill="#43D675"
-        initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-        transition={{ type: "spring", stiffness: 300, damping: 14, delay: 0.4 }}
-      />
-      <motion.path
-        d="M106.5 10l2.5 2.5 4.5-5" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 0.35, delay: 0.6 }}
-      />
+      <circle cx="110" cy="10" r="8" fill="#43D675" />
+      <path d="M106.5 10l2.5 2.5 4.5-5" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -65,23 +60,24 @@ function DiagramSchedule() {
       {Array.from({ length: 21 }).map((_, i) => {
         const col = i % 7;
         const row = Math.floor(i / 7);
-        const active = i === 11;
-        return active ? (
-          <motion.rect
-            key={i} x={62 + col * 15} y={18 + row * 13} width="10" height="9" rx="2.5"
-            fill="#3D43E8"
-            initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-            transition={{ type: "spring", stiffness: 300, damping: 14, delay: 0.5 }}
-          />
+        return i === 11 ? (
+          <rect key={i} x={62 + col * 15} y={18 + row * 13} width="10" height="9" rx="2.5" fill="#3D43E8" />
         ) : (
           <circle key={i} cx={67 + col * 15} cy={22.5 + row * 13} r="1.8" fill="#D9DCE5" />
         );
       })}
-      <motion.path
-        d="M129.5 39.5l2.5 2.5 4.5-5" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.75 }}
-      />
+      <path d="M129.5 39.5l2.5 2.5 4.5-5" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  );
+}
+
+function Scene({ scene, legacy, testid }) {
+  return (
+    <div className="h-full" data-testid={testid}>
+      <Suspense fallback={legacy}>
+        <Scene3D scene={scene} fallback={legacy} className="h-full w-full" />
+      </Suspense>
+    </div>
   );
 }
 
@@ -91,6 +87,7 @@ const CARDS = [
     num: "01",
     title: "Pull the numbers together",
     desc: "Connect supported channels instead of collecting each metric manually.",
+    scene: "outcomePull",
     diagram: <DiagramConverge />,
   },
   {
@@ -98,6 +95,7 @@ const CARDS = [
     num: "02",
     title: "Keep reports consistent",
     desc: "Use a repeatable reporting structure across clients.",
+    scene: "outcomeConsistent",
     diagram: <DiagramConsistent />,
   },
   {
@@ -105,6 +103,7 @@ const CARDS = [
     num: "03",
     title: "Make it yours",
     desc: "Apply agency branding and a client-facing presentation style.",
+    scene: "outcomeBrand",
     diagram: <DiagramBrand />,
   },
   {
@@ -112,6 +111,7 @@ const CARDS = [
     num: "04",
     title: "Stay on schedule",
     desc: "Prepare reports around a defined reporting cadence when scheduling is available.",
+    scene: "outcomeSchedule",
     diagram: <DiagramSchedule />,
   },
 ];
@@ -127,14 +127,18 @@ export default function Outcome() {
       <div className="grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 xl:grid-cols-4">
         {CARDS.map((card, i) => (
           <Reveal key={card.num} delay={i * 0.08} className="bg-page">
-            <div className="group relative flex h-full flex-col p-7 transition-colors hover:bg-accent-tint/60" data-testid={`outcome-card-${card.num}`}>
-              <div className="flex items-center justify-between">
-                <span className="font-display text-sm font-semibold tracking-wide text-accent/80">{card.num}</span>
-                <card.icon className="h-5 w-5 text-accent" strokeWidth={1.7} />
+            <div className="group relative flex h-full flex-col transition-colors hover:bg-accent-tint/40" data-testid={`outcome-card-${card.num}`}>
+              <div className="p-7 pb-0">
+                <div className="flex items-center justify-between">
+                  <span className="font-display text-sm font-semibold tracking-wide text-accent/80">{card.num}</span>
+                  <card.icon className="h-5 w-5 text-accent" strokeWidth={1.7} />
+                </div>
+                <h3 className="mt-5 text-[17px] font-semibold text-ink">{card.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{card.desc}</p>
               </div>
-              <h3 className="mt-5 text-[17px] font-semibold text-ink">{card.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-soft">{card.desc}</p>
-              <div className="mt-auto pt-6">{card.diagram}</div>
+              <div className="relative mt-5 min-h-[180px] flex-1 overflow-hidden bg-[radial-gradient(120%_100%_at_50%_0%,#FBFAF6_0%,#F1EFE8_100%)]">
+                <Scene scene={card.scene} legacy={card.diagram} testid={`outcome-scene-${card.num}`} />
+              </div>
               <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-accent transition-all duration-500 group-hover:w-full" aria-hidden="true" />
             </div>
           </Reveal>
