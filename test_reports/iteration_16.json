@@ -1,0 +1,19 @@
+{
+  "summary": "Iteration 16 full regression — all backend (19/19 pytest) and frontend flows pass. Verified the new ROI calculator layout, full route sweep (10 routes incl. /blog/<slug>, /integrations/<slug>, 404), Lenis smooth scroll (window.scrollY eases over multiple frames: 0→533→791→900→1048→1092→1124→1157→1178→1187→1192 across ~500ms, monotonic), GSAP marquees translating (6/25 transforms changing per 800ms; w-max will-change-transform elements shifting from -322px to new positions), currency USD↔INR mask swap, waitlist Starter/Growth preselect, waitlist + contact submit success states, 3 careers roles, admin auth + authenticated jobs list, no horizontal overflow at 1440 or 390, zero unfiltered page errors across all routes.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/iteration_16.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Testid naming drift between review-request spec and actual code: review mentioned roi-monthly-hours / roi-annual-hours / roi-saved-annual / roi-days-back / roi-hero-monthly, but code emits roi-monthly-output / roi-annual-output / roi-saved-output / roi-workdays-output (no roi-hero-monthly — hero uses roi-dark-panel + roi-monthly-output). Not a bug — behavior is correct — but keep spec/code in sync to avoid confusion in future tests.",
+    "RoiCalculator useTween animates values; raw snapshots within <500ms of input change read mid-tween values (e.g. saved shows 2,877 then settles to 2,880). Not a bug; just ensure any future automated assertions wait ~2s after input."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "admin@example.com / admin123 (verified login + authenticated /api/careers/jobs?all=true returns 3 jobs)",
+  "seed_data_creation": "Created test waitlist (qa.full.<ts>@testmail.dev) and contact (qa.contact.<ts>@testmail.dev) submissions via live API — persisted in Mongo.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All iteration-16 asks verified. Calculator math: 8/2/3/40 → 48/mo, 576/yr; 20/4/5/40 → 400/mo, 4800/yr, saved 1920 h; 20/4/5/60 → saved 2880 h / 360 workdays / YOU at left:40%; 20/4/5/10 → saved 480 h (settled) / YOU at left:90%. Testids: roi-{clients,reports,hours,reduction}-input, roi-{monthly,annual,saved,workdays}-output, roi-you-marker, roi-dark-panel, roi-copy-result, roi-compare-bar. Pricing testids: currency-toggle-{usd,inr}, pricing-page-card-{starter,growth}-{cta,price}, pricing-page-cta-button. Careers: 3 roles (saas-sales-intern, saas-sales-us-markets-intern, saas-sales-uk-markets-intern). Lenis + GSAP perf changes (ticker merge, dpr 1.5, texture cache, Mongo indexes) did not regress anything.",
+  "rca of the issue": "N/A — no issues found."
+}
