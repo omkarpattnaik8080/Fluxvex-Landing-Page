@@ -20,7 +20,7 @@ export const WORLD = {
   featureDelivery: { w: 10.6, h: 5.4 },
   platform: { w: 11.4, h: 7 },
   vision: { w: 11, h: 6.6 },
-  layers: { w: 11, h: 5.0 },
+  layers: { w: 10, h: 5.0 },
 };
 
 function useBrandTextures() {
@@ -50,8 +50,17 @@ function useCanvasTexture(w, h, draw) {
   }, []);
 }
 
-function Cam({ zoom }) {
-  return <OrthographicCamera makeDefault position={[14, 14, 14]} zoom={zoom || 40} near={-100} far={500} onUpdate={(c) => c.lookAt(0, 0, 0)} />;
+function Cam({ zoom, target = [0, 0, 0] }) {
+  return (
+    <OrthographicCamera
+      makeDefault
+      position={[14, 14, 14]}
+      zoom={zoom || 40}
+      near={-100}
+      far={500}
+      onUpdate={(c) => c.lookAt(target[0], target[1], target[2])}
+    />
+  );
 }
 
 /* ---------- How it works — step-driven pipeline ---------- */
@@ -648,9 +657,9 @@ export function LayersScene({ input, reduce, visible, zoom }) {
     useTextTexture({ lines: [{ text: "Branded delivery", size: 22, color: C.mint }], size: 22, h: 0.44 }),
   ];
   const chipTex = [
-    useTextTexture({ lines: [{ text: "3 sources · one schema", size: 19, weight: 700, color: C.accent }], pill: true, h: 0.4 }),
-    useTextTexture({ lines: [{ text: "Drafts · flags anomalies", size: 19, weight: 700, color: C.violet }], pill: true, h: 0.4 }),
-    useTextTexture({ lines: [{ text: "Your logo · your voice", size: 19, weight: 700, color: C.mint }], pill: true, h: 0.4 }),
+    useTextTexture({ lines: [{ text: "3 sources · one schema", size: 19, weight: 700, color: "#FFFFFF" }], pill: true, bg: C.accent, h: 0.38 }),
+    useTextTexture({ lines: [{ text: "Drafts · flags anomalies", size: 19, weight: 700, color: "#FFFFFF" }], pill: true, bg: C.violet, h: 0.38 }),
+    useTextTexture({ lines: [{ text: "Your logo · your voice", size: 19, weight: 700, color: "#FFFFFF" }], pill: true, bg: C.mint, h: 0.38 }),
   ];
   const sep = useRef(1);
   useFrame((s, dt) => {
@@ -668,7 +677,7 @@ export function LayersScene({ input, reduce, visible, zoom }) {
   const plate = [C.accent, C.violet, C.mint];
   return (
     <>
-      <Cam zoom={zoom} />
+      <Cam zoom={zoom} target={[0, 0.82, 0]} />
       <IsoWorld input={input} reduce={reduce} interactive={false} ground={14}>
         <group ref={grp}>
           {slabs.map((tex, i) => {
@@ -688,11 +697,11 @@ export function LayersScene({ input, reduce, visible, zoom }) {
                   <planeGeometry args={[3.9, 2.52]} />
                   <meshBasicMaterial map={tex} transparent depthWrite={false} />
                 </mesh>
-                <sprite position={[2.75, 0.1, -0.3]} scale={[0.44 * (labelTex[i].aspect || 3), 0.44, 1]}>
-                  <spriteMaterial map={labelTex[i]} transparent depthWrite={false} />
+                <sprite position={[2.72, 0.16, -0.2]} scale={[0.5 * (labelTex[i].aspect || 3), 0.5, 1]} renderOrder={10}>
+                  <spriteMaterial map={labelTex[i]} transparent depthWrite={false} depthTest={false} />
                 </sprite>
-                <sprite position={[-2.5, 0.02, (i - 1) * 1.35]} scale={[0.4 * (chipTex[i].aspect || 4), 0.4, 1]}>
-                  <spriteMaterial map={chipTex[i]} transparent depthWrite={false} opacity={0.95} />
+                <sprite position={[-2.72, 0.05, (i - 1) * 1.65]} scale={[0.4 * (chipTex[i].aspect || 4), 0.4, 1]} renderOrder={10}>
+                  <spriteMaterial map={chipTex[i]} transparent depthWrite={false} depthTest={false} opacity={0.97} />
                 </sprite>
               </group>
             );

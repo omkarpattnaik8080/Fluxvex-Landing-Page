@@ -142,28 +142,45 @@ export default function Showcase() {
           data-testid="showcase-layers-3d"
         >
           <div className="fine-grid pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent via-violet-500 to-emerald-400" aria-hidden="true" />
-          <div className="relative flex flex-col justify-between gap-3 px-6 pt-5 sm:flex-row sm:items-start sm:px-8">
-            <div>
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1 bg-gradient-to-r from-accent via-violet-500 to-emerald-400" aria-hidden="true" />
+          <div className="relative grid lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
+            {/* left — the layer index */}
+            <div className="relative z-10 px-6 pb-1 pt-6 sm:px-9 sm:pt-8 lg:pb-8">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">Three layers, one frame</p>
-              <p className="mt-1 max-w-md text-[13px] leading-relaxed text-ink-soft">
+              <h3 className="mt-3 max-w-xs font-display text-2xl font-semibold leading-[1.12] tracking-tight text-ink sm:text-3xl">
+                One report, three working layers.
+              </h3>
+              <p className="mt-3 max-w-sm text-[13.5px] leading-[1.7] text-ink-soft">
                 Connected data feeds Fluxvex AI, which fills the branded delivery your client reads.
               </p>
+              <ul className="mt-6 space-y-2.5">
+                {[
+                  ["#3D43E8", "Connected data"],
+                  ["#7B5CFF", "Fluxvex AI"],
+                  ["#10B981", "Branded delivery"],
+                ].map(([dot, label]) => (
+                  <li key={label} className="flex items-center gap-2.5 text-[13px] font-semibold text-ink">
+                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: dot }} aria-hidden="true" />
+                    {label}
+                  </li>
+                ))}
+              </ul>
+              <span className="mt-6 inline-flex items-center gap-1.5 rounded-full border border-line bg-page px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" aria-hidden="true" /> Hover to fan the layers
+              </span>
             </div>
-            <span className="hidden items-center gap-1.5 rounded-full border border-line bg-page px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft sm:flex">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" aria-hidden="true" /> Hover to fan the layers
-            </span>
-          </div>
-          <div className="relative h-[230px] sm:h-[260px]">
-            <Suspense
-              fallback={
-                <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
-                  <span className="h-2 w-2 animate-ping rounded-full bg-accent/60" />
-                </div>
-              }
-            >
-              <Scene3D scene="layers" className="absolute inset-0" />
-            </Suspense>
+            {/* right — the 3D scene */}
+            <div className="relative h-[250px] sm:h-[300px] lg:min-h-[400px]">
+              <Suspense
+                fallback={
+                  <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                    <span className="h-2 w-2 animate-ping rounded-full bg-accent/60" />
+                  </div>
+                }
+              >
+                <Scene3D scene="layers" className="absolute inset-0" />
+              </Suspense>
+            </div>
           </div>
         </div>
       </Reveal>
