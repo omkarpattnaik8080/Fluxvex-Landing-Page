@@ -330,14 +330,14 @@ export default function Integration() {
                     <Link
                       key={o.slug}
                       to={`/integrations/${o.slug}`}
-                      className="group flex items-center gap-3.5 rounded-xl border border-line bg-page p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_24px_48px_-28px_rgba(61,67,232,0.4)]"
+                      className="group flex min-w-0 items-center gap-3.5 rounded-xl border border-line bg-page p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_24px_48px_-28px_rgba(61,67,232,0.4)]"
                       data-testid={`integration-crosslink-${o.slug}`}
                     >
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-line bg-surface">
                         <OtherMark size={18} />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-semibold text-ink">{o.name}</span>
+                        <span className="block truncate text-sm font-semibold text-ink">{o.name}</span>
                         <span className="block truncate text-xs text-ink-soft">{o.tagline}</span>
                       </span>
                       <ArrowRight className="h-4 w-4 shrink-0 text-black/30 transition-[color,transform] duration-300 group-hover:translate-x-0.5 group-hover:text-accent" />

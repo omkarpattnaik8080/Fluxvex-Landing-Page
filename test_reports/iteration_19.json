@@ -1,0 +1,38 @@
+{
+  "summary": "Iteration 19 regression + new-feature sweep passed almost entirely. Backend pytest suite 19/19 pass. Hero sample report fully verified (4 KPI tiles + 4 sparkline polylines, CountUp values settle to $48,210 / 1.24M / 34,880 / 1,204, dashed Last-period comparison line present (stroke-dasharray count=13), channel marks + legend; all preserved testids present: hero-report-preview, hero-ai-summary, hero-top-campaign, hero-brand-card, hero-delivery-card, hero-ai-insight). All three integration pages render with correct per-slug sample data (google-ads $24,180 + 2.6x, meta-ads $16,940, ga4 21,480), 'Supported at launch' chip + check-badge, READ-ONLY permissions card, FAQ <details> accordions toggle open, cross-link navigation works (google-ads → meta-ads), dark CTA band + integration-bottom-cta-button opens the waitlist modal. Bad slug /integrations/not-a-real-slug correctly serves 404. Regression: waitlist E2E submits + Done closes modal, contact form submits (contact-success visible), calculator shows 4 sliders + copy button, AI-core band renders 5 capability cards. Only one real issue found: integration cross-link cards overflow horizontally on mobile (390px) viewport.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Integration page cross-link cards",
+        "issue": "At mobile 390px viewport, the 'Also explore' cross-link <a> elements render at ~714px width inside a 350px parent grid cell, causing the whole /integrations/* page to horizontally scroll (document.scrollWidth=734 vs clientWidth=390). Root cause: the Link is a grid item but lacks min-w-0, so its intrinsic content width (long tagline inside .block.truncate span) blows out the grid track. The inner span uses truncate but overflow:hidden only engages when the parent is width-constrained — the Link itself needs min-w-0 (or the parent grid needs min-w-0 on items) so the flex child + truncate can clip properly.",
+        "selector": "[data-testid='integration-crosslink-meta-ads'], [data-testid='integration-crosslink-ga4']",
+        "priority": "MEDIUM",
+        "fix_hint": "In /app/frontend/src/pages/Integration.jsx line ~333, add `min-w-0` to the Link className (e.g. 'group flex min-w-0 items-center gap-3.5 ...'). Also safe to add `min-w-0` to the inner span.block.text-sm.font-semibold if names ever grow."
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home (headless render)", "issues": ["Many 'Too many active WebGL contexts' console warnings in headless mode — expected per agent-note, not a real-user issue."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/iter19_results.xml"
+  ],
+  "action_items": [
+    "Fix the mobile 390px horizontal overflow on /integrations/* pages by adding `min-w-0` to the cross-link Link className (Integration.jsx ~line 333)."
+  ],
+  "critical_code_review_comments": [
+    "Integration.jsx cross-link grid items miss min-w-0 — recurring Tailwind flex/grid shrink gotcha; add min-w-0 on grid/flex children that wrap truncated text.",
+    "Integration.jsx is ~391 lines — still manageable, but the inline Diagram, SampleReport, Timeline, Permissions, FAQ, CrossLinks, and CTA sub-sections could be extracted into separate components as the page grows."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "100%", "frontend": "~95%" },
+  "test_credentials": "Not needed for this run (admin flows untouched per request).",
+  "seed_data_creation": "Created ephemeral waitlist and contact entries via live form submits (qa.int.<ts>@testmail.dev, qa.c.<ts>@testmail.dev) — safe to prune.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Everything requested in iteration-19 scope was verified green except the single mobile overflow bug on integration cross-link cards. Hero report sparklines + dashed Last-period line are present and animated. All three integration slugs render their correct sample numbers from data/integrations.js. Cross-link + CTA → waitlist flow confirmed. Backend untouched and all 19 pytest cases pass. Next agent should re-verify mobile overflow after Integration.jsx line ~333 className fix.",
+  "rca_of_the_issue": "Mobile overflow on /integrations/*: the cross-link Link is a CSS grid item; grid items default to min-width:auto so they are sized by their intrinsic content. The inner tagline span has `truncate` (nowrap+overflow:hidden) but that only takes effect once the ancestor flex/grid chain is width-constrained. Without `min-w-0` on the Link (and ideally on the inner name span too), the content's intrinsic width ~714px wins and the grid track grows, pushing document width to 734px at a 390px viewport. Fix: add `min-w-0` to the Link element's className."
+}
