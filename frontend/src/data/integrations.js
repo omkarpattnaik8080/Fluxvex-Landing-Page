@@ -1,4 +1,11 @@
 /* Config for the /integrations/:slug detail pages */
+
+const PERMISSIONS = [
+  "Read-only reporting scopes via OAuth—Fluxvex can read performance, never change budgets, bids, or campaigns.",
+  "No passwords are ever shared—authorization happens on the platform's own consent screen.",
+  "Disconnect in one click at any time; data access ends immediately.",
+];
+
 export const INTEGRATIONS = [
   {
     slug: "google-ads",
@@ -16,6 +23,16 @@ export const INTEGRATIONS = [
       { icon: "globe", text: "Geo and device splits that explain why a number moved, not just that it moved" },
     ],
     diagramLabels: ["Google Ads data", "AI drafts the summary", "Branded report out"],
+    sample: {
+      title: "Google Ads in the June report",
+      rows: [
+        ["Spend", "$24,180", "−2.1% vs May", false],
+        ["Conversions", "612", "+11.4% vs May", true],
+        ["Cost / conversion", "$39.51", "−7.8% vs May", true],
+        ["ROAS", "2.6x", "+0.3x vs May", true],
+      ],
+      ai: "Pacing 4% under budget while conversions climbed—Search drove most of the lift, Performance Max held CPA steady.",
+    },
     steps: [
       { icon: "link", title: "Connect via Google OAuth", desc: "Authorize read-only reporting scopes for the accounts you manage. Minutes, not an implementation project." },
       { icon: "wand", title: "Fluxvex builds the report", desc: "Your structure, your brand—with an AI-drafted summary and anomaly flags your team reviews before sending." },
@@ -42,6 +59,16 @@ export const INTEGRATIONS = [
       { icon: "gauge", text: "Frequency and audience-quality notes only when they explain a move" },
     ],
     diagramLabels: ["Meta Ads data", "AI drafts the summary", "Branded report out"],
+    sample: {
+      title: "Meta Ads in the June report",
+      rows: [
+        ["Spend", "$16,940", "+3.2% vs May", false],
+        ["Results", "498", "+9.7% vs May", true],
+        ["Cost / result", "$34.02", "−5.9% vs May", true],
+        ["ROAS", "2.1x", "+0.2x vs May", true],
+      ],
+      ai: "Reels placements carried the efficiency gains—creative set 3 held frequency under 2.1 while results climbed.",
+    },
     steps: [
       { icon: "link", title: "Connect via Meta OAuth", desc: "Authorize read-only access to the ad accounts you manage. Disconnect anytime, no strings." },
       { icon: "wand", title: "Fluxvex builds the report", desc: "Fixed structure applied to every account—results, spend, changes, next steps—in your brand." },
@@ -68,6 +95,16 @@ export const INTEGRATIONS = [
       { icon: "gauge", text: "Audience quality—new versus returning, and the segments that convert" },
     ],
     diagramLabels: ["GA4 data", "AI drafts the summary", "Branded report out"],
+    sample: {
+      title: "GA4 in the June report",
+      rows: [
+        ["Sessions", "21,480", "+7.4% vs May", true],
+        ["Engagement rate", "61.2%", "+2.8pp vs May", true],
+        ["Key events", "894", "+12.6% vs May", true],
+        ["New users", "14,120", "+6.9% vs May", true],
+      ],
+      ai: "Paid channels brought qualified traffic this month—landing pages from the new campaign held engagement above the site average.",
+    },
     steps: [
       { icon: "link", title: "Connect the GA4 property", desc: "Authorize read-only access to the properties you manage. The translation layer does the rest." },
       { icon: "wand", title: "Fluxvex translates it", desc: "GA4 vocabulary becomes client sentences—AI-drafted summaries your strategists review and approve." },
@@ -81,3 +118,4 @@ export const INTEGRATIONS = [
 ];
 
 export const getIntegration = (slug) => INTEGRATIONS.find((i) => i.slug === slug);
+export { PERMISSIONS };

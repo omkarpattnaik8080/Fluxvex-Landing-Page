@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Check, Lock, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
@@ -10,7 +11,7 @@ import CinematicText from "@/components/ui/CinematicText";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark, LinkedInMark, TikTokMark } from "@/components/brand/IntegrationMarks";
-import { INTEGRATIONS, getIntegration } from "@/data/integrations";
+import { INTEGRATIONS, getIntegration, PERMISSIONS } from "@/data/integrations";
 import { useWaitlist } from "@/components/WaitlistContext";
 import TapCTA from "@/components/ui/TapCTA";
 
@@ -58,6 +59,60 @@ function Diagram({ config }) {
   );
 }
 
+/* Sample report mock — what the integration's data looks like inside a Fluxvex report */
+function SampleReport({ config }) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-white shadow-[0_40px_90px_-40px_rgba(16,16,20,0.4)] ring-1 ring-black/[0.08]" data-testid="integration-sample-report">
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-accent via-[#8A5CFF] to-mint" />
+      <div className="flex items-center gap-3 border-b border-black/[0.06] px-5 py-3.5 sm:px-6">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-ink to-[#2A2F55] font-display text-[13px] font-bold text-white">N</span>
+        <div className="min-w-0">
+          <p className="truncate text-[13px] font-semibold text-ink">{config.sample.title}</p>
+          <p className="text-[10.5px] text-black/45">Northbeam Media · June 2025 · Sample data</p>
+        </div>
+        <span className="ml-auto hidden items-center gap-1.5 rounded-full bg-mint/10 px-2.5 py-1 text-[10px] font-semibold text-[#0E8A3E] sm:inline-flex">
+          <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Report section
+        </span>
+      </div>
+      <div className="p-5 sm:p-6">
+        <div className="overflow-hidden rounded-xl border border-black/[0.06]">
+          {config.sample.rows.map(([metric, value, delta, good], i) => (
+            <motion.div
+              key={metric}
+              initial={{ opacity: 0, x: -14 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.5, delay: 0.15 + i * 0.09, ease: [0.25, 1, 0.5, 1] }}
+              className={`flex items-center gap-3 px-4 py-3 text-sm ${i % 2 ? "bg-[#FAFAF7]" : "bg-white"}`}
+            >
+              <span className="min-w-0 flex-1 truncate font-medium text-ink/80">{metric}</span>
+              <span className="font-display font-semibold text-ink">{value}</span>
+              <span className={`w-28 text-right text-xs font-medium ${good ? "text-[#0E8A3E]" : "text-black/45"}`}>{delta}</span>
+            </motion.div>
+          ))}
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          className="mt-4 flex items-start gap-3 rounded-xl border border-accent/20 bg-gradient-to-r from-accent-tint/80 to-transparent px-4 py-3"
+        >
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-accent text-white shadow-[0_8px_18px_-6px_rgba(61,67,232,0.7)]">
+            <Sparkles className="h-3 w-3" />
+          </span>
+          <p className="text-[12px] leading-relaxed text-ink/80">
+            <span className="font-semibold text-accent">AI-drafted summary ·</span> {config.sample.ai}
+          </p>
+        </motion.div>
+        <p className="mt-3.5 flex items-center gap-1.5 text-[10.5px] text-black/40">
+          <Lock className="h-3 w-3" /> Illustrative sample—real values come from your connected accounts.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function Integration() {
   const { slug } = useParams();
   const config = getIntegration(slug);
@@ -88,12 +143,20 @@ export default function Integration() {
             <div className="mt-8 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
               <div>
                 <Reveal>
-                  <span className="flex h-16 w-16 items-center justify-center rounded-2xl border border-line bg-surface shadow-[0_20px_40px_-18px_rgba(16,16,20,0.35)]">
+                  <span className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-line bg-surface shadow-[0_20px_40px_-18px_rgba(16,16,20,0.35)]">
                     <Mark size={30} />
+                    <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-ink ring-2 ring-page" title="Supported at launch">
+                      <Check className="h-3 w-3 text-white" strokeWidth={3} />
+                    </span>
                   </span>
                 </Reveal>
                 <Reveal y={14} delay={0.05}>
-                  <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">Integration</p>
+                  <p className="mt-6 flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent">
+                    Integration
+                    <span className="flex items-center gap-1.5 rounded-full border-mint/40 bg-mint/10 px-2.5 py-0.5 text-[9px] tracking-[0.14em] text-[#0E8A3E] normal-case">
+                      <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> Supported at launch
+                    </span>
+                  </p>
                 </Reveal>
                 <CinematicText
                   as="h1"
@@ -143,10 +206,32 @@ export default function Integration() {
           </div>
         </div>
 
-        {/* what it pulls in */}
         <div className="mx-auto max-w-[1100px] px-5 py-16 lg:px-8 lg:py-20">
+          {/* sample report */}
           <Reveal>
-            <h2 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+                  Where {config.name} shows up in the report
+                </h2>
+                <p className="mt-2 max-w-lg text-[15px] leading-relaxed text-ink-soft">
+                  Headline numbers first, AI-drafted context underneath, detail in the appendix—every cycle.
+                </p>
+              </div>
+              <span className="flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-[11px] font-medium text-ink-soft">
+                <TrendingUp className="h-3.5 w-3.5 text-[#0E8A3E]" /> Sample section
+              </span>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="mt-8">
+              <SampleReport config={config} />
+            </div>
+          </Reveal>
+
+          {/* what it pulls in */}
+          <Reveal>
+            <h2 className="mt-16 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
               What Fluxvex pulls from {config.name}
             </h2>
           </Reveal>
@@ -166,17 +251,17 @@ export default function Integration() {
             ))}
           </div>
 
-          {/* how connection works */}
+          {/* how connection works — vertical timeline */}
           <Reveal>
             <h2 className="mt-16 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
               How the connection works
             </h2>
           </Reveal>
-          <div className="mt-8 space-y-4">
+          <div className="relative mt-8 space-y-4 before:absolute before:bottom-6 before:left-[31px] before:top-6 before:hidden before:w-px before:bg-gradient-to-b before:from-accent/40 before:via-line before:to-accent/30 sm:before:block" aria-hidden="true">
             {config.steps.map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.06}>
-                <div className="flex items-center gap-6 rounded-xl border border-line bg-page p-6" data-testid={`integration-step-${i + 1}`}>
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-tint font-display text-sm font-bold text-accent">
+              <Reveal key={s.title} delay={i * 0.08}>
+                <div className="relative flex items-center gap-6 rounded-xl border border-line bg-page p-6 transition-[border-color,box-shadow] duration-300 hover:border-accent/35 hover:shadow-[0_24px_48px_-28px_rgba(61,67,232,0.4)]" data-testid={`integration-step-${i + 1}`}>
+                  <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent font-display text-sm font-bold text-white ring-4 ring-page">
                     {i + 1}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -190,6 +275,29 @@ export default function Integration() {
               </Reveal>
             ))}
           </div>
+
+          {/* permissions & scope */}
+          <Reveal>
+            <div className="mt-16 overflow-hidden rounded-2xl border border-line" data-testid="integration-permissions">
+              <div className="flex items-center gap-3 border-b border-line bg-surface px-6 py-4">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-white">
+                  <ShieldCheck className="h-4 w-4" />
+                </span>
+                <h2 className="font-display text-lg font-semibold tracking-tight text-ink">Permissions &amp; scope</h2>
+                <span className="ml-auto rounded-full border border-mint/40 bg-mint/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#0E8A3E]">
+                  Read-only
+                </span>
+              </div>
+              <div className="grid gap-4 p-6 sm:grid-cols-3">
+                {PERMISSIONS.map((p, i) => (
+                  <div key={i} className="flex items-start gap-2.5 rounded-xl bg-surface/70 p-4 text-[13px] leading-relaxed text-ink-soft">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#0E8A3E]" strokeWidth={2.4} />
+                    {p}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
 
           {/* faq */}
           <Reveal>
@@ -213,39 +321,64 @@ export default function Integration() {
 
           {/* cross-links */}
           <Reveal>
-            <div className="mt-12 flex flex-wrap items-center gap-3">
+            <div className="mt-14">
               <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-black/45">Also explore</span>
-              {others.map((o) => {
-                const OtherMark = MARKS[o.mark];
-                return (
-                  <Link
-                    key={o.slug}
-                    to={`/integrations/${o.slug}`}
-                    className="flex items-center gap-2 rounded-full border border-line bg-page px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-accent/40 hover:text-accent"
-                    data-testid={`integration-crosslink-${o.slug}`}
-                  >
-                    <OtherMark size={16} />
-                    {o.name}
-                  </Link>
-                );
-              })}
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {others.map((o) => {
+                  const OtherMark = MARKS[o.mark];
+                  return (
+                    <Link
+                      key={o.slug}
+                      to={`/integrations/${o.slug}`}
+                      className="group flex items-center gap-3.5 rounded-xl border border-line bg-page p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_24px_48px_-28px_rgba(61,67,232,0.4)]"
+                      data-testid={`integration-crosslink-${o.slug}`}
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-line bg-surface">
+                        <OtherMark size={18} />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-semibold text-ink">{o.name}</span>
+                        <span className="block truncate text-xs text-ink-soft">{o.tagline}</span>
+                      </span>
+                      <ArrowRight className="h-4 w-4 shrink-0 text-black/30 transition-[color,transform] duration-300 group-hover:translate-x-0.5 group-hover:text-accent" />
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </Reveal>
 
-          {/* CTA band */}
+          {/* CTA band — dark premium */}
           <Reveal>
-            <div className="mt-14 rounded-2xl border border-accent-border bg-accent-tint p-8 text-center">
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">See it with your own data</h2>
-              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink-soft">
-                Connect {config.name} once at launch—every report after that builds itself.
-              </p>
-              <TapCTA
-                onClick={() => openWaitlist(`integration-${config.slug}`)}
-                className="mt-6 inline-flex h-11 items-center rounded-full bg-accent px-6 text-sm font-semibold text-white transition-colors hover:bg-accent-strong"
-                testid="integration-bottom-cta-button"
-              >
-                Join the waitlist
-              </TapCTA>
+            <div className="relative mt-14 overflow-hidden rounded-[24px] bg-[#0B0B14] px-8 py-12 text-center sm:py-14" data-testid="integration-cta-band">
+              <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.4),transparent_70%)] blur-3xl" aria-hidden="true" />
+              <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(123,92,255,0.3),transparent_70%)] blur-3xl" aria-hidden="true" />
+              <div className="fine-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+              <div className="relative">
+                <span className="mx-auto flex w-fit items-center gap-2.5">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06]">
+                    <Mark size={20} />
+                  </span>
+                  <FluxvexMark size={10} className="hidden text-white/40 sm:block" aria-hidden="true" />
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06]">
+                    <FluxvexMark size={20} />
+                  </span>
+                </span>
+                <h2 className="mx-auto mt-6 max-w-md font-display text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                  See it with your own data
+                </h2>
+                <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/55">
+                  Connect {config.name} once at launch—every report after that builds itself.
+                </p>
+                <TapCTA
+                  onClick={() => openWaitlist(`integration-${config.slug}`)}
+                  className="group mt-7 inline-flex h-11 items-center gap-2 rounded-full bg-white px-6 font-display text-sm font-semibold text-ink transition-colors hover:bg-white/90"
+                  testid="integration-bottom-cta-button"
+                >
+                  Join the waitlist
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </TapCTA>
+              </div>
             </div>
           </Reveal>
         </div>

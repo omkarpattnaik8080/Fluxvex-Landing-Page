@@ -48,17 +48,40 @@ function CountUp({ value, decimals = 0, prefix = "", suffix = "", delay = 0 }) {
 }
 
 const KPIS = [
-  { label: "Spend", value: 48210, prefix: "$", decimals: 0, suffix: "", delta: "+8.2%" },
-  { label: "Impressions", value: 1.24, prefix: "", decimals: 2, suffix: "M", delta: "+11.6%" },
-  { label: "Clicks", value: 34880, prefix: "", decimals: 0, suffix: "", delta: "+6.1%" },
-  { label: "Conversions", value: 1204, prefix: "", decimals: 0, suffix: "", delta: "+14.9%" },
+  { label: "Spend", value: 48210, prefix: "$", decimals: 0, suffix: "", delta: "+8.2%", spark: [14, 12, 15, 13, 17, 16, 19] },
+  { label: "Impressions", value: 1.24, prefix: "", decimals: 2, suffix: "M", delta: "+11.6%", spark: [10, 13, 12, 16, 15, 18, 20] },
+  { label: "Clicks", value: 34880, prefix: "", decimals: 0, suffix: "", delta: "+6.1%", spark: [12, 11, 14, 15, 14, 17, 18] },
+  { label: "Conversions", value: 1204, prefix: "", decimals: 0, suffix: "", delta: "+14.9%", spark: [9, 12, 11, 15, 17, 16, 21] },
 ];
 
 const CHANNELS = [
-  ["Google Ads", "58%", 58],
-  ["Meta Ads", "31%", 31],
-  ["GA4 sessions", "11%", 11],
+  ["Google Ads", "58%", 58, GoogleAdsMark],
+  ["Meta Ads", "31%", 31, MetaMark],
+  ["GA4 sessions", "11%", 11, GA4Mark],
 ];
+
+function Spark({ points, delay = 0 }) {
+  const max = Math.max(...points);
+  const min = Math.min(...points);
+  const pts = points
+    .map((p, i) => `${(i / (points.length - 1)) * 60 + 2},${17 - ((p - min) / (max - min || 1)) * 13}`)
+    .join(" ");
+  return (
+    <svg viewBox="0 0 64 20" className="h-5 w-16 shrink-0" aria-hidden="true">
+      <motion.polyline
+        points={pts}
+        fill="none"
+        stroke="#0E8A3E"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.9, delay, ease: "easeOut" }}
+      />
+    </svg>
+  );
+}
 
 function ReportPreview() {
   const reduce = useReducedMotion();
@@ -133,15 +156,18 @@ function ReportPreview() {
         </div>
 
         <div className="p-4 sm:p-6">
+          {/* brand gradient edge */}
+          <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-accent via-[#8A5CFF] to-mint" />
+
           {/* header */}
           <div className="flex flex-wrap items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink font-display text-sm font-bold text-white">N</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-ink to-[#2A2F55] font-display text-sm font-bold text-white shadow-[0_10px_22px_-8px_rgba(16,16,20,0.6)]">N</span>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-ink">Northbeam Media</p>
               <p className="text-[11px] text-black/45">Agency report · Jun 1 – Jun 30, 2025</p>
             </div>
             <span className="ml-auto flex items-center gap-2">
-              <span className="hidden rounded-full border border-black/[0.08] px-3 py-1 text-[11px] font-medium text-black/60 sm:inline">June 2025 ▾</span>
+              <span className="hidden items-center gap-1.5 rounded-full border border-black/[0.08] px-3 py-1 text-[11px] font-medium text-black/60 sm:inline-flex">June 2025 <span className="text-[8px] text-black/35">▾</span></span>
               <span className="rounded-full bg-accent-tint px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">Sample report</span>
             </span>
           </div>
@@ -154,21 +180,32 @@ function ReportPreview() {
                 initial={reduce ? false : { opacity: 0, y: 14 }}
                 animate={reduce ? {} : { opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.25 + i * 0.09, ease: [0.19, 1, 0.22, 1] }}
-                className="rounded-lg border border-black/[0.07] bg-[#FAFAF8] p-3"
+                className="group/kpi rounded-xl border border-black/[0.07] bg-gradient-to-b from-white to-[#F8F8F4] p-3.5 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-accent/35 hover:shadow-[0_16px_32px_-18px_rgba(61,67,232,0.5)]"
               >
-                <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">{k.label}</p>
-                <p className="mt-1 font-display text-base font-semibold tracking-tight text-ink sm:text-lg">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">{k.label}</p>
+                  <Spark points={k.spark} delay={1.6 + i * 0.1} />
+                </div>
+                <p className="mt-1.5 font-display text-lg font-semibold tracking-tight text-ink sm:text-xl">
                   <CountUp value={k.value} decimals={k.decimals} prefix={k.prefix} suffix={k.suffix} delay={1.35 + i * 0.09} />
                 </p>
-                <p className="text-[10.5px] font-medium text-[#0E8A3E]">{k.delta}</p>
+                <p className="mt-0.5 flex items-center gap-1 text-[10.5px] font-semibold text-[#0E8A3E]">
+                  <span aria-hidden="true">▲</span> {k.delta} <span className="font-normal text-black/35">vs May</span>
+                </p>
               </motion.div>
             ))}
           </div>
 
           {/* chart + channels */}
           <div className="mt-2.5 grid gap-2.5 sm:mt-3 sm:grid-cols-5">
-            <div className="rounded-lg border border-black/[0.07] p-3 sm:col-span-3">
-              <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">Performance trend</p>
+            <div className="rounded-xl border border-black/[0.07] p-3.5 sm:col-span-3">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">Performance trend</p>
+                <span className="flex items-center gap-3 text-[10px] font-medium text-black/45" aria-hidden="true">
+                  <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-accent" /> Conversions</span>
+                  <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-black/25" /> Last period</span>
+                </span>
+              </div>
               <svg viewBox="0 0 300 90" className="mt-2 w-full" role="img" aria-label="Performance trend chart with an upward trajectory">
                 <defs>
                   <linearGradient id="heroArea" x1="0" y1="0" x2="0" y2="1">
@@ -179,6 +216,17 @@ function ReportPreview() {
                 {[18, 42, 66].map((y) => (
                   <line key={y} x1="0" x2="300" y1={y} y2={y} stroke="#EEECE6" strokeWidth="1" />
                 ))}
+                <motion.path
+                  d="M0 76 C 40 72, 70 74, 110 66 S 190 58, 230 48 S 275 40, 300 34"
+                  fill="none"
+                  stroke="#B9BCC9"
+                  strokeWidth="1.8"
+                  strokeDasharray="4 5"
+                  strokeLinecap="round"
+                  initial={reduce ? false : { pathLength: 0 }}
+                  animate={reduce ? {} : { pathLength: 1 }}
+                  transition={{ duration: 1.4, delay: 1.7, ease: "easeInOut" }}
+                />
                 <motion.path
                   d="M0 70 C 30 62, 45 74, 70 60 S 115 34, 140 44 S 190 20, 215 26 S 265 8, 300 10 L 300 90 L 0 90 Z"
                   fill="url(#heroArea)"
@@ -207,17 +255,18 @@ function ReportPreview() {
                 />
               </svg>
             </div>
-            <div className="space-y-2 rounded-lg border border-black/[0.07] p-3 sm:col-span-2">
+            <div className="space-y-2.5 rounded-xl border border-black/[0.07] p-3.5 sm:col-span-2">
               <p className="text-[10.5px] font-medium uppercase tracking-wide text-black/45">Channel mix</p>
-              {CHANNELS.map(([label, pct, w], i) => (
+              {CHANNELS.map(([label, pct, w, Mark], i) => (
                 <div key={label}>
-                  <div className="flex items-center justify-between text-[11px] text-black/60">
+                  <div className="flex items-center gap-1.5 text-[11px] text-black/60">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-surface ring-1 ring-black/[0.05]"><Mark size={9} /></span>
                     <span>{label}</span>
-                    <span className="font-medium text-black/80">{pct}</span>
+                    <span className="ml-auto font-semibold text-black/80">{pct}</span>
                   </div>
                   <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-black/[0.06]">
                     <motion.div
-                      className="h-full rounded-full bg-accent"
+                      className="h-full rounded-full bg-gradient-to-r from-accent to-[#8A90FF]"
                       initial={reduce ? false : { width: 0 }}
                       animate={reduce ? {} : { width: `${w}%` }}
                       transition={{ duration: 0.9, delay: 1.7 + i * 0.12, ease: [0.19, 1, 0.22, 1] }}
@@ -233,59 +282,62 @@ function ReportPreview() {
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={reduce ? {} : { opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 2.15 }}
-            className="mt-2.5 flex items-start gap-2.5 rounded-lg border border-accent/20 bg-accent-tint/60 px-3 py-2.5"
+            className="mt-2.5 flex items-start gap-2.5 rounded-xl border border-accent/20 bg-gradient-to-r from-accent-tint/80 to-accent-tint/30 px-3.5 py-3"
             data-testid="hero-ai-summary"
           >
-            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-accent text-white shadow-[0_8px_18px_-6px_rgba(61,67,232,0.7)]">
+              <Sparkles className="h-3 w-3" />
+            </span>
             <p className="text-[11.5px] leading-relaxed text-ink/80">
               <span className="font-semibold text-accent">Fluxvex AI ·</span> Conversions hit a monthly high while spend
               stayed near plan—Meta ROAS is trending up three weeks in a row.
             </p>
+            <span className="ml-auto hidden shrink-0 items-center gap-1 self-start rounded-full border border-accent/25 bg-white/70 px-2 py-0.5 text-[9px] font-semibold text-accent sm:inline-flex">AI-drafted</span>
           </motion.div>
 
-          {/* top campaign */}
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={reduce ? {} : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 2.1 }}
-            className="mt-2.5 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-dashed border-black/[0.12] bg-[#FAFAF8] px-3 py-2"
-            data-testid="hero-top-campaign"
-          >
-            <span className="flex items-center gap-2 text-[11px] font-medium text-ink">
-              <Trophy className="h-3.5 w-3.5 text-accent" /> Top campaign · Summer Sale (Search)
-            </span>
-            <span className="rounded-full bg-accent-tint px-2.5 py-0.5 text-[10.5px] font-semibold text-accent">412 conversions</span>
-          </motion.div>
-
-          {/* delivery info */}
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={reduce ? {} : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 2.2 }}
-            className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-lg border border-black/[0.07] px-3 py-2 text-[11px] text-black/55"
-          >
-            <span className="flex items-center gap-1.5">
-              <CalendarDays className="h-3.5 w-3.5 text-black/35" /> Period · Jun 1 – Jun 30
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CalendarClock className="h-3.5 w-3.5 text-black/35" /> Next report · Jul 1
-            </span>
-            <span className="ml-auto flex items-center gap-1.5 font-medium text-ink">
-              <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Auto-delivery on
-            </span>
-          </motion.div>
+          {/* top campaign + delivery */}
+          <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 10 }}
+              animate={reduce ? {} : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 2.1 }}
+              className="flex items-center justify-between gap-2 rounded-xl border border-dashed border-black/[0.12] bg-[#FAFAF8] px-3.5 py-2.5"
+              data-testid="hero-top-campaign"
+            >
+              <span className="flex items-center gap-2 text-[11px] font-medium text-ink">
+                <Trophy className="h-3.5 w-3.5 text-accent" /> Top campaign · Summer Sale (Search)
+              </span>
+              <span className="rounded-full bg-accent-tint px-2.5 py-0.5 text-[10.5px] font-semibold text-accent">412 conversions</span>
+            </motion.div>
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 10 }}
+              animate={reduce ? {} : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 2.2 }}
+              className="flex flex-wrap items-center gap-x-3.5 gap-y-1 rounded-xl border border-black/[0.07] bg-[#FAFAF8] px-3.5 py-2.5 text-[11px] text-black/55"
+            >
+              <span className="flex items-center gap-1.5">
+                <CalendarDays className="h-3.5 w-3.5 text-black/35" /> Jun 1 – Jun 30
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CalendarClock className="h-3.5 w-3.5 text-black/35" /> Next · Jul 1
+              </span>
+              <span className="ml-auto flex items-center gap-1.5 font-medium text-ink">
+                <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse-dot" /> Auto-delivery on
+              </span>
+            </motion.div>
+          </div>
 
           {/* footer */}
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={reduce ? {} : { opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 2.3 }}
-            className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-dashed border-black/[0.12] px-3 py-2.5"
+            className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-dashed border-black/[0.12] px-3.5 py-2.5"
           >
             <span className="flex items-center gap-2 text-[11px] font-medium text-black/55">
               <Plus className="h-3.5 w-3.5 text-accent" /> White-label: branded for Northbeam Media
             </span>
-            <span className="rounded-full bg-ink px-3.5 py-1.5 text-[11px] font-semibold text-white">Export report</span>
+            <span className="rounded-full bg-ink px-3.5 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-black">Export report</span>
           </motion.div>
         </div>
       </div>
