@@ -207,10 +207,36 @@ function SyncRail() {
   );
 }
 
+/* Dimmed skeleton preview for the coming-soon cards — no empty-looking cards */
+function SoonSkeleton() {
+  return (
+    <div
+      className="relative overflow-hidden rounded-xl border border-black/[0.06] bg-white/60 px-4 pb-3.5 pt-3"
+      aria-hidden="true"
+    >
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-black/30">Preview</p>
+      <div className="mt-2.5 flex h-12 items-end gap-1.5" aria-hidden="true">
+        {[52, 72, 58, 84, 66, 92].map((h, i) => (
+          <motion.span
+            key={i}
+            className="w-2.5 rounded-t-sm bg-gradient-to-t from-black/[0.06] to-black/[0.14]"
+            style={{ height: `${h}%`, transformOrigin: "bottom" }}
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 + i * 0.06, ease: [0.25, 1, 0.5, 1] }}
+          />
+        ))}
+        <span className="ml-2 h-5 w-20 self-start rounded-md bg-black/[0.05]" />
+      </div>
+    </div>
+  );
+}
+
 function BentoCard({ item, soon = false, i, viz = null, progress = null, className = "" }) {
   const hrefSlug = item.href ? item.href.split("/").pop() : slugOf(item.name);
   const testid = `integration-card-${hrefSlug}`;
-  const cardCls = `group relative flex h-full flex-col gap-3.5 overflow-hidden rounded-2xl border p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 ${
+  const cardCls = `group relative flex h-full flex-col gap-3.5 overflow-hidden rounded-2xl border p-7 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 ${
     soon
       ? "border-dashed border-black/20 bg-surface/80"
       : "border-line hover:border-accent/40 hover:shadow-[0_40px_80px_-40px_rgba(61,67,232,0.45)]"
@@ -287,7 +313,7 @@ export default function IntegrationsStrip() {
           </span>
           <CinematicText
             as="h2"
-            className="mt-5 max-w-2xl font-display text-3xl font-semibold leading-[1.06] tracking-tighter2 text-ink sm:text-4xl"
+            className="mt-5 max-w-2xl font-display text-[34px] font-semibold leading-[1.04] tracking-tighter2 text-ink sm:text-[42px] lg:text-[48px]"
           >
             One reporting workflow. The channels your clients already use.
           </CinematicText>
@@ -295,21 +321,22 @@ export default function IntegrationsStrip() {
             Connect each channel once—every report pulls from the same governed pipeline. No exports, no stale
             screenshots, no rebuilds.
           </p>
-          {/* live status chips — folded into the header */}
+          {/* live status — one sleek pill */}
           <div
-            className="mt-5 flex flex-wrap items-center justify-center gap-2.5"
+            className="mt-6 flex items-center gap-3 rounded-full border border-line bg-white py-1.5 pl-2 pr-3 shadow-[0_14px_30px_-18px_rgba(16,16,20,0.35)]"
             data-testid="integrations-status"
           >
             <span className="flex -space-x-1.5" aria-hidden="true">
-              {[<GoogleAdsMark size={13} key="g" />, <MetaMark size={13} key="m" />, <GA4Mark size={13} key="a" />].map((m, i) => (
-                <span key={i} className="flex h-6 w-6 items-center justify-center rounded-full border border-line bg-white shadow-sm">
+              {[<GoogleAdsMark size={12} key="g" />, <MetaMark size={12} key="m" />, <GA4Mark size={12} key="a" />].map((m, i) => (
+                <span key={i} className="flex h-6 w-6 items-center justify-center rounded-full border border-line bg-white">
                   {m}
                 </span>
               ))}
             </span>
-            <span className="rounded-full border border-line bg-white px-3 py-1 text-[11.5px] font-semibold text-ink shadow-sm">
+            <span className="text-[12px] font-semibold text-ink">
               3 of 5 channels live at launch
             </span>
+            <span className="h-3 w-px bg-line" aria-hidden="true" />
             <LivePill />
           </div>
         </Reveal>
@@ -367,6 +394,7 @@ export default function IntegrationsStrip() {
             i={3}
             soon
             className="lg:col-span-2"
+            viz={<SoonSkeleton />}
             progress={<SoonProgress pct={68} label="In build" delay={0.35} testid="soon-progress-linkedin-ads" />}
             item={{ mark: <LinkedInMark size={24} />, name: "LinkedIn Ads", desc: "B2B campaign reporting for a post-launch release." }}
           />
@@ -374,6 +402,7 @@ export default function IntegrationsStrip() {
             i={4}
             soon
             className="lg:col-span-2"
+            viz={<SoonSkeleton />}
             progress={<SoonProgress pct={41} label="In build" delay={0.45} testid="soon-progress-tiktok-ads" />}
             item={{ mark: <TikTokMark size={24} />, name: "TikTok Ads", desc: "Short-form video results, after the initial launch." }}
           />
@@ -390,10 +419,19 @@ export default function IntegrationsStrip() {
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-mint">
                   <Plus className="h-5 w-5" />
                 </span>
-                <p className="max-w-xl text-[14.5px] leading-relaxed text-white/85">
-                  More channels land after launch—LinkedIn Ads and TikTok Ads are in the pipeline.{" "}
-                  <span className="font-semibold text-mint">Tell us which one your agency needs next.</span>
-                </p>
+                <div className="min-w-0">
+                  <p className="font-display text-lg font-semibold tracking-tight text-white sm:text-xl">
+                    More channels land after launch.{" "}
+                    <span className="text-mint">Tell us which one your agency needs next.</span>
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                    {["LinkedIn Ads — 68% built", "TikTok Ads — 41% built"].map((t) => (
+                      <span key={t} className="rounded-full border border-white/15 bg-white/[0.08] px-2.5 py-1 text-[10.5px] font-medium text-white/75">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
               <TapCTA
                 onClick={() => openWaitlist("integrations-more")}

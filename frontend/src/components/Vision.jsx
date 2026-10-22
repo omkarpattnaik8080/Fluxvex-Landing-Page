@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Plug, Sparkles, CalendarClock, ArrowRight, Zap } from "lucide-react";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
@@ -10,8 +10,7 @@ import TapCTA from "@/components/ui/TapCTA";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { useWaitlist } from "@/components/WaitlistContext";
-
-const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+import CrossFade3D from "@/components/three/CrossFade3D";
 
 const PILLARS = [
   {
@@ -233,14 +232,12 @@ export default function Vision() {
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal>
           <div className="overflow-x-clip" data-testid="vision-scene">
-            <Suspense fallback={<VisionSceneLegacy />}>
-              <Scene3D
-                scene="vision"
-                testid="vision-scene-3d"
-                fallback={<VisionSceneLegacy />}
-                className="mx-auto h-[400px] w-full sm:h-[440px] lg:h-[470px]"
-              />
-            </Suspense>
+            <CrossFade3D
+              scene="vision"
+              legacy={<VisionSceneLegacy />}
+              testid="vision-scene-3d"
+              className="mx-auto h-[400px] w-full sm:h-[440px] lg:h-[470px]"
+            />
           </div>
         </Reveal>
         <div className="space-y-4">

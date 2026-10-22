@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { Link2, Share2, BadgePercent, ArrowRight, Check, Bell } from "lucide-react";
+import { Link2, Share2, BadgePercent, ArrowRight, Check, Bell, Wallet } from "lucide-react";
+import { IsoTile, IsoWire, IsoBillboard, PLANE } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import { useWaitlist } from "@/components/WaitlistContext";
 import TapCTA from "@/components/ui/TapCTA";
+import CrossFade3D from "@/components/three/CrossFade3D";
+import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 
 const STEPS = [
   {
@@ -150,6 +153,33 @@ function ReferralFeed() {
   );
 }
 
+/* Static SVG base beneath the 3D money-flow scene */
+function AffiliateSceneLegacy() {
+  return (
+    <div className="scale-[0.8] sm:scale-100" aria-hidden="true">
+      <div className="relative h-[210px] w-[320px]" style={{ transform: PLANE, transformStyle: "preserve-3d" }}>
+        <IsoWire from={[50, 100]} to={[92, 100]} delay={0} />
+        <IsoWire from={[150, 100]} to={[192, 100]} delay={0.3} />
+        <IsoTile x={18} y={82} w={36} h={36}>
+          <Link2 className="h-4 w-4 text-accent" strokeWidth={1.8} />
+        </IsoTile>
+        <IsoTile x={92} y={78} w={44} h={44}>
+          <FluxvexMark size={22} />
+        </IsoTile>
+        <IsoTile x={192} y={82} w={36} h={36}>
+          <Wallet className="h-4 w-4 text-[#0E8A3E]" strokeWidth={1.8} />
+        </IsoTile>
+        <IsoBillboard x={240} y={40}>
+          <span className="whitespace-nowrap rounded-full bg-[#0E8A3E] px-2.5 py-1 text-[10px] font-semibold text-white">+20% · yours to keep</span>
+        </IsoBillboard>
+        <IsoBillboard x={20} y={130}>
+          <span className="whitespace-nowrap rounded-full border border-line bg-surface px-2.5 py-1 text-[10px] font-semibold text-ink-soft">Your referral link</span>
+        </IsoBillboard>
+      </div>
+    </div>
+  );
+}
+
 export default function Affiliate() {
   const { openWaitlist } = useWaitlist();
   return (
@@ -201,13 +231,38 @@ export default function Affiliate() {
           <EarningsCard />
         </Reveal>
 
+        {/* the money flow, in 3D — link → engine → straight to your account */}
+        <Reveal delay={0.05} className="h-full lg:col-span-2">
+          <div className="relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-2xl border border-line bg-[linear-gradient(140deg,#EEF0FF_0%,#FDFDF8_50%,#EAF6E9_100%)] p-7 sm:p-8">
+            <div className="fine-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+            <div className="relative flex items-center justify-between gap-2">
+              <span className="flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-soft shadow-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" aria-hidden="true" /> How the money flows
+              </span>
+              <span className="rounded-full border border-[#0E8A3E]/25 bg-[#EAF6E9] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#0E8A3E]">
+                No T&amp;C applied
+              </span>
+            </div>
+            <CrossFade3D
+              scene="affiliate"
+              legacy={<AffiliateSceneLegacy />}
+              testid="affiliate-flow-3d"
+              className="relative min-h-[230px] flex-1"
+            />
+            <p className="relative max-w-md text-center text-[12.5px] leading-relaxed text-ink-soft">
+              Your link feeds the engine — up to <span className="font-semibold text-ink">20% of every subscription payment</span>{" "}
+              lands straight in your account. No T&amp;C applied, yours to keep.
+            </p>
+          </div>
+        </Reveal>
+
         {/* C — referral feed (soft violet) */}
-        <Reveal delay={0.05} className="h-full">
+        <Reveal delay={0.1} className="h-full">
           <ReferralFeed />
         </Reveal>
 
         {/* D — CTA anchor card (deep green, like the reference) */}
-        <Reveal delay={0.12} className="h-full lg:col-span-2">
+        <Reveal delay={0.12} className="h-full lg:col-span-3">
           <div className="relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-[radial-gradient(120%_160%_at_85%_0%,#1E7A3C_0%,#0C2E1B_70%)] p-7 sm:p-8">
             <span
               className="pointer-events-none absolute -right-10 -top-16 h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(67,214,117,0.35),transparent_70%)] blur-2xl"

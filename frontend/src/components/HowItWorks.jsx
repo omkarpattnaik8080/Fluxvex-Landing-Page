@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { Check, ChevronRight, Plug, FolderOpen, Sparkles, Send } from "lucide-react";
 import { SectionShell } from "@/components/SectionShell";
@@ -8,8 +8,7 @@ import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/Integration
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { useWaitlist } from "@/components/WaitlistContext";
 import TapCTA from "@/components/ui/TapCTA";
-
-const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+import CrossFade3D from "@/components/three/CrossFade3D";
 
 const AUTO_MS = 3800;
 
@@ -177,41 +176,19 @@ function IsoStageLegacy({ step }) {
   );
 }
 
-/* Interactive Iso3D stage — the crisp SVG stage stays mounted as the base
-   layer and cross-fades out only after the WebGL scene has painted its first
-   frame. No blank beats, no hard swap: the illustration is never "loading". */
+/* Interactive Iso3D stage — the crisp SVG stage is the base layer and the 3D
+   scene cross-fades in after its first painted frame. No blank beats, no
+   hard swap: the illustration is never "loading". */
 function IsoStage({ step }) {
-  const [ready3d, setReady3d] = useState(false);
   return (
     <div className="relative h-[460px] overflow-hidden" data-testid="workflow-iso-stage">
-      {/* base layer — SVG stage, instant paint */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        animate={{ opacity: ready3d ? 0 : 1 }}
-        transition={{ duration: 0.7, ease: "easeInOut" }}
-        aria-hidden={ready3d}
-      >
-        <IsoStageLegacy step={step} />
-      </motion.div>
-      {/* 3D layer — fades in over the base once ready; if WebGL is missing the
-          Scene3D renders nothing here and the SVG base simply stays */}
-      <motion.div
-        className="absolute inset-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: ready3d ? 1 : 0 }}
-        transition={{ duration: 0.7, ease: "easeInOut" }}
-      >
-        <Suspense fallback={null}>
-          <Scene3D
-            scene="workflow"
-            props={{ step }}
-            testid="workflow-iso-stage-3d"
-            fallback={null}
-            onReady={() => setReady3d(true)}
-            className="h-full w-full"
-          />
-        </Suspense>
-      </motion.div>
+      <CrossFade3D
+        scene="workflow"
+        props={{ step }}
+        legacy={<IsoStageLegacy step={step} />}
+        testid="workflow-iso-stage-3d"
+        className="h-full w-full"
+      />
     </div>
   );
 }

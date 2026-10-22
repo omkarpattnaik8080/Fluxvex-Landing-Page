@@ -1,9 +1,7 @@
-import { lazy, Suspense } from "react";
 import { Database, LayoutTemplate, Palette, CalendarClock } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
-
-const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+import CrossFade3D from "@/components/three/CrossFade3D";
 
 function DiagramConverge() {
   return (
@@ -72,13 +70,7 @@ function DiagramSchedule() {
 }
 
 function Scene({ scene, legacy, testid }) {
-  return (
-    <div className="h-full" data-testid={testid}>
-      <Suspense fallback={legacy}>
-        <Scene3D scene={scene} fallback={legacy} className="h-full w-full" />
-      </Suspense>
-    </div>
-  );
+  return <CrossFade3D scene={scene} legacy={legacy} className="h-full" testid={testid} />;
 }
 
 const CARDS = [

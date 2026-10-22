@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Download, ChevronDown, Sparkles } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
@@ -6,8 +6,7 @@ import { Reveal } from "@/components/Reveal";
 import { useTween } from "@/hooks/useTween";
 import TapCTA from "@/components/ui/TapCTA";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
-
-const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+import CrossFade3D from "@/components/three/CrossFade3D";
 
 const fmtUsd = (v) => `$${Math.round(v).toLocaleString("en-US")}`;
 const fmtMils = (v) => `${(v / 1e6).toFixed(2)}M`;
@@ -105,6 +104,34 @@ function useTypewriter(text, { speed = 20, pause = 3600, reduce = false } = {}) 
   return text.slice(0, n);
 }
 
+/* Static layers composition — the base layer beneath the 3D scene */
+function LayersLegacy() {
+  return (
+    <div className="flex h-full items-center justify-center" aria-hidden="true">
+      <svg viewBox="0 0 300 240" className="h-[82%] w-auto">
+        <g transform="rotate(-8 110 130)">
+          <rect x="60" y="60" width="130" height="150" rx="12" fill="#F3F2EE" stroke="#E7E5DE" />
+        </g>
+        <g transform="rotate(-2 150 125)">
+          <rect x="85" y="50" width="130" height="150" rx="12" fill="#FFFFFF" stroke="#E7E5DE" />
+          <rect x="100" y="70" width="60" height="10" rx="5" fill="#7B5CFF" opacity="0.85" />
+          <rect x="100" y="92" width="100" height="7" rx="3.5" fill="rgba(16,16,20,0.14)" />
+          <rect x="100" y="106" width="86" height="7" rx="3.5" fill="rgba(16,16,20,0.09)" />
+          <rect x="100" y="126" width="40" height="26" rx="6" fill="#10B981" opacity="0.15" />
+          <rect x="148" y="126" width="40" height="26" rx="6" fill="#3D43E8" opacity="0.12" />
+        </g>
+        <g transform="rotate(5 210 130)">
+          <rect x="120" y="58" width="120" height="140" rx="12" fill="#FFFFFF" stroke="#E7E5DE" opacity="0.95" />
+          <rect x="136" y="78" width="46" height="10" rx="5" fill="#3D43E8" />
+          <rect x="136" y="98" width="90" height="7" rx="3.5" fill="rgba(16,16,20,0.12)" />
+        </g>
+        <circle cx="150" cy="70" r="4" fill="#3D43E8" />
+        <circle cx="215" cy="150" r="4" fill="#10B981" />
+      </svg>
+    </div>
+  );
+}
+
 /* KPI tile — numbers count up on first view and tween when the period switches */
 function Kpi({ kpi, reduce, testid }) {
   const ref = useRef(null);
@@ -196,18 +223,9 @@ export default function Showcase() {
                 <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" aria-hidden="true" /> Hover to fan the layers
               </span>
             </div>
-            {/* right — the 3D scene */}
+            {/* right — the 3D scene (SVG base layer cross-fades into WebGL) */}
             <div className="relative h-[250px] sm:h-[300px] lg:min-h-[400px]">
-              <Suspense
-                fallback={
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2" aria-hidden="true">
-                    <FluxvexMark size={30} className="animate-pulse" />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-soft/70">Warming up the scene</span>
-                  </div>
-                }
-              >
-                <Scene3D scene="layers" className="absolute inset-0" />
-              </Suspense>
+              <CrossFade3D scene="layers" legacy={<LayersLegacy />} className="absolute inset-0" testid="showcase-layers-3d" />
             </div>
           </div>
         </div>

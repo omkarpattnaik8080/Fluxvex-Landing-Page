@@ -1,11 +1,9 @@
-import { lazy, Suspense } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check, HelpCircle, LayoutTemplate, MessageSquare, Minus, Plug, RefreshCw, Repeat, Send, SlidersHorizontal, Sparkles, Users } from "lucide-react";
 import { IsoTile, IsoWire, IsoBillboard, PLANE } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
-
-const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+import CrossFade3D from "@/components/three/CrossFade3D";
 
 const ROWS = [
   { icon: Plug, need: "Connect to the agency's live accounts", ai: "Depends on available connectors, permissions, and setup", fx: "Designed around supported advertising and analytics integrations" },
@@ -67,9 +65,7 @@ function PromptVisual() {
       </div>
 
       <div className="relative flex flex-1 items-center justify-center">
-        <Suspense fallback={<PromptSceneLegacy />}>
-          <Scene3D scene="prompt" fallback={<PromptSceneLegacy />} className="absolute inset-0" />
-        </Suspense>
+        <CrossFade3D scene="prompt" legacy={<PromptSceneLegacy />} className="flex-1 self-stretch" />
       </div>
 
       <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
@@ -136,9 +132,7 @@ function WorkflowVisual() {
       </div>
 
       <div className="relative flex flex-1 items-center justify-center">
-        <Suspense fallback={<WorkflowSceneLegacy />}>
-          <Scene3D scene="pipeline" fallback={<WorkflowSceneLegacy />} className="absolute inset-0" />
-        </Suspense>
+        <CrossFade3D scene="pipeline" legacy={<WorkflowSceneLegacy />} className="flex-1 self-stretch" />
       </div>
 
       <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">

@@ -54,14 +54,16 @@ function ScrollManager() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  /* Pre-warm the 3D scene chunk on idle so illustrations mount instantly everywhere */
+  /* Pre-warm the 3D scene chunk immediately — starting the download with the
+     first frame (instead of on idle) means illustrations are already mounted,
+     or fade in within a beat, long before the user reaches any 3D section. */
   useEffect(() => {
     const warm = () => {
       import("@/components/three/Scene3D").catch(() => {});
       import("@/components/three/SceneCanvas").catch(() => {});
     };
-    if ("requestIdleCallback" in window) window.requestIdleCallback(warm, { timeout: 2000 });
-    else setTimeout(warm, 1200);
+    const raf = requestAnimationFrame(() => requestAnimationFrame(warm));
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   useEffect(() => {

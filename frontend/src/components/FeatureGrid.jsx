@@ -1,4 +1,3 @@
-import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import { BarChart3, TrendingUp, Users, Zap, Database, Sparkles, Bell } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
@@ -6,8 +5,7 @@ import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
-
-const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+import CrossFade3D from "@/components/three/CrossFade3D";
 
 const SCENE_SCALE = "scale-[0.72] sm:scale-90 lg:scale-105";
 
@@ -161,15 +159,9 @@ function LegacyDelivery() {
   );
 }
 
-/* Interactive Iso3D cards — legacy SVG kept as WebGL fallback */
+/* Interactive Iso3D cards — SVG base cross-fades into WebGL, never a hard swap */
 function Scene({ scene, legacy, testid }) {
-  return (
-    <div className="h-full" data-testid={testid}>
-      <Suspense fallback={legacy}>
-        <Scene3D scene={scene} fallback={legacy} className="h-full w-full" />
-      </Suspense>
-    </div>
-  );
+  return <CrossFade3D scene={scene} legacy={legacy} className="h-full" testid={testid} />;
 }
 
 const VisualInputs = () => <Scene scene="featureSources" legacy={<LegacyInputs />} testid="feature-visual-inputs" />;

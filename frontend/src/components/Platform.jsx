@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronDown, ChevronRight, Link2, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { HubIllustration, PadlockIllustration, RiffleIllustration } from "@/components/hairline/Illustrations";
@@ -9,8 +9,7 @@ import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { useWaitlist } from "@/components/WaitlistContext";
 import TapCTA from "@/components/ui/TapCTA";
-
-const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+import CrossFade3D from "@/components/three/CrossFade3D";
 
 const ACCORDION = [
   { icon: Link2, title: "Seamless integrations", desc: "Connect reporting sources without workflow interruptions.", mini: "integrations" },
@@ -195,11 +194,9 @@ export default function Platform() {
             </div>
           </div>
 
-          {/* right cloud visual — interactive Iso3D orbit, SVG fallback */}
+          {/* right cloud visual — interactive Iso3D orbit over its SVG base */}
           <div className="fine-grid relative flex items-center justify-center bg-[#F7F6F2] p-10 min-h-[400px] sm:p-14">
-            <Suspense fallback={<CloudVisualLegacy />}>
-              <Scene3D scene="platform" testid="platform-cloud-3d" fallback={<CloudVisualLegacy />} className="absolute inset-0" />
-            </Suspense>
+            <CrossFade3D scene="platform" legacy={<CloudVisualLegacy />} testid="platform-cloud-3d" className="absolute inset-0" />
           </div>
         </div>
 

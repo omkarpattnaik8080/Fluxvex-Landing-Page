@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { OrthographicCamera, Line, Edges } from "@react-three/drei";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
-import { HelpCircle, MessageSquare, Repeat, Plug, SlidersHorizontal, Sparkles, Send } from "lucide-react";
+import { HelpCircle, MessageSquare, Repeat, Plug, SlidersHorizontal, Sparkles, Send, Link2, Wallet } from "lucide-react";
 import { C, IsoWorld, Tile, Wire, Billboard, PulseRings, Beam, Chip, Burst, Satellite, useSvgTexture, useTextTexture, useGlowTexture, useImgTexture } from "./kit3d";
 
 /* ---------- shared bits ---------- */
@@ -24,6 +24,7 @@ export const WORLD = {
   outcomeConsistent: { w: 7.2, h: 3.6 },
   outcomeBrand: { w: 6.2, h: 3.8 },
   outcomeSchedule: { w: 6.2, h: 3.8 },
+  affiliate: { w: 10.4, h: 5.4 },
 };
 
 function useBrandTextures() {
@@ -1048,6 +1049,74 @@ export function OutcomeScheduleScene({ input, reduce, zoom }) {
   );
 }
 
+/* ---------- Affiliate — one link, payouts straight to your account ---------- */
+
+/* A gold coin flying from the engine into the wallet tile */
+function FlyingCoin({ offset, reduce }) {
+  const ref = useRef(null);
+  useFrame((s) => {
+    if (!ref.current || reduce) return;
+    const t = (s.clock.elapsedTime * 0.42 + offset) % 1;
+    ref.current.position.set(0.95 + t * 1.55, 0.32 + Math.sin(t * Math.PI) * 0.42, 0);
+    ref.current.rotation.z = Math.sin(s.clock.elapsedTime * 2 + offset * 7) * 0.25;
+  });
+  return (
+    <mesh ref={ref}>
+      <cylinderGeometry args={[0.16, 0.16, 0.055, 22]} />
+      <meshBasicMaterial color="#F5C518" />
+    </mesh>
+  );
+}
+
+function StaticCoin({ position }) {
+  return (
+    <mesh position={position}>
+      <cylinderGeometry args={[0.15, 0.15, 0.05, 22]} />
+      <meshBasicMaterial color="#F5C518" />
+    </mesh>
+  );
+}
+
+export function AffiliateScene({ input, reduce, visible, zoom }) {
+  const linkTex = useIconTexture(Link2, "ic-aff-link", "#3D43E8");
+  const fxTex = useImgTexture(`${process.env.PUBLIC_URL || ""}/fluxvex-icon.png`, "brand-fx");
+  const walletTex = useIconTexture(Wallet, "ic-aff-wallet", "#0E8A3E");
+  const [burst, setBurst] = useState(0);
+  useEffect(() => {
+    if (reduce || !visible) return undefined;
+    setBurst(performance.now());
+    const id = setInterval(() => setBurst(performance.now()), 3200);
+    return () => clearInterval(id);
+  }, [reduce, visible]);
+  return (
+    <>
+      <Cam zoom={zoom} />
+      <IsoWorld input={input} reduce={reduce} ground={14}>
+        {/* referral link tile → Fluxvex engine → wallet */}
+        <Tile position={[-3.5, 0, 0]} size={[1.1, 0.2, 1.1]} texture={linkTex} texScale={0.55} base={C.sky} />
+        <Tile position={[0, 0, 0]} size={[1.6, 0.24, 1.6]} texture={fxTex} texScale={0.5} base={C.accent} glowColor={C.violet} active />
+        <Tile position={[3.3, 0, 0]} size={[1.35, 0.22, 1.35]} texture={walletTex} texScale={0.55} base={C.mint} active />
+        {/* coins landing in the wallet */}
+        <StaticCoin position={[3.05, 0.27, 0.35]} />
+        <StaticCoin position={[3.5, 0.27, -0.25]} />
+        <FlyingCoin offset={0} reduce={reduce} />
+        <FlyingCoin offset={0.33} reduce={reduce} />
+        <FlyingCoin offset={0.66} reduce={reduce} />
+        {/* connection wires */}
+        <Wire from={[-2.9, 0.05, 0]} to={[-0.9, 0.05, 0]} delay={0} period={1.4} />
+        <Wire from={[0.9, 0.05, 0]} to={[2.55, 0.05, 0]} delay={0.3} period={1.4} />
+        <Beam position={[-3.5, 0, 0]} color={C.sky} />
+        <Beam position={[0, 0, 0]} color={C.accent} />
+        {/* payment-received pulse on the wallet */}
+        <Burst position={[3.3, 0.15, 0]} trigger={burst} color={C.mint} />
+        <Billboard position={[-3.5, 1.7, 0]} reduce={reduce} spec={{ lines: [{ text: "Your referral link", size: 23 }], size: 23, h: 0.5 }} />
+        <Billboard position={[3.3, 1.9, 0]} reduce={reduce} spec={{ lines: [{ text: "Straight to your account", color: C.green, size: 23 }, { text: "No T&C · yours to keep", size: 17, color: C.soft }], size: 23, h: 0.86 }} />
+        <Chip position={[-0.4, 2.3, 1.4]} value="20%" label="of every payment" color={C.mint} delay={0.3} reduce={reduce} />
+      </IsoWorld>
+    </>
+  );
+}
+
 /* ---------- scene registry ---------- */
 export const SCENES = {
   workflow: WorkflowScene,
@@ -1063,6 +1132,7 @@ export const SCENES = {
   outcomeConsistent: OutcomeConsistentScene,
   outcomeBrand: OutcomeBrandScene,
   outcomeSchedule: OutcomeScheduleScene,
+  affiliate: AffiliateScene,
 };
 
 /* ---------- shared doc tile ---------- */
