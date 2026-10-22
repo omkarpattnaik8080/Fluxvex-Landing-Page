@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only verification of the dark-rebuilt IntegrationsStrip and AiComparison sections on the Fluxvex landing. Verified at 1440px and 390px viewports after accepting the cookie banner. All required data-testids exist, zero console errors, no horizontal overflow at either breakpoint, GA4 card navigates to /integrations/ga4, more-CTA opens the waitlist modal, 'IN BUILD' progress bars render 68% / 41% for LinkedIn and TikTok, Pipeline Status reads '3 of 5 channels live at launch', score strip reads '6 for 6 — every workflow need, run by the system', all 6 verdict cards render with their need title, 'A prompt by itself' verdict, 'The Fluxvex workflow' verdict and an inner SVG (drawn check). Both #integrations and #why computed background-color is rgb(11, 11, 20) = #0B0B14 as specified. Regression smoke: ROI calculator still has 4 range sliders and 2 copy buttons; both dark bands render cleanly without visible seams.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_22.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "IntegrationsStrip and AiComparison both now preserve all legacy data-testids used by prior iteration tests — good for test stability.",
+    "Dark bands use computed bg rgb(11,11,20); verified via getComputedStyle on section-integrations and section-why.",
+    "Verdict cards: 6/6 contain an SVG element consistent with the DrawnCheck animation requirement."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped per request)", "frontend": "100%" },
+  "test_credentials": "none required",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Showcase period tabs use data-testid pattern showcase-period-tab-{key} (not showcase-tab-{key}); update any future regression scripts accordingly. All review-request testids verified present. GA4 card navigates to /integrations/ga4. Waitlist modal opens from integrations-more-cta (10 modal-like elements detected). No console errors or page errors observed.",
+  "rca of the issue": "n/a — no issues found."
+}
