@@ -404,10 +404,10 @@ export function Chip({ position, value, label, color = C.accent, delay = 0, redu
   const tex = useTextTexture({
     lines: [
       { text: value, size: 30, weight: 700, color, align: "left" },
-      { text: label, size: 16, weight: 600, color: C.soft, align: "left" },
+      { text: label, size: 17, weight: 600, color: C.soft, align: "left" },
     ],
     size: 30,
-    h: 0.72,
+    h: 0.85,
   });
   const s = useRef(null);
   const o = useRef(0);
@@ -420,7 +420,7 @@ export function Chip({ position, value, label, color = C.accent, delay = 0, redu
     sp.material.opacity = o.current;
     if (!reduce) sp.position.y = position[1] + Math.sin(t * 1.4 + phase) * 0.06;
   });
-  const h = 0.72;
+  const h = 0.85;
   return <sprite ref={s} position={position} scale={[h * (tex.aspect || 3), h, 1]}><spriteMaterial map={tex} transparent depthWrite={false} opacity={0} /></sprite>;
 }
 

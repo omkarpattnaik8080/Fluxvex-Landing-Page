@@ -4,7 +4,6 @@ import { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { OrthographicCamera, Line, Edges } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { HelpCircle, MessageSquare, Repeat, Plug, SlidersHorizontal, Sparkles, Send } from "lucide-react";
 import { C, IsoWorld, Tile, Wire, Billboard, PulseRings, Beam, Chip, Burst, Satellite, useSvgTexture, useTextTexture, useGlowTexture, useImgTexture } from "./kit3d";
@@ -15,9 +14,9 @@ export const WORLD = {
   workflow: { w: 10.6, h: 6.6 },
   prompt: { w: 7.6, h: 6.4 },
   pipeline: { w: 11, h: 5.6 },
-  featureSources: { w: 10.6, h: 5.6 },
-  featureAi: { w: 10.6, h: 5.6 },
-  featureDelivery: { w: 10.6, h: 5.4 },
+  featureSources: { w: 9.6, h: 5.2 },
+  featureAi: { w: 9.6, h: 5.2 },
+  featureDelivery: { w: 9.6, h: 5.2 },
   platform: { w: 11.4, h: 7 },
   vision: { w: 11, h: 6.6 },
   layers: { w: 10, h: 5.0 },
@@ -325,7 +324,7 @@ export function FeatureSourcesScene({ input, reduce, visible, zoom }) {
         {zs.map((z, i) => (
           <Wire key={i} from={[-2.75, 0.05, z]} to={[-1.25, 0.05, 0]} delay={i * 0.2} period={1.4} />
         ))}
-        <Tile position={[-0.4, 0, 0]} size={[1.4, 0.24, 1.4]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.violet} />
+        <Tile position={[-0.4, 0, 0]} size={[1.4, 0.24, 1.4]} texture={fxTex} texScale={0.5} active base={C.accent} />
         <Satellite radius={1.35} y={0.95} color={C.violet} phase={0.6} reduce={reduce} />
         <Wire from={[0.5, 0.05, 0]} to={[1.7, 0.05, 0]} delay={0.5} period={1.5} />
         <ReportBoard />
@@ -358,36 +357,48 @@ export function FeatureAiScene({ input, reduce, visible, zoom }) {
         <Satellite radius={1.4} y={1.0} color={C.violet} phase={0} reduce={reduce} />
         <Satellite radius={1.4} y={1.05} color={C.amber} phase={Math.PI} speed={-0.8} reduce={reduce} />
         <Beam position={[-0.4, 0, 0]} color={C.violet} />
-        <Billboard position={[2.9, 1.9, -0.7]} reduce={reduce} spec={{ lines: [{ text: "Meta Ads · ROAS 2.4x", size: 22 }], size: 22, h: 0.5 }} />
-        <Billboard position={[2.9, 1.1, 0.9]} reduce={reduce} fade={!reduce}
-          spec={{ lines: [{ text: "AI · drafting summary" + "·".repeat(dotFrame + 1), size: 22 }], size: 22, h: 0.5 }} />
-        <Chip position={[2.4, 2.4, 0.2]} value="+24%" label="channel results" color={C.mint} delay={0.4} reduce={reduce} />
+        <Billboard position={[2.85, 2.25, -0.5]} reduce={reduce} spec={{ lines: [{ text: "Meta Ads · ROAS 2.4x", size: 24 }], size: 24, h: 0.58 }} />
+        <Billboard position={[2.5, 0.92, 1.1]} reduce={reduce} fade={!reduce}
+          spec={{ lines: [{ text: "AI · drafting summary" + "·".repeat(dotFrame + 1), size: 24 }], size: 24, h: 0.58 }} />
+        <Chip position={[2.6, 1.57, 0.3]} value="+24%" label="channel results" color={C.mint} delay={0.4} reduce={reduce} />
       </IsoWorld>
     </>
   );
 }
 
 function Dial({ position }) {
+  const ringTex = useCanvasTexture(160, 160, (ctx) => {
+    ctx.strokeStyle = "#E4E2DB";
+    ctx.lineWidth = 11;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(80, 80, 62, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+  const arcTex = useCanvasTexture(160, 160, (ctx) => {
+    ctx.strokeStyle = C.accent;
+    ctx.lineWidth = 11;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(80, 80, 62, -Math.PI / 2, -Math.PI / 2 + 4.4);
+    ctx.stroke();
+  });
   const arc = useRef(null);
-  const grp = useRef(null);
-  const cam = useThree((s) => s.camera);
-  useEffect(() => {
-    if (grp.current && cam) grp.current.quaternion.copy(cam.quaternion);
-  }, [cam]);
+  const timeTex = useTextTexture({ lines: [{ text: "00:03", size: 30, weight: 700 }], size: 30, h: 0.4 });
   useFrame((s) => {
-    if (arc.current) arc.current.rotation.z = -s.clock.elapsedTime * 0.9;
+    if (arc.current) arc.current.material.rotation = -s.clock.elapsedTime * 1.1;
   });
   return (
-    <group position={position} ref={grp}>
-      <mesh>
-        <torusGeometry args={[0.6, 0.05, 10, 48]} />
-        <meshBasicMaterial color="#E4E2DB" />
-      </mesh>
-      <mesh ref={arc}>
-        <torusGeometry args={[0.6, 0.05, 10, 48, 4.6]} />
-        <meshBasicMaterial color={C.accent} />
-      </mesh>
-      <Billboard position={[0, 0, 0.02]} bob={0} fade={false} spec={{ lines: [{ text: "00:03", size: 30, weight: 700 }], size: 30, h: 0.42 }} />
+    <group position={position}>
+      <sprite scale={[1.4, 1.4, 1]}>
+        <spriteMaterial map={ringTex} transparent depthWrite={false} />
+      </sprite>
+      <sprite ref={arc} scale={[1.4, 1.4, 1]}>
+        <spriteMaterial map={arcTex} transparent depthWrite={false} />
+      </sprite>
+      <sprite position={[0, 0, 0.01]} scale={[0.4 * (timeTex.aspect || 3), 0.4, 1]} renderOrder={5}>
+        <spriteMaterial map={timeTex} transparent depthWrite={false} depthTest={false} />
+      </sprite>
     </group>
   );
 }
@@ -434,6 +445,10 @@ export function FeatureDeliveryScene({ input, reduce, visible, zoom }) {
         <Tile position={[-0.4, 0, 0]} size={[1.3, 0.24, 1.3]} texture={spk} texScale={0.55} active base={C.violet} glowColor={C.violet} />
         <Wire from={[0.45, 0.05, 0]} to={[2.0, 0.05, 0]} delay={0.4} period={1.3} />
         <group position={[3.0, 0, 0]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.012, 0]}>
+            <planeGeometry args={[1.24, 1.6]} />
+            <meshBasicMaterial color={C.mint} transparent opacity={0.9} depthWrite={false} />
+          </mesh>
           <mesh position={[0, 0.09, 0]}>
             <boxGeometry args={[1.05, 0.18, 1.35]} />
             <meshBasicMaterial color={C.white} />
@@ -444,10 +459,9 @@ export function FeatureDeliveryScene({ input, reduce, visible, zoom }) {
             <meshBasicMaterial map={reqTex} transparent depthWrite={false} />
           </mesh>
         </group>
-        <Beam position={[3.0, 0, 0]} color={C.mint} />
-        <Billboard position={[-2.3, 1.9, 0.9]} reduce={reduce}
-          spec={{ lines: [{ text: "Generating report…", size: 22 }, { text: "3 integrations live", size: 17, color: C.accent, weight: 700 }], size: 22, h: 0.8 }} />
-        <Dial position={[3.0, 1.6, -0.9]} />
+        <Billboard position={[-2.2, 2.0, 0.9]} reduce={reduce}
+          spec={{ lines: [{ text: "Generating report…", size: 24 }, { text: "3 integrations live", size: 19, color: C.accent, weight: 700 }], size: 24, h: 0.9 }} />
+        <Dial position={[3.0, 1.7, -1.0]} />
       </IsoWorld>
     </>
   );
