@@ -9,8 +9,25 @@ import { GoogleAdsMark, MetaMark, GA4Mark, LinkedInMark, TikTokMark } from "@/co
 
 const slugOf = (name) => name.toLowerCase().replace(/\s+/g, "-");
 
-function LiveDot() {
-  return <span className="mt-1.5 h-2 w-2 rounded-full bg-mint shadow-[0_0_0_3px_rgba(67,214,117,0.18)] animate-pulse-dot" aria-hidden="true" />;
+const SOFT = "#A3A8FF"; /* the accent's dark-surface tone, as used in the AI-core band */
+
+/* LIVE pill — reads clearly on the dark band */
+function LivePill() {
+  return (
+    <span className="flex items-center gap-1.5 rounded-full bg-mint/15 px-2.5 py-1 text-[10px] font-bold tracking-wide text-mint" aria-hidden="true">
+      <span className="h-1.5 w-1.5 rounded-full bg-mint shadow-[0_0_8px_2px_rgba(67,214,117,0.45)] animate-pulse-dot" /> LIVE
+    </span>
+  );
+}
+
+/* Nested viz panel — the reference's "Growth" panel anatomy */
+function VizPanel({ label, children }) {
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.04] px-4 pb-3.5 pt-3">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{label}</p>
+      <div className="mt-2.5">{children}</div>
+    </div>
+  );
 }
 
 /* Mini equalizer for the Google Ads card */
@@ -21,7 +38,7 @@ function MiniBars({ delay = 0 }) {
       {bars.map((h, i) => (
         <motion.span
           key={i}
-          className={`w-2.5 rounded-t-sm ${i === bars.length - 1 ? "bg-gradient-to-t from-mint/25 to-mint/80" : "bg-gradient-to-t from-accent/15 to-accent/45"}`}
+          className={`w-2.5 rounded-t-sm ${i === bars.length - 1 ? "bg-gradient-to-t from-mint/25 to-mint shadow-[0_0_14px_rgba(67,214,117,0.35)]" : "bg-gradient-to-t from-accent/20 to-[#6B70FF]"}`}
           style={{ height: `${h}%`, transformOrigin: "bottom" }}
           initial={{ scaleY: 0 }}
           whileInView={{ scaleY: 1 }}
@@ -29,8 +46,8 @@ function MiniBars({ delay = 0 }) {
           transition={{ duration: 0.6, delay: delay + i * 0.07, ease: [0.25, 1, 0.5, 1] }}
         />
       ))}
-      <span className="ml-2 flex items-center gap-1.5 self-start rounded-md bg-mint/10 px-2 py-1 text-[10px] font-bold text-[#0E8A3E]">
-        <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> CONV +11.4%
+      <span className="ml-2 flex items-center gap-1.5 self-start rounded-md bg-mint/15 px-2 py-1 text-[10px] font-bold text-mint">
+        <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> CONV +11.4%
       </span>
     </div>
   );
@@ -44,7 +61,7 @@ function MiniSpark({ delay = 0 }) {
         <motion.path
           d="M2 34 C 20 30, 30 36, 46 26 S 78 12, 96 14 S 114 8, 118 6"
           fill="none"
-          stroke="#0E8A3E"
+          stroke="#43D675"
           strokeWidth="2"
           strokeLinecap="round"
           initial={{ pathLength: 0 }}
@@ -56,15 +73,15 @@ function MiniSpark({ delay = 0 }) {
           cx="118"
           cy="6"
           r="3"
-          fill="#0E8A3E"
+          fill="#43D675"
           initial={{ opacity: 0, scale: 0 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: delay + 1.1, type: "spring", stiffness: 300 }}
         />
       </svg>
-      <span className="flex items-center gap-1.5 self-start rounded-md bg-mint/10 px-2 py-1 text-[10px] font-bold text-[#0E8A3E]">
-        <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> ROAS 2.1x
+      <span className="flex items-center gap-1.5 self-start rounded-md bg-mint/15 px-2 py-1 text-[10px] font-bold text-mint">
+        <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> ROAS 2.1x
       </span>
     </div>
   );
@@ -75,15 +92,15 @@ function MiniDonut({ delay = 0 }) {
   const R = 15.5;
   const CIRC = 2 * Math.PI * R;
   const segs = [
-    { p: 0.44, c: "#3D43E8" },
+    { p: 0.44, c: SOFT },
     { p: 0.33, c: "#7B5CFF" },
-    { p: 0.23, c: "#10B981" },
+    { p: 0.23, c: "#43D675" },
   ];
   let acc = 0;
   return (
     <div className="flex h-12 items-center gap-3" aria-hidden="true" data-testid="ga4-donut-viz">
       <svg viewBox="0 0 40 40" className="h-11 w-11 -rotate-90">
-        <circle cx="20" cy="20" r={R} fill="none" stroke="rgba(16,16,20,0.07)" strokeWidth="5" />
+        <circle cx="20" cy="20" r={R} fill="none" stroke="rgba(255,255,255,0.09)" strokeWidth="5" />
         {segs.map((s, i) => {
           const off = acc;
           acc += s.p;
@@ -106,8 +123,8 @@ function MiniDonut({ delay = 0 }) {
           );
         })}
       </svg>
-      <span className="flex items-center gap-1.5 rounded-md bg-mint/10 px-2 py-1 text-[10px] font-bold text-[#0E8A3E]">
-        <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" /> SESSIONS +18.2%
+      <span className="flex items-center gap-1.5 rounded-md bg-mint/15 px-2 py-1 text-[10px] font-bold text-mint">
+        <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" /> SESSIONS +18.2%
       </span>
     </div>
   );
@@ -117,13 +134,13 @@ function MiniDonut({ delay = 0 }) {
 function SoonProgress({ pct, label, delay = 0, testid }) {
   return (
     <div aria-hidden="true" data-testid={testid}>
-      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-black/40">
+      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">
         <span>{label}</span>
-        <span>{pct}%</span>
+        <span className="text-white/70">{pct}%</span>
       </div>
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-black/[0.07]">
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
         <motion.div
-          className="h-full rounded-full bg-[repeating-linear-gradient(45deg,#3D43E8_0_5px,#6B70FF_5px_10px)]"
+          className="h-full rounded-full bg-[repeating-linear-gradient(45deg,#5D63FF_0_5px,#8A8FFF_5px_10px)]"
           initial={{ width: 0 }}
           whileInView={{ width: `${pct}%` }}
           viewport={{ once: true }}
@@ -138,7 +155,7 @@ function SoonProgress({ pct, label, delay = 0, testid }) {
 function RailPacket({ delay = 0 }) {
   return (
     <motion.span
-      className="absolute -top-[3px] left-0 h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgba(61,67,232,0.4)]"
+      className="absolute -top-[3px] left-0 h-1.5 w-1.5 rounded-full bg-[#A3A8FF] shadow-[0_0_8px_2px_rgba(123,127,255,0.55)]"
       animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
       transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay }}
       aria-hidden="true"
@@ -149,14 +166,14 @@ function RailPacket({ delay = 0 }) {
 function SyncRail() {
   return (
     <Reveal delay={0.1}>
-      <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-line bg-surface/70 px-5 py-4" data-testid="integrations-sync-rail">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-soft">The flow</span>
+      <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-4" data-testid="integrations-sync-rail">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">The flow</span>
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
           <span className="flex -space-x-1.5" aria-hidden="true">
             {[<GoogleAdsMark size={14} key="g" />, <MetaMark size={14} key="m" />, <GA4Mark size={14} key="a" />].map((m, i) => (
               <motion.span
                 key={i}
-                className="flex h-7 w-7 items-center justify-center rounded-lg border border-line bg-white shadow-sm"
+                className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.07]"
                 initial={{ opacity: 0, scale: 0.6 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -166,23 +183,23 @@ function SyncRail() {
               </motion.span>
             ))}
           </span>
-          <span className="text-[12px] font-medium text-ink-soft">Your channels</span>
-          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-accent/40 sm:block" aria-hidden="true">
+          <span className="text-[12px] font-medium text-white/55">Your channels</span>
+          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-[#7B7FFF]/50 sm:block" aria-hidden="true">
             <RailPacket delay={0} />
           </span>
-          <span className="flex items-center gap-2 rounded-full border border-accent-border bg-accent-tint px-3 py-1.5">
+          <span className="flex items-center gap-2 rounded-full bg-accent px-3 py-1.5 shadow-[0_10px_28px_-10px_rgba(93,99,255,0.7)]">
             <FluxvexMark size={15} />
-            <span className="text-[12px] font-semibold text-accent">Fluxvex AI</span>
+            <span className="text-[12px] font-semibold text-white">Fluxvex AI</span>
           </span>
-          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-accent/40 sm:block" aria-hidden="true">
+          <span className="relative hidden h-px min-w-[56px] flex-1 border-t border-dashed border-[#7B7FFF]/50 sm:block" aria-hidden="true">
             <RailPacket delay={0.9} />
           </span>
-          <span className="flex items-center gap-2 rounded-full bg-ink px-3 py-1.5">
+          <span className="flex items-center gap-2 rounded-full bg-white px-3 py-1.5">
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
-              <rect x="5" y="3" width="14" height="18" rx="2" stroke="#FFFFFF" strokeWidth="1.8" />
-              <path d="M9 8h6M9 12h6M9 16h4" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" />
+              <rect x="5" y="3" width="14" height="18" rx="2" stroke="#101014" strokeWidth="1.8" />
+              <path d="M9 8h6M9 12h6M9 16h4" stroke="#101014" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
-            <span className="text-[12px] font-semibold text-white">Branded report</span>
+            <span className="text-[12px] font-semibold text-ink">Branded report</span>
           </span>
         </div>
       </div>
@@ -193,50 +210,50 @@ function SyncRail() {
 function BentoCard({ item, soon = false, i, viz = null, progress = null, className = "" }) {
   const hrefSlug = item.href ? item.href.split("/").pop() : slugOf(item.name);
   const testid = `integration-card-${hrefSlug}`;
-  const cardCls = `group relative flex h-full flex-col gap-3.5 overflow-hidden rounded-2xl border p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 ${
+  const cardCls = `group relative flex h-full flex-col gap-3.5 overflow-hidden rounded-2xl border p-6 transition-[border-color,box-shadow,transform,background-color] duration-300 hover:-translate-y-1 ${
     soon
-      ? "border-dashed border-black/20 bg-page/70"
-      : "border-line bg-white shadow-[0_30px_60px_-40px_rgba(16,16,20,0.4)] hover:border-accent/40 hover:shadow-[0_44px_84px_-44px_rgba(61,67,232,0.55)]"
+      ? "border-dashed border-white/[0.16] bg-white/[0.02]"
+      : "border-white/[0.08] bg-white/[0.035] hover:border-[#8A8FFF]/50 hover:bg-white/[0.055] hover:shadow-[0_44px_84px_-44px_rgba(93,99,255,0.6)]"
   }`;
 
   const body = (
     <>
       {/* hover glow */}
       <span
-        className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-accent/[0.09] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+        className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[#5D63FF]/[0.16] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
         aria-hidden="true"
       />
       <div className="relative flex items-start justify-between">
         <span
-          className={`flex h-12 w-12 items-center justify-center rounded-xl border bg-surface transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110 ${
-            soon ? "border-dashed border-black/25 opacity-80" : "border-line shadow-[0_10px_24px_-12px_rgba(16,16,20,0.35)]"
+          className={`flex h-12 w-12 items-center justify-center rounded-xl border transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110 ${
+            soon ? "border-dashed border-white/[0.2] opacity-80" : "border-white/[0.12] bg-white/[0.06] shadow-[0_10px_24px_-12px_rgba(0,0,0,0.7)]"
           }`}
         >
           {item.mark}
         </span>
         {soon ? (
           <span
-            className="rounded-full border border-dashed border-black/25 bg-page px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-black/50"
+            className="rounded-full border border-dashed border-white/[0.2] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/45"
             data-testid={`integration-soon-${slugOf(item.name)}`}
           >
             Coming soon
           </span>
         ) : (
-          <LiveDot />
+          <LivePill />
         )}
       </div>
       <div className="relative">
-        <p className="text-base font-semibold text-ink">{item.name}</p>
-        <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-soft">{item.desc}</p>
+        <p className="text-base font-semibold text-white">{item.name}</p>
+        <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/55">{item.desc}</p>
       </div>
       {viz}
       {progress}
       {soon ? (
-        <span className="mt-auto flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-black/35">
-          <ThumbsUp className="h-3 w-3" /> Top community request
+        <span className="mt-auto flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/40">
+          <ThumbsUp className="h-3 w-3 text-mint/70" /> Top community request
         </span>
       ) : (
-        <span className="relative mt-auto inline-flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent">
+        <span className="relative mt-auto inline-flex items-center gap-1.5 pt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A3A8FF]">
           Integration details
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
         </span>
@@ -263,22 +280,22 @@ function BentoCard({ item, soon = false, i, viz = null, progress = null, classNa
 function PipelineStatus() {
   return (
     <Reveal delay={0.1} className="w-full lg:max-w-[340px]">
-      <div className="rounded-2xl border border-line bg-surface p-5" data-testid="integrations-status">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5" data-testid="integrations-status">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-soft">Pipeline status</span>
-          <span className="flex items-center gap-1.5 rounded-full bg-mint/10 px-2 py-0.5 text-[10px] font-bold text-[#0E8A3E]">
-            <span className="h-1 w-1 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" /> LIVE
+          <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">Pipeline status</span>
+          <span className="flex items-center gap-1.5 rounded-full bg-mint/15 px-2 py-0.5 text-[10px] font-bold text-mint">
+            <span className="h-1 w-1 rounded-full bg-mint animate-pulse-dot" aria-hidden="true" /> LIVE
           </span>
         </div>
         <p className="mt-3 flex items-baseline gap-2">
-          <span className="font-display text-4xl font-semibold tracking-tight text-ink">3</span>
-          <span className="text-[13px] text-ink-soft">of 5 channels live at launch</span>
+          <span className="font-display text-4xl font-semibold tracking-tight text-white">3</span>
+          <span className="text-[13px] text-white/50">of 5 channels live at launch</span>
         </p>
         <div className="mt-3.5 flex gap-1" aria-hidden="true">
           {[0, 1, 2, 3, 4].map((i) => (
             <motion.span
               key={i}
-              className={`h-1.5 flex-1 rounded-full ${i < 3 ? "bg-accent" : "border border-dashed border-black/20"}`}
+              className={`h-1.5 flex-1 rounded-full ${i < 3 ? "bg-[#6B70FF] shadow-[0_0_10px_rgba(107,112,255,0.5)]" : "border border-dashed border-white/25"}`}
               initial={{ scaleX: 0, opacity: 0 }}
               whileInView={{ scaleX: 1, opacity: 1 }}
               viewport={{ once: true }}
@@ -287,7 +304,7 @@ function PipelineStatus() {
             />
           ))}
         </div>
-        <p className="mt-3 text-[11.5px] leading-relaxed text-ink-soft">
+        <p className="mt-3 text-[11.5px] leading-relaxed text-white/45">
           Google Ads, Meta Ads and GA4 connect at launch. LinkedIn Ads and TikTok Ads follow right after.
         </p>
       </div>
@@ -298,25 +315,30 @@ function PipelineStatus() {
 export default function IntegrationsStrip() {
   const { openWaitlist } = useWaitlist();
   return (
-    <section id="integrations" className="bg-page" data-testid="section-integrations">
-      <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-20">
+    <section id="integrations" className="relative overflow-hidden bg-[#0B0B14]" data-testid="section-integrations">
+      {/* ambient glows + fine grid */}
+      <div className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.22),transparent_70%)] blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-28 bottom-0 h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(123,92,255,0.16),transparent_70%)] blur-3xl" aria-hidden="true" />
+      <div className="fine-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+
+      <div className="relative mx-auto max-w-[1280px] px-5 py-16 lg:px-8 lg:py-20">
         {/* split header: headline left, live pipeline status right */}
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <Reveal className="max-w-xl">
             <span
-              className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-accent"
+              className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.05] px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-[#A3A8FF]"
               data-testid="integrations-qualifier"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" aria-hidden="true" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#A3A8FF] animate-pulse-dot" aria-hidden="true" />
               Initial integration focus
             </span>
             <CinematicText
               as="h2"
-              className="mt-5 font-display text-3xl font-semibold leading-[1.06] tracking-tighter2 text-ink sm:text-4xl"
+              className="mt-5 font-display text-3xl font-semibold leading-[1.06] tracking-tighter2 text-white sm:text-4xl"
             >
               One reporting workflow. The channels your clients already use.
             </CinematicText>
-            <p className="mt-4 text-[15px] leading-[1.7] text-ink-soft">
+            <p className="mt-4 text-[15px] leading-[1.7] text-white/55">
               Connect each channel once—every report pulls from the same governed pipeline. No exports, no stale
               screenshots, no rebuilds.
             </p>
@@ -331,7 +353,11 @@ export default function IntegrationsStrip() {
           <BentoCard
             i={0}
             className="sm:col-span-2 lg:col-span-3"
-            viz={<MiniBars delay={0.3} />}
+            viz={
+              <VizPanel label="Conversions this month">
+                <MiniBars delay={0.3} />
+              </VizPanel>
+            }
             item={{
               mark: <GoogleAdsMark size={24} />,
               name: "Google Ads",
@@ -342,7 +368,11 @@ export default function IntegrationsStrip() {
           <BentoCard
             i={1}
             className="sm:col-span-2 lg:col-span-3"
-            viz={<MiniSpark delay={0.4} />}
+            viz={
+              <VizPanel label="Efficiency trend">
+                <MiniSpark delay={0.4} />
+              </VizPanel>
+            }
             item={{
               mark: <MetaMark size={24} />,
               name: "Meta Ads",
@@ -353,7 +383,11 @@ export default function IntegrationsStrip() {
           <BentoCard
             i={2}
             className="lg:col-span-2"
-            viz={<MiniDonut delay={0.35} />}
+            viz={
+              <VizPanel label="Session mix">
+                <MiniDonut delay={0.35} />
+              </VizPanel>
+            }
             item={{
               mark: <GA4Mark size={24} />,
               name: "Google Analytics 4",
@@ -376,19 +410,19 @@ export default function IntegrationsStrip() {
             item={{ mark: <TikTokMark size={24} />, name: "TikTok Ads", desc: "Short-form video results, after the initial launch." }}
           />
           <Reveal delay={0.3} className="h-full sm:col-span-2 lg:col-span-6">
-            <div className="group flex flex-col items-start justify-between gap-5 rounded-2xl border border-dashed border-black/20 bg-gradient-to-r from-surface/70 via-page to-accent-tint/40 p-6 transition-[border-color] duration-300 hover:border-accent/40 sm:flex-row sm:items-center sm:p-7">
+            <div className="group flex flex-col items-start justify-between gap-5 rounded-2xl border border-white/[0.08] bg-gradient-to-r from-[#5D63FF]/[0.14] via-white/[0.03] to-[#7B5CFF]/[0.12] p-6 transition-[border-color] duration-300 hover:border-[#8A8FFF]/50 sm:flex-row sm:items-center sm:p-7">
               <div className="flex min-w-0 items-center gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-dashed border-black/25 bg-page text-accent">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/[0.14] bg-white/[0.06] text-[#A3A8FF]">
                   <Plus className="h-5 w-5" />
                 </span>
-                <p className="max-w-xl text-[14px] leading-relaxed text-ink-soft">
+                <p className="max-w-xl text-[14px] leading-relaxed text-white/60">
                   More channels land after launch—LinkedIn Ads and TikTok Ads are in the pipeline. Tell us which one
                   your agency needs next.
                 </p>
               </div>
               <TapCTA
                 onClick={() => openWaitlist("integrations-more")}
-                className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-ink px-5 font-display text-[13px] font-semibold text-white transition-colors hover:bg-black/80"
+                className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-white px-5 font-display text-[13px] font-semibold text-ink transition-colors hover:bg-white/85"
                 testid="integrations-more-cta"
               >
                 Request a channel
