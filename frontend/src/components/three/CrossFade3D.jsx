@@ -10,7 +10,7 @@ import Scene3D from "./Scene3D";
 export default function CrossFade3D({ scene, props, legacy, className = "", testid }) {
   const [ready, setReady] = useState(false);
   return (
-    <div className={`relative ${className}`} data-testid={testid}>
+    <div className={className} data-testid={testid}>
       <motion.div
         className="absolute inset-0 flex items-center justify-center"
         animate={{ opacity: ready ? 0 : 1 }}

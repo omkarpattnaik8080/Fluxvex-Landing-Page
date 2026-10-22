@@ -236,7 +236,7 @@ export default function Vision() {
               scene="vision"
               legacy={<VisionSceneLegacy />}
               testid="vision-scene-3d"
-              className="mx-auto h-[400px] w-full sm:h-[440px] lg:h-[470px]"
+              className="relative mx-auto h-[400px] w-full sm:h-[440px] lg:h-[470px]"
             />
           </div>
         </Reveal>

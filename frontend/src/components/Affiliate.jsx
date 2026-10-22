@@ -248,8 +248,7 @@ export default function Affiliate() {
               legacy={<AffiliateSceneLegacy />}
               testid="affiliate-flow-3d"
               className="relative min-h-[230px] flex-1"
-            />
-            <p className="relative max-w-md text-center text-[12.5px] leading-relaxed text-ink-soft">
+            />            <p className="relative max-w-md text-center text-[12.5px] leading-relaxed text-ink-soft">
               Your link feeds the engine — up to <span className="font-semibold text-ink">20% of every subscription payment</span>{" "}
               lands straight in your account. No T&amp;C applied, yours to keep.
             </p>

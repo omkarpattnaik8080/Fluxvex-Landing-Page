@@ -187,7 +187,7 @@ function IsoStage({ step }) {
         props={{ step }}
         legacy={<IsoStageLegacy step={step} />}
         testid="workflow-iso-stage-3d"
-        className="h-full w-full"
+        className="absolute inset-0"
       />
     </div>
   );

@@ -70,7 +70,7 @@ function DiagramSchedule() {
 }
 
 function Scene({ scene, legacy, testid }) {
-  return <CrossFade3D scene={scene} legacy={legacy} className="h-full" testid={testid} />;
+  return <CrossFade3D scene={scene} legacy={legacy} className="relative h-full" testid={testid} />;
 }
 
 const CARDS = [

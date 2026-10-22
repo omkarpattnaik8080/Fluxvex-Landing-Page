@@ -65,7 +65,7 @@ function PromptVisual() {
       </div>
 
       <div className="relative flex flex-1 items-center justify-center">
-        <CrossFade3D scene="prompt" legacy={<PromptSceneLegacy />} className="flex-1 self-stretch" />
+        <CrossFade3D scene="prompt" legacy={<PromptSceneLegacy />} className="absolute inset-0" />
       </div>
 
       <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">
@@ -132,7 +132,7 @@ function WorkflowVisual() {
       </div>
 
       <div className="relative flex flex-1 items-center justify-center">
-        <CrossFade3D scene="pipeline" legacy={<WorkflowSceneLegacy />} className="flex-1 self-stretch" />
+        <CrossFade3D scene="pipeline" legacy={<WorkflowSceneLegacy />} className="absolute inset-0" />
       </div>
 
       <p className="relative max-w-[300px] text-center text-[12px] leading-relaxed text-ink-soft">

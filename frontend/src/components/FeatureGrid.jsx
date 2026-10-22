@@ -161,7 +161,7 @@ function LegacyDelivery() {
 
 /* Interactive Iso3D cards — SVG base cross-fades into WebGL, never a hard swap */
 function Scene({ scene, legacy, testid }) {
-  return <CrossFade3D scene={scene} legacy={legacy} className="h-full" testid={testid} />;
+  return <CrossFade3D scene={scene} legacy={legacy} className="relative h-full" testid={testid} />;
 }
 
 const VisualInputs = () => <Scene scene="featureSources" legacy={<LegacyInputs />} testid="feature-visual-inputs" />;
