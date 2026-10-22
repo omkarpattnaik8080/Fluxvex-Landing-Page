@@ -145,7 +145,7 @@ export default function RoiCalculator() {
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line px-5 py-3 sm:px-8">
             <div className="flex min-w-0 items-center gap-2.5">
               <span className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white">
-                <Zap className="h-3.5 w-3.5" strokeWidth={2.2} />
+                <span className="h-1.5 w-1.5 rounded-full bg-white/90 animate-pulse-dot" aria-hidden="true" />
                 Live tool
               </span>
               <span className="truncate text-sm font-medium text-ink">Reporting cost calculator</span>
@@ -184,7 +184,10 @@ export default function RoiCalculator() {
               </h2>
               <p className="mt-3 text-sm text-ink-soft">Understand your team’s effort in today’s market.</p>
 
-              <h3 className="mt-10 text-base font-semibold text-ink">Your reporting workload</h3>
+              <h3 className="mt-10 flex items-center gap-2.5 text-base font-semibold text-ink">
+                <span className="h-4 w-1 rounded-full bg-accent" aria-hidden="true" />
+                Your reporting workload
+              </h3>
               <div className="mt-4 grid gap-x-5 gap-y-6 sm:grid-cols-2">
                 <FieldSlider
                   id="roi-clients-input"
@@ -223,7 +226,10 @@ export default function RoiCalculator() {
                 </div>
               </div>
 
-              <h3 className="mt-10 text-base font-semibold text-ink">Your assumption</h3>
+              <h3 className="mt-10 flex items-center gap-2.5 text-base font-semibold text-ink">
+                <span className="h-4 w-1 rounded-full bg-accent" aria-hidden="true" />
+                Your assumption
+              </h3>
               <div className="mt-4">
                 <FieldSlider
                   id="roi-reduction-input"
@@ -256,8 +262,9 @@ export default function RoiCalculator() {
               {/* dark hero card */}
               <div className="relative overflow-hidden rounded-2xl bg-[#13131B] p-6 sm:p-7" data-testid="roi-dark-panel">
                 <div
-                  aria-hidden="true"
                   className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.30),transparent_70%)] blur-2xl"
+                  style={{ animation: "hero-drift 9s ease-in-out infinite alternate" }}
+                  aria-hidden="true"
                 />
                 <svg viewBox="0 0 200 80" className="pointer-events-none absolute -bottom-1 right-2 w-44 text-white/[0.08]" aria-hidden="true">
                   <path d="M0 70 L30 58 L60 62 L90 40 L120 46 L150 22 L180 28 L200 8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />

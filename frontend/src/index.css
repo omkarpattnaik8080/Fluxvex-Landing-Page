@@ -197,3 +197,36 @@ body {
 .range-dark::-webkit-slider-thumb:hover { transform: scale(1.18); }
 .range-dark::-moz-range-thumb { height: 18px; width: 18px; border-radius: 9999px; background: #ffffff; border: none; box-shadow: 0 0 0 5px rgba(163,168,255,0.3), 0 6px 14px rgba(0,0,0,0.45); cursor: pointer; }
 .range-dark::-moz-range-track { background: transparent; }
+
+/* Iso3D scenes crossfade in when the lazy three.js chunk replaces the SVG fallback */
+@keyframes iso3d-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.iso3d-host {
+  animation: iso3d-in 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .iso3d-host {
+    animation: none;
+  }
+}
+
+/* Slow ambient drift for calculator hero glow */
+@keyframes hero-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-26px, 18px) scale(1.15);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="hero-drift"] {
+    animation: none !important;
+  }
+}

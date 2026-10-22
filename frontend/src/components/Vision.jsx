@@ -252,6 +252,13 @@ export default function Vision() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.9, delay: 0.5, ease: [0.25, 1, 0.5, 1] }}
                 >
+                  <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-t-md" aria-hidden="true">
+                    <motion.span
+                      className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                      animate={{ x: ["-140%", "380%"] }}
+                      transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.8 }}
+                    />
+                  </span>
                   <motion.span
                     className="absolute left-1/2 top-[24%] h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-white shadow-[0_2px_8px_rgba(16,16,20,0.35)]"
                     animate={{ y: [0, -3, 0] }}
@@ -288,9 +295,8 @@ export default function Vision() {
                   <motion.span
                     className="mt-5 block h-1.5 rounded bg-accent"
                     initial={{ width: "10%" }}
-                    whileInView={{ width: "78%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.4, delay: 0.5, ease: [0.25, 1, 0.5, 1] }}
+                    animate={{ width: ["14%", "82%", "82%", "14%"] }}
+                    transition={{ duration: 4.2, times: [0, 0.35, 0.8, 1], repeat: Infinity, ease: "easeInOut", repeatDelay: 0.4 }}
                   />
                 </motion.div>
               </div>
@@ -329,7 +335,13 @@ export default function Vision() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: 0.8, ease: [0.25, 1, 0.5, 1] }}
                   >
-                    Auto-drafted
+                    <motion.span
+                      className="inline-block"
+                      animate={{ scale: [1, 1.07, 1] }}
+                      transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      Auto-drafted
+                    </motion.span>
                   </motion.span>
                 </motion.div>
               </div>
@@ -350,13 +362,20 @@ export default function Vision() {
                   How did June perform for Northbeam?
                 </motion.span>
                 <motion.span
-                  className="w-fit rounded-2xl rounded-br-md bg-accent px-4 py-2 text-xs font-medium text-white shadow-[0_16px_32px_-16px_rgba(61,67,232,0.6)]"
                   initial={{ y: 16, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.45, ease: [0.25, 1, 0.5, 1] }}
                 >
-                  On it — June’s client report is drafted and ready for review.
+                  <motion.span
+                    className="block w-fit"
+                    animate={reduce ? undefined : { y: [0, -2.5, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+                  >
+                    <span className="block rounded-2xl rounded-br-md bg-accent px-4 py-2 text-xs font-medium text-white shadow-[0_16px_32px_-16px_rgba(61,67,232,0.6)]">
+                      On it — June’s client report is drafted and ready for review.
+                    </span>
+                  </motion.span>
                 </motion.span>
                 <motion.span
                   className="flex items-center gap-1 rounded-2xl rounded-br-md bg-accent/10 px-3.5 py-2.5"
@@ -387,33 +406,51 @@ export default function Vision() {
         </Reveal>
       </div>
 
-      {/* state-of-the-art AI capabilities */}
+      {/* state-of-the-art AI capabilities — the core, dark band */}
       <Reveal>
         <div
-          className="fine-grid relative mt-14 overflow-hidden rounded-2xl border border-accent-border bg-accent-tint p-8 sm:p-10"
+          className="relative mt-14 overflow-hidden rounded-[24px] bg-[#0B0B14] p-8 sm:p-10"
           data-testid="vision-ai-block"
         >
-          <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+          <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.4),transparent_70%)] blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-28 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(123,92,255,0.3),transparent_70%)] blur-3xl" aria-hidden="true" />
+          <div className="fine-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+
+          <div className="relative flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center">
             <div className="max-w-sm">
-              <span className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-white shadow-[0_16px_30px_-10px_rgba(61,67,232,0.6)]">
+              <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#5D63FF] to-[#8A5CFF] text-white shadow-[0_20px_40px_-12px_rgba(93,99,255,0.8)]">
                 <Zap className="h-5 w-5" />
                 {!reduce && (
                   <motion.span
-                    className="absolute inset-0 rounded-xl border-2 border-accent/50"
-                    animate={{ scale: [1, 1.3], opacity: [0.9, 0] }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+                    className="absolute inset-0 rounded-2xl border-2 border-[#8A8FFF]/60"
+                    animate={{ scale: [1, 1.35], opacity: [0.9, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
                     aria-hidden="true"
                   />
                 )}
               </span>
-              <h3 className="mt-5 font-display text-2xl font-semibold tracking-tight text-ink">
+              <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.24em] text-white/45">The AI core</p>
+              <h3 className="mt-2.5 font-display text-2xl font-semibold tracking-tight text-white sm:text-3xl">
                 State-of-the-art AI at the core
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+              <p className="mt-3 text-sm leading-relaxed text-white/55">
                 One AI engine learns your accounts and your voice—drafting the work, flagging what matters, and
                 leaving every final call to your team.
               </p>
+              <div className="mt-7 flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-2.5 font-mono text-[11px] text-white/60">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-mint animate-pulse-dot" aria-hidden="true" />
+                <span>Fluxvex AI · drafting Northbeam—June</span>
+                {!reduce && (
+                  <motion.span
+                    className="h-3.5 w-[7px] bg-[#A3A8FF]"
+                    animate={{ opacity: [1, 0, 1] }}
+                    transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
             </div>
+
             <motion.ul
               initial="hidden"
               whileInView="show"
@@ -428,14 +465,16 @@ export default function Vision() {
                     hidden: { opacity: 0, y: 14 },
                     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 26 } },
                   }}
-                  className="flex items-start gap-2.5 rounded-xl border border-accent/15 bg-page/80 p-4 text-[13.5px] font-medium leading-snug text-ink"
+                  className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-4 text-[13.5px] font-medium leading-snug text-white/85 transition-[border-color,background-color] duration-300 hover:border-[#5D63FF]/50 hover:bg-white/[0.07]"
                   data-testid={`vision-ai-capability${c.plan ? "-future" : ""}`}
                 >
-                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/[0.06] transition-colors duration-300 group-hover:border-[#5D63FF]/50">
+                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#A3A8FF]" />
+                  </span>
                   <span>
                     {c.text}
                     {c.plan && (
-                      <span className="ml-2 inline-block rounded-full border border-accent/30 bg-accent-tint/70 px-2 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-[0.12em] text-accent">
+                      <span className="ml-2 inline-block rounded-full border border-white/15 bg-white/[0.06] px-2 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-[0.12em] text-white/55">
                         Future plan
                       </span>
                     )}

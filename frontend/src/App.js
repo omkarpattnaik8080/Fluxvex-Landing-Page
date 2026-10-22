@@ -54,6 +54,16 @@ function ScrollManager() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  /* Pre-warm the 3D scene chunk on idle so illustrations mount instantly everywhere */
+  useEffect(() => {
+    const warm = () => {
+      import("@/components/three/Scene3D").catch(() => {});
+      import("@/components/three/SceneCanvas").catch(() => {});
+    };
+    if ("requestIdleCallback" in window) window.requestIdleCallback(warm, { timeout: 2000 });
+    else setTimeout(warm, 1200);
+  }, []);
+
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;

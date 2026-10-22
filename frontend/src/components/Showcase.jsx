@@ -4,6 +4,7 @@ import { Download, ChevronDown, Sparkles } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import TapCTA from "@/components/ui/TapCTA";
+import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 
 const Scene3D = lazy(() => import("@/components/three/Scene3D"));
 
@@ -173,8 +174,9 @@ export default function Showcase() {
             <div className="relative h-[250px] sm:h-[300px] lg:min-h-[400px]">
               <Suspense
                 fallback={
-                  <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
-                    <span className="h-2 w-2 animate-ping rounded-full bg-accent/60" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2" aria-hidden="true">
+                    <FluxvexMark size={30} className="animate-pulse" />
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-soft/70">Warming up the scene</span>
                   </div>
                 }
               >
