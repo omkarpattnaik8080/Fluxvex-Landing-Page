@@ -81,7 +81,7 @@ function MiniDonut({ delay = 0 }) {
   ];
   let acc = 0;
   return (
-    <div className="flex h-12 items-center gap-3" aria-hidden="true">
+    <div className="flex h-12 items-center gap-3" aria-hidden="true" data-testid="ga4-donut-viz">
       <svg viewBox="0 0 40 40" className="h-11 w-11 -rotate-90">
         <circle cx="20" cy="20" r={R} fill="none" stroke="rgba(16,16,20,0.07)" strokeWidth="5" />
         {segs.map((s, i) => {
@@ -114,9 +114,9 @@ function MiniDonut({ delay = 0 }) {
 }
 
 /* Build progress for the coming-soon cards */
-function SoonProgress({ pct, label, delay = 0 }) {
+function SoonProgress({ pct, label, delay = 0, testid }) {
   return (
-    <div aria-hidden="true">
+    <div aria-hidden="true" data-testid={testid}>
       <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-black/40">
         <span>{label}</span>
         <span>{pct}%</span>
@@ -365,14 +365,14 @@ export default function IntegrationsStrip() {
             i={3}
             soon
             className="lg:col-span-2"
-            progress={<SoonProgress pct={68} label="In build" delay={0.35} />}
+            progress={<SoonProgress pct={68} label="In build" delay={0.35} testid="soon-progress-linkedin-ads" />}
             item={{ mark: <LinkedInMark size={24} />, name: "LinkedIn Ads", desc: "B2B campaign reporting for a post-launch release." }}
           />
           <BentoCard
             i={4}
             soon
             className="lg:col-span-2"
-            progress={<SoonProgress pct={41} label="In build" delay={0.45} />}
+            progress={<SoonProgress pct={41} label="In build" delay={0.45} testid="soon-progress-tiktok-ads" />}
             item={{ mark: <TikTokMark size={24} />, name: "TikTok Ads", desc: "Short-form video results, after the initial launch." }}
           />
           <Reveal delay={0.3} className="h-full sm:col-span-2 lg:col-span-6">

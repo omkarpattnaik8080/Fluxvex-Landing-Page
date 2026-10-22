@@ -10,8 +10,7 @@
 - Switch server.py email fields to Pydantic EmailStr.
 
 ## P2
-- Privacy Policy + Terms pages after legal review.
-- /integrations detail pages (Google Ads, Meta Ads, GA4 — later LinkedIn/TikTok "coming soon") with animated diagrams.
+- Privacy Policy + Terms pages after legal review (bracketed placeholders in privacyDoc.js / termsDoc.js).
 - Consent-gated analytics events (respect the cookie banner choices).
 - Replace illustrated mockups with real product screenshots at launch.
 - Re-scrape social share cards after deploy (WhatsApp/FB cache OG aggressively).
@@ -19,6 +18,8 @@
 ## Done 2026-10-21 (session 3)
 - Google Ads logo fix, navbar dropdown perf fix, hero declutter + animated CTAs, Consistency fonts, Vision section, Affiliate program section, Blog (index + 12 articles + SEO + sitemap), GDPR/HIPAA/DPDP/CCPA badges.
 
-## Added P2
-- Launch countdown timer beside the locked prices (curiosity hook).
-- Affiliate program page (/partners) if the section outgrows the homepage block.
+## Done 2026-10-22 (sessions 4-15)
+- Outcome 3D scenes, agency-loop bento grid, zero-friction waitlist/contact forms, integration detail pages, Waitlist Pulse live counter, GSAP+Lenis unified ticker, MongoDB hot-path indexes.
+
+## Done 2026-10-22 (session 16)
+- Six-section premium polish: integrations strip (status module + sync rail + donut + build progress), how-it-works crossfade load fix (Scene3D onReady), calculator savings-ring redesign (+ shared useTween hook), promise cards + commitments ticker, agency-loop auto-cycling highlight + count-up stats + cycling AI chat, sample-report count-up KPIs + self-drawing trend chart. Iteration 21: backend 19/19, frontend 100%.

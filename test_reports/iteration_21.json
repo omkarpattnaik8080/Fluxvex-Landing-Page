@@ -1,0 +1,30 @@
+{
+  "summary": "Iteration 21 — Home UI regression after 6-section rewrite (IntegrationsStrip, HowItWorks crossfade, RoiCalculator, Testimonial/Promise, Vision agency loop, Showcase sample report). Backend regression 19/19 pass (test_fluxvex_api.py, iter21_results.xml). Frontend: Home loads clean on both 1440x900 and 390x844 with 0 console errors / 0 pageerrors; no horizontal overflow at either breakpoint (scrollWidth=clientWidth). Integrations section renders expected visual content: markers 'Pipeline', 'channels live', 'SESSIONS', '+18.2%', 'Fluxvex AI', 'Branded report', 'IN BUILD', '68%', '41%', 'Top community' all present in #integrations innerText; GA4 card click navigates to /integrations/ga4 as spec'd. HowItWorks: workflow-iso-stage mounts with ~17KB inner HTML (never blank); workflow-step-1..4 all present and clickable. ROI calculator: all 11 expected testids present. Math verified at defaults (clients=8, hours=3, reports=2, reduction=40): roi-monthly-output=48, roi-annual-output=576 h, roi-saved-output=230 h, roi-workdays-output=29, roi-fluxvex-bar-value=346 h/yr, roi-you-marker style='left:40%' (=100-60 after slider change). After reduction=60: saved=346 h, workdays=43, fluxvex-bar-value=230 h/yr, you-marker left=40%. Copy button toggles to 'Copied'. Promise section: section-promise + promise-card-trace + promise-card-schedule + promise-card-brand + promise-ticker all present. Vision: vision-loop-progress present. Showcase: all 4 KPIs + 3 period tabs + export button present. Clicking showcase-period-tab-q2 tweens KPIs to exactly $128,760 / 3.52M / 99,410 / 3,220 as spec'd; June shows $48,210/1.24M/34,880/1,204. Export button triggers export note. Waitlist modal opens from CTA (dialog visible, email input accepts value). All regressions green.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_fluxvex_api.py",
+    "/app/test_reports/pytest/iter21_results.xml"
+  ],
+  "action_items": [
+    "MINOR / informational only — Spec listed Vision roadmap cards as data-testid='vision-roadmap-1..4' but Vision.jsx uses semantic ids: vision-roadmap-reporting, vision-roadmap-proposals, vision-roadmap-invoicing, vision-roadmap-ai-account-manager. Not a bug (functionality intact — testid naming divergence from the review-request spec). If the spec is the source of truth, add numeric aliases or update the spec. No user-facing impact.",
+    "MINOR — Spec also listed data-testids pipeline-status / sync-rail / ga4-donut / soon-progress-linkedin-ads / soon-progress-tiktok-ads on IntegrationsStrip; those literal testids are not present but the described visual content (Pipeline, channels live, Fluxvex AI → Branded report flow, SESSIONS +18.2%, IN BUILD 68%/41%, Top community request) all render correctly. Consider adding the data-testids to IntegrationsStrip for easier automation if desired."
+  ],
+  "critical_code_review_comments": [
+    "Vision.jsx uses semantic roadmap testids ('reporting/proposals/invoicing/ai-account-manager') which are better than numeric indexes — recommend updating the project spec to match rather than renaming the code.",
+    "RoiCalculator math is correct and bar/marker tracking reduces cleanly; no issues observed.",
+    "Showcase period tween between May/June/Q2 lands on the exact spec'd numbers — tween implementation via useTween hook is working."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "100%", "frontend": "100%" },
+  "test_credentials": "Not needed (admin flows out of scope).",
+  "seed_data_creation": "Ephemeral waitlist email qa.iter21.<ts>@testmail.dev inserted — safe to prune.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 6 new section rewrites behave as described in the review-request (visuals + math + navigation + tween + overflow + 0 console errors). Two spec/implementation testid-naming divergences flagged as informational only: Vision roadmap uses semantic IDs (not numeric 1-4) and IntegrationsStrip omits pipeline-status/sync-rail/ga4-donut/soon-progress-* testids (but the visuals they describe render correctly). Backend suite remains 19/19.",
+  "rca_of_the_issue": "N/A — no functional issues this iteration."
+}
