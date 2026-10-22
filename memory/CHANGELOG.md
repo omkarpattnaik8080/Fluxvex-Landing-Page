@@ -1,5 +1,11 @@
 # Fluxvex — Changelog
 
+## 2026-10-21 (session 11 — Inside-Fluxvex band restructure)
+- Band restructured to premium two-column layout: LEFT = eyebrow + new heading "One report, three working layers." + subcopy + color-dot layer index (blue/violet/green) + hover-hint chip; RIGHT = enlarged 3D scene (250/300px mobile, lg:min-h-[400px]).
+- LayersScene: camera targets [0, 0.82, 0] (stack centered), world w 10 (bigger slabs), labels/chips are screen-space tags (depthTest false, renderOrder 10) that never hide behind slabs; chips = white-on-color pills (green "Your logo · your voice", violet "Drafts · flags anomalies", blue "3 sources · one schema") spread diagonally.
+- Cam component now takes a lookAt target prop.
+- Verified (iteration 13: 100%): backend 19/19, no clipping on hover, chips readable, 0 overflow, no ghosting, other pages clean.
+
 ## 2026-10-21 (session 10 — brighter Iso3D + no play button + premium Inside-Fluxvex band)
 - Scene enrichment: colored base plates per element (sky/blue/amber sources, violet AI, mint delivery), volumetric light beams, floating KPI chips (2.4x ROAS, +38% conversions, +24% channel results, 5→500 clients — honest copy), particle bursts (on step change / click / 3.2s pipeline cycle), orbiting octahedron satellites, brighter palette (amber/violet/sky/mint). PromptScene intentionally stays gray = contrast vs colorful pipeline.
 - HowItWorks: Auto-playing/Play tour toggle REMOVED — tour auto-plays on scroll into view; tabs + dots remain.

@@ -1,0 +1,20 @@
+{
+  "summary": "Iteration 13 — 'Inside Fluxvex' band restructure to a premium two-column layout. Backend pytest 19/19 PASS (SEO, waitlist, careers, contact, admin auth + jobs CRUD, dynamic careers page). Frontend @1440: two-column layout renders correctly — LEFT column shows eyebrow 'THREE LAYERS, ONE FRAME', heading 'One report, three working layers.', subcopy, the 3-item index (blue Connected data / violet Fluxvex AI / green Branded delivery), and 'HOVER TO FAN THE LAYERS' chip; RIGHT column renders the enlarged LayersScene (band height ~402px, canvas spans ~55% of the row). Chips restyled as white-on-color pills (green 'Your logo · your voice', violet 'Drafts · flags anomalies', blue '3 sources · one schema') — all readable, no invisible text. Camera target [0, 0.82, 0] + depthTest=false renderOrder 10 verified: labels (Branded delivery / Fluxvex AI / Connected data) stay attached to each slab and never hide behind slabs. Hover state: layers fan apart smoothly, chips/labels follow, top slab stays inside the rounded band border (no clipping). Only 1 shared <canvas> on Home at 1440 and 390. All 10 scene testids present (workflow-iso-stage/-3d, showcase-layers-3d, platform-cloud-3d, feature-visual-inputs/summaries/delivery, comparison-prompt-visual/workflow-visual, vision-scene-3d). Mobile @390x844: band stacks (content above scene), scene area renders ~390x300 after lazy chunk, horizontal overflow = 0px, 1 canvas, no clipping. Scroll regression: scrolled 0→~20705px — no 3D ghosting, canvas count stable at 1, Pricing preview/FAQ/footer clean. Non-home routes: /careers /pricing /blog = 0 canvas each. Admin login admin@example.com/admin123 at /admin/jobs — authenticated, 'SaaS Sales Intern' listing visible. Only console entries: expected 401 probes before admin login. No regressions, no new issues.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_fluxvex_api.py", "/app/test_reports/pytest/iteration_13_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Showcase two-column restructure holds up: text column + scene column proportions look premium at 1440, mobile stacks correctly with no horizontal overflow.",
+    "LayersScene chip restyle (white-on-color pills with depthTest=false, renderOrder 10) correctly places chips in screen-space — no legibility or occlusion issues observed at rest or on hover.",
+    "Camera lookAt via new Cam target prop centers the stack vertically; top slab stays inside band bounds on hover (no clipping at the band's top edge)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (19/19)", "frontend": "100% — restructure verified, chips readable, no clipping, no regressions"},
+  "test_credentials": "Admin admin@example.com / admin123 per /app/memory/test_credentials.md — verified working.",
+  "seed_data_creation": "None; pytest self-cleans TEST_* records.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 13 Inside Fluxvex restructure verified good. For next regression keep checking: (1) Showcase band two-column layout at >=lg (text left, scene right), (2) chips remain readable white-on-color pills, (3) layer labels + chips never clip above band on hover, (4) 1 canvas on Home @1440 & @390, 0 canvas on /careers /pricing /blog, (5) horizontal overflow == 0 at both viewports, (6) all 10 scene testids mounted.",
+  "rca of the issue": "N/A — no bugs found."
+}
