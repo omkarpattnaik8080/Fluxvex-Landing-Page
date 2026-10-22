@@ -1,9 +1,10 @@
-import { lazy, Suspense } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Plug, Sparkles, CalendarClock, ArrowRight, Zap } from "lucide-react";
 import { IsoPlane, IsoTile, IsoWire, IsoBillboard } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+import { useTween } from "@/hooks/useTween";
 import ComplianceBadges from "@/components/ComplianceBadges";
 import TapCTA from "@/components/ui/TapCTA";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
@@ -79,22 +80,47 @@ const STAGES = [
 /* Bento card — tinted visual zone with floating stat pills over a signature
    mini-visualization, then title + description (reference-card anatomy). */
 function BentoStat({ label, value }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
+  const m = String(value).match(/^([+−-]?)(\d+)(.*)$/);
+  const target = m ? parseInt(m[2], 10) : null;
+  const t = useTween(inView && target !== null ? target : 0);
+  const shown =
+    target === null || !inView
+      ? value
+      : `${m[1] === "−" ? "−" : m[1] || ""}${Math.round(t)}${m[3]}`;
   return (
-    <span className="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[13px] shadow-[0_8px_20px_-10px_rgba(16,16,20,0.3)]">
+    <span
+      ref={ref}
+      className="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[13px] shadow-[0_8px_20px_-10px_rgba(16,16,20,0.3)] transition-transform duration-300"
+      data-testid={`vision-stat-${label.toLowerCase().replace(/[^a-z]+/g, "-")}`}
+    >
       <span className="font-medium text-ink">{label}</span>
       <span className="h-3 w-px bg-line" aria-hidden="true" />
-      <span className="font-display font-semibold text-[#0E8A3E]">{value}</span>
+      <span className="font-display font-semibold text-[#0E8A3E]">{shown}</span>
     </span>
   );
 }
 
-function BentoCard({ stage, vizTint, children }) {
+function BentoCard({ stage, vizTint, active = false, index, children }) {
   return (
     <div
-      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_40px_80px_-48px_rgba(16,16,20,0.4)] transition-[transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-[0_56px_100px_-48px_rgba(16,16,20,0.45)]"
+      className={`group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_40px_80px_-48px_rgba(16,16,20,0.4)] transition-[box-shadow,transform,ring-color] duration-500 hover:-translate-y-1.5 hover:shadow-[0_56px_100px_-48px_rgba(16,16,20,0.45)] ${
+        active ? "ring-2 ring-accent/45 shadow-[0_48px_96px_-44px_rgba(61,67,232,0.5)]" : "ring-1 ring-transparent"
+      }`}
       data-testid={stage.testid}
     >
       <div className={`relative h-[230px] overflow-hidden ${vizTint}`}>
+        {index != null && (
+          <span
+            className={`absolute bottom-4 left-5 z-10 font-display text-[11px] font-bold tracking-[0.14em] transition-colors duration-500 ${
+              active ? "text-accent" : "text-ink/25"
+            }`}
+            aria-hidden="true"
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        )}
         <div className="absolute inset-x-5 top-5 z-10 flex flex-wrap items-center justify-center gap-2">
           {stage.stats.map((s) => (
             <BentoStat key={s.label} label={s.label} value={s.value} />
@@ -125,6 +151,17 @@ const AI_CAPABILITIES = [
   { text: "Turns delivered work into ready-to-send invoices", plan: true },
   { text: "An AI account manager that runs day-to-day client communication—saving what a full-time manager costs", plan: true },
 ];
+
+/* The AI account manager conversation cycles itself while the section is on screen */
+const AI_CHATS = [
+  { q: "How did June perform for Northbeam?", a: "On it — June’s client report is drafted and ready for review." },
+  { q: "Draft the Q2 summary for Northbeam.", a: "Done — summary drafted, three anomalies flagged for your review." },
+];
+
+const chatItem = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 1, 0.5, 1] } },
+};
 
 function VisionSceneLegacy() {
   return (
@@ -167,6 +204,25 @@ function VisionSceneLegacy() {
 export default function Vision() {
   const { openWaitlist } = useWaitlist();
   const reduce = useReducedMotion();
+
+  /* The loop plays itself: stages highlight in sequence while the roadmap is on screen */
+  const roadmapRef = useRef(null);
+  const roadmapInView = useInView(roadmapRef, { amount: 0.15 });
+  const [loopIdx, setLoopIdx] = useState(0);
+  const [chatIdx, setChatIdx] = useState(0);
+
+  useEffect(() => {
+    if (!roadmapInView || reduce) return undefined;
+    const id = setInterval(() => setLoopIdx((v) => (v + 1) % STAGES.length), 2600);
+    return () => clearInterval(id);
+  }, [roadmapInView, reduce]);
+
+  useEffect(() => {
+    if (!roadmapInView || reduce) return undefined;
+    const id = setInterval(() => setChatIdx((v) => (v + 1) % AI_CHATS.length), 5200);
+    return () => clearInterval(id);
+  }, [roadmapInView, reduce]);
+
   return (
     <SectionShell id="vision">
       <SectionHeader
@@ -208,11 +264,20 @@ export default function Vision() {
       </div>
 
       {/* agency loop — bento grid */}
-      <div className="mt-16" data-testid="vision-roadmap">
+      <div className="mt-16" data-testid="vision-roadmap" ref={roadmapRef}>
         <Reveal>
           <div className="flex flex-col items-center gap-4 text-center">
             <span className="flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-soft">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" />
+              {/* orbiting packet — the loop, in miniature */}
+              <span className="relative flex h-3 w-3 items-center justify-center" aria-hidden="true">
+                <span className="absolute inset-0 rounded-full border border-dashed border-[#0E8A3E]/50" />
+                <motion.span
+                  className="absolute -top-[2px] left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[#0E8A3E]"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: "linear" }}
+                  style={{ transformOrigin: "50% 8px" }}
+                />
+              </span>
               The agency loop
             </span>
             <h3 className="max-w-2xl font-display text-3xl font-semibold leading-[1.05] tracking-tighter2 text-ink sm:text-4xl">
@@ -222,13 +287,27 @@ export default function Vision() {
               Reporting is where Fluxvex begins. From there, the same connected pipeline and AI core extend to the
               work on either side of it—winning the engagement and getting paid for it.
             </p>
+            {/* loop progress — the active stage sweeps as the tour cycles */}
+            <div className="mt-2 flex w-full max-w-md items-center gap-1.5 px-6" data-testid="vision-loop-progress" aria-hidden="true">
+              {STAGES.map((s, i) => (
+                <span key={s.title} className="relative h-1 flex-1 overflow-hidden rounded-full bg-black/[0.08]">
+                  <motion.span
+                    className="absolute inset-y-0 left-0 w-full rounded-full bg-accent"
+                    initial={false}
+                    animate={{ scaleX: i === loopIdx ? 1 : 0, opacity: i === loopIdx ? 1 : 0 }}
+                    transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+                    style={{ transformOrigin: "left" }}
+                  />
+                </span>
+              ))}
+            </div>
           </div>
         </Reveal>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {/* 01 — client reporting (hero card, reporting chart) */}
           <Reveal className="h-full lg:col-span-2">
-            <BentoCard stage={STAGES[0]} delay={0} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#EAF6E9_0%,#F7FBF5_78%)]">
+            <BentoCard stage={STAGES[0]} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#EAF6E9_0%,#F7FBF5_78%)]" active={loopIdx === 0} index={0}>
               <div className="absolute inset-x-0 bottom-0 top-[104px] flex items-end justify-center gap-4 px-10 sm:gap-6" aria-hidden="true">
                 <span className="absolute inset-x-10 top-[34%] border-t border-dashed border-ink/25">
                   <span className="absolute -top-2.5 left-0 rounded bg-white/85 px-1.5 text-[10px] font-medium text-ink-soft">Avg. cycle</span>
@@ -279,7 +358,7 @@ export default function Vision() {
 
           {/* 02 — proposal making (drafting doc) */}
           <Reveal delay={0.08} className="h-full">
-            <BentoCard stage={STAGES[1]} delay={0} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#EFEEFB_0%,#F8F8FD_78%)]">
+            <BentoCard stage={STAGES[1]} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#EFEEFB_0%,#F8F8FD_78%)]" active={loopIdx === 1} index={1}>
               <div className="absolute inset-x-0 bottom-0 top-[96px] flex items-end justify-center px-10" aria-hidden="true">
                 <motion.div
                   className="h-[92%] w-44 rounded-t-xl bg-white p-4 shadow-[0_28px_56px_-28px_rgba(61,67,232,0.4)]"
@@ -305,7 +384,7 @@ export default function Vision() {
 
           {/* 03 — invoicing (auto-drafted invoice) */}
           <Reveal className="h-full">
-            <BentoCard stage={STAGES[2]} delay={0} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#FBF3E2_0%,#FDFBF4_78%)]">
+            <BentoCard stage={STAGES[2]} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#FBF3E2_0%,#FDFBF4_78%)]" active={loopIdx === 2} index={2}>
               <div className="absolute inset-x-0 bottom-0 top-[96px] flex items-end justify-center px-10" aria-hidden="true">
                 <motion.div
                   className="h-[92%] w-48 rounded-t-xl bg-white p-4 shadow-[0_28px_56px_-28px_rgba(201,138,20,0.4)]"
@@ -348,41 +427,37 @@ export default function Vision() {
             </BentoCard>
           </Reveal>
 
-          {/* 04 — AI account manager (chat, hero card) */}
+          {/* 04 — AI account manager (chat, hero card) — conversation cycles itself */}
           <Reveal delay={0.08} className="h-full lg:col-span-2">
-            <BentoCard stage={STAGES[3]} delay={0} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#E9F2FB_0%,#F6FAFD_78%)]">
-              <div className="absolute inset-x-0 bottom-0 top-[96px] flex flex-col items-center justify-end gap-2.5 px-8" aria-hidden="true">
+            <BentoCard stage={STAGES[3]} vizTint="bg-[radial-gradient(120%_120%_at_50%_0%,#E9F2FB_0%,#F6FAFD_78%)]" active={loopIdx === 3} index={3}>
+              <motion.div
+                key={chatIdx}
+                initial="hidden"
+                animate="show"
+                variants={{ show: { transition: { staggerChildren: 0.24 } } }}
+                className="absolute inset-x-0 bottom-0 top-[96px] flex flex-col items-center justify-end gap-2.5 px-8"
+                aria-hidden="true"
+              >
                 <motion.span
+                  variants={chatItem}
                   className="w-fit rounded-2xl rounded-bl-md bg-ink/[0.06] px-4 py-2 text-xs font-medium text-ink-soft"
-                  initial={{ y: 16, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
                 >
-                  How did June perform for Northbeam?
+                  {AI_CHATS[chatIdx].q}
                 </motion.span>
-                <motion.span
-                  initial={{ y: 16, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.45, ease: [0.25, 1, 0.5, 1] }}
-                >
+                <motion.span variants={chatItem}>
                   <motion.span
                     className="block w-fit"
                     animate={reduce ? undefined : { y: [0, -2.5, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
                   >
                     <span className="block rounded-2xl rounded-br-md bg-accent px-4 py-2 text-xs font-medium text-white shadow-[0_16px_32px_-16px_rgba(61,67,232,0.6)]">
-                      On it — June’s client report is drafted and ready for review.
+                      {AI_CHATS[chatIdx].a}
                     </span>
                   </motion.span>
                 </motion.span>
                 <motion.span
+                  variants={chatItem}
                   className="flex items-center gap-1 rounded-2xl rounded-br-md bg-accent/10 px-3.5 py-2.5"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.7 }}
                 >
                   {[0, 1, 2].map((d) => (
                     <motion.span
@@ -393,7 +468,7 @@ export default function Vision() {
                     />
                   ))}
                 </motion.span>
-              </div>
+              </motion.div>
             </BentoCard>
           </Reveal>
         </div>

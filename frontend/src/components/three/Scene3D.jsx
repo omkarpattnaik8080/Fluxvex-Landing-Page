@@ -2,7 +2,7 @@
    Falls back to the original SVG composition when WebGL is unavailable or a
    scene throws at render time (per-view error boundary keeps one bad scene
    from taking down the page). */
-import { Component, useEffect, useRef, useState } from "react";
+import { Component, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { View, OrthographicCamera } from "@react-three/drei";
 import { useReducedMotion } from "framer-motion";
@@ -18,8 +18,15 @@ class SceneBoundary extends Component {
   }
 }
 
-function SceneHost({ scene, props, input, reduce, visible, zoom }) {
+function SceneHost({ scene, props, input, reduce, visible, zoom, onReady }) {
   const Scene = SCENES[scene];
+  /* Two rAFs past mount = the scene's first painted frame — signal the host so
+     it can cross-fade the SVG stage out instead of hard-swapping. */
+  useEffect(() => {
+    if (!onReady) return undefined;
+    const id = requestAnimationFrame(() => requestAnimationFrame(onReady));
+    return () => cancelAnimationFrame(id);
+  }, [onReady]);
   if (!Scene) return null;
   return (
     <>
@@ -41,7 +48,7 @@ function fitZoom(size, world) {
   return Math.min(size.w / world.w, size.h / world.h) * 0.94;
 }
 
-export default function Scene3D({ scene, props = {}, fallback, className = "", style, testid }) {
+export default function Scene3D({ scene, props = {}, fallback, className = "", style, testid, onReady }) {
   const ref = useRef(null);
   const world = WORLD[scene] || { w: 10, h: 6 };
   const [glOk, setGlOk] = useState(false);
@@ -49,6 +56,12 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
   const [inView, setInView] = useState(false);
   const reduce = useReducedMotion();
   const input = useRef({ px: 0, py: 0, hover: false, yaw: 0, pulseAt: 0, down: false, lastX: 0 }).current;
+  const readySentRef = useRef(false);
+  const handleReady = useCallback(() => {
+    if (readySentRef.current) return;
+    readySentRef.current = true;
+    if (onReady) onReady();
+  }, [onReady]);
 
   useEffect(() => {
     try {
@@ -141,7 +154,7 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
         data-testid={testid}
         {...handlers}
       >
-        {size && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} />}
+        {size && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} onReady={handleReady} />}
       </View>
     </SceneBoundary>
   );

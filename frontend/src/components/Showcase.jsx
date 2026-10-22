@@ -1,12 +1,17 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Download, ChevronDown, Sparkles } from "lucide-react";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+import { useTween } from "@/hooks/useTween";
 import TapCTA from "@/components/ui/TapCTA";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 
 const Scene3D = lazy(() => import("@/components/three/Scene3D"));
+
+const fmtUsd = (v) => `$${Math.round(v).toLocaleString("en-US")}`;
+const fmtMils = (v) => `${(v / 1e6).toFixed(2)}M`;
+const fmtInt = (v) => Math.round(v).toLocaleString("en-US");
 
 const PERIODS = {
   may: {
@@ -14,10 +19,10 @@ const PERIODS = {
     slug: "may-2025",
     days: "Conversions · last 30 days",
     kpis: [
-      ["Spend", "$44,540", "-1.8% vs Apr"],
-      ["Impressions", "1.11M", "-0.9% vs Apr"],
-      ["Clicks", "32,875", "+2.2% vs Apr"],
-      ["Conversions", "1,048", "+4.6% vs Apr"],
+      { label: "Spend", value: 44540, fmt: fmtUsd, note: "-1.8% vs Apr" },
+      { label: "Impressions", value: 1110000, fmt: fmtMils, note: "-0.9% vs Apr" },
+      { label: "Clicks", value: 32875, fmt: fmtInt, note: "+2.2% vs Apr" },
+      { label: "Conversions", value: 1048, fmt: fmtInt, note: "+4.6% vs Apr" },
     ],
     line: "M0 120 C 60 114, 110 122, 160 110 S 260 92, 320 96 S 420 78, 480 80",
     dot: [480, 80],
@@ -34,10 +39,10 @@ const PERIODS = {
     slug: "june-2025",
     days: "Conversions · last 30 days",
     kpis: [
-      ["Spend", "$48,210", "+8.2% vs May"],
-      ["Impressions", "1.24M", "+11.6% vs May"],
-      ["Clicks", "34,880", "+6.1% vs May"],
-      ["Conversions", "1,204", "+14.9% vs May"],
+      { label: "Spend", value: 48210, fmt: fmtUsd, note: "+8.2% vs May" },
+      { label: "Impressions", value: 1240000, fmt: fmtMils, note: "+11.6% vs May" },
+      { label: "Clicks", value: 34880, fmt: fmtInt, note: "+6.1% vs May" },
+      { label: "Conversions", value: 1204, fmt: fmtInt, note: "+14.9% vs May" },
     ],
     line: "M0 112 C 40 104, 70 118, 105 96 S 170 58, 210 70 S 280 34, 320 42 S 400 12, 480 14",
     dot: [480, 14],
@@ -54,10 +59,10 @@ const PERIODS = {
     slug: "q2-2025",
     days: "Conversions · last 90 days",
     kpis: [
-      ["Spend", "$128,760", "+18.3% vs Q1"],
-      ["Impressions", "3.52M", "+21.4% vs Q1"],
-      ["Clicks", "99,410", "+17.2% vs Q1"],
-      ["Conversions", "3,220", "+24.8% vs Q1"],
+      { label: "Spend", value: 128760, fmt: fmtUsd, note: "+18.3% vs Q1" },
+      { label: "Impressions", value: 3520000, fmt: fmtMils, note: "+21.4% vs Q1" },
+      { label: "Clicks", value: 99410, fmt: fmtInt, note: "+17.2% vs Q1" },
+      { label: "Conversions", value: 3220, fmt: fmtInt, note: "+24.8% vs Q1" },
     ],
     line: "M0 124 C 80 116, 140 100, 200 92 S 320 64, 380 48 S 440 22, 480 16",
     dot: [480, 16],
@@ -98,6 +103,27 @@ function useTypewriter(text, { speed = 20, pause = 3600, reduce = false } = {}) 
     return () => clearTimeout(t);
   }, [n, text, pause, reduce]);
   return text.slice(0, n);
+}
+
+/* KPI tile — numbers count up on first view and tween when the period switches */
+function Kpi({ kpi, reduce, testid }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
+  const v = useTween(inView ? kpi.value : 0, { duration: 720 });
+  return (
+    <div ref={ref} className="relative overflow-hidden rounded-xl border border-line bg-surface p-4" data-testid={testid}>
+      <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-black/45">{kpi.label}</p>
+      <p className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink">{kpi.fmt(v)}</p>
+      <p className="mt-1 text-[11px] text-accent">{kpi.note}</p>
+      <motion.span
+        className="absolute bottom-0 left-0 h-[2px] bg-accent/60"
+        initial={reduce ? false : { width: 0 }}
+        animate={{ width: "100%" }}
+        transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
+        aria-hidden="true"
+      />
+    </div>
+  );
 }
 
 export default function Showcase() {
@@ -246,22 +272,15 @@ export default function Showcase() {
               </span>
             </div>
 
-            {/* KPIs */}
+            {/* KPIs — count up on view, tween between periods */}
             <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-              {data.kpis.map(([label, value, note]) => (
-                <div key={label} className="rounded-xl border border-line bg-surface p-4" data-testid={`showcase-kpi-${label.toLowerCase().replace(/\s+/g, "-")}`}>
-                  <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-black/45">{label}</p>
-                  <motion.p
-                    key={`${period}-${label}`}
-                    initial={reduce ? false : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink"
-                  >
-                    {value}
-                  </motion.p>
-                  <p className="mt-1 text-[11px] text-accent">{note}</p>
-                </div>
+              {data.kpis.map((kpi) => (
+                <Kpi
+                  key={kpi.label}
+                  kpi={kpi}
+                  reduce={reduce}
+                  testid={`showcase-kpi-${kpi.label.toLowerCase().replace(/\s+/g, "-")}`}
+                />
               ))}
             </div>
 
@@ -291,8 +310,35 @@ export default function Showcase() {
                   {[30, 70, 110].map((y) => (
                     <line key={y} x1="0" x2="480" y1={y} y2={y} stroke="rgba(16,16,20,0.06)" strokeWidth="1" />
                   ))}
-                  <path d={`${data.line} L 480 140 L 0 140 Z`} fill="url(#showArea)" />
-                  <path d={data.line} fill="none" stroke="#3D43E8" strokeWidth="2.4" strokeLinecap="round" />
+                  <motion.path
+                    d={`${data.line} L 480 140 L 0 140 Z`}
+                    fill="url(#showArea)"
+                    initial={reduce ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.9, delay: 0.45 }}
+                  />
+                  {/* glow under-stroke */}
+                  <motion.path
+                    d={data.line}
+                    fill="none"
+                    stroke="#3D43E8"
+                    strokeWidth="7"
+                    strokeLinecap="round"
+                    opacity="0.13"
+                    initial={reduce ? false : { pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                  />
+                  <motion.path
+                    d={data.line}
+                    fill="none"
+                    stroke="#3D43E8"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    initial={reduce ? false : { pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                  />
                   <motion.circle
                     cx={data.dot[0]}
                     cy={data.dot[1]}
@@ -310,15 +356,19 @@ export default function Showcase() {
                 <div className="rounded-xl border border-line bg-surface p-5">
                   <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-black/45">Channel comparison</p>
                   <div className="mt-3 space-y-2.5">
-                    {data.channels.map(([name, val, w]) => (
+                    {data.channels.map(([name, val, w], i) => (
                       <div key={name}>
                         <div className="flex items-center justify-between text-xs text-ink-soft">
-                          <span>{name}</span>
+                          <span className="flex items-center gap-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: ["#3D43E8", "#7B5CFF", "#10B981"][i] }} aria-hidden="true" />
+                            {name}
+                          </span>
                           <span className="font-medium text-ink">{val}</span>
                         </div>
                         <div className="mt-1 h-1.5 rounded-full bg-black/[0.07]">
                           <motion.div
-                            className="h-full rounded-full bg-accent"
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: ["#3D43E8", "#7B5CFF", "#10B981"][i] }}
                             initial={false}
                             animate={{ width: w }}
                             transition={{ type: "spring", stiffness: 120, damping: 20 }}
@@ -328,10 +378,24 @@ export default function Showcase() {
                     ))}
                   </div>
                 </div>
-                <div className="rounded-xl border border-accent-border bg-accent-tint/60 p-5" data-testid="showcase-ai-insights">
+                <div className="relative overflow-hidden rounded-xl border border-accent-border bg-accent-tint/60 p-5" data-testid="showcase-ai-insights">
+                  {typed.length < data.ai.length && !reduce && (
+                    <motion.span
+                      className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-accent/[0.08] to-transparent"
+                      animate={{ x: ["-120%", "320%"] }}
+                      transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                      aria-hidden="true"
+                    />
+                  )}
                   <div className="flex items-center justify-between gap-2">
                     <p className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-accent">
-                      <Sparkles className="h-3 w-3" /> Fluxvex AI insights
+                      <motion.span
+                        animate={typed.length < data.ai.length && !reduce ? { opacity: [1, 0.35, 1] } : {}}
+                        transition={{ duration: 0.9, repeat: Infinity }}
+                      >
+                        <Sparkles className="h-3 w-3" />
+                      </motion.span>
+                      Fluxvex AI insights
                     </p>
                     <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-black/40">
                       Illustrative

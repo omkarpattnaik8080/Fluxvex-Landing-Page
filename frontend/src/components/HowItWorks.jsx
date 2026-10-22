@@ -177,19 +177,41 @@ function IsoStageLegacy({ step }) {
   );
 }
 
-/* Interactive Iso3D stage — SVG IsoStage kept as WebGL fallback */
+/* Interactive Iso3D stage — the crisp SVG stage stays mounted as the base
+   layer and cross-fades out only after the WebGL scene has painted its first
+   frame. No blank beats, no hard swap: the illustration is never "loading". */
 function IsoStage({ step }) {
+  const [ready3d, setReady3d] = useState(false);
   return (
-    <div className="flex h-[460px] items-center justify-center overflow-hidden" data-testid="workflow-iso-stage">
-      <Suspense fallback={<IsoStageLegacy step={step} />}>
-        <Scene3D
-          scene="workflow"
-          props={{ step }}
-          testid="workflow-iso-stage-3d"
-          fallback={<IsoStageLegacy step={step} />}
-          className="h-full w-full"
-        />
-      </Suspense>
+    <div className="relative h-[460px] overflow-hidden" data-testid="workflow-iso-stage">
+      {/* base layer — SVG stage, instant paint */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center"
+        animate={{ opacity: ready3d ? 0 : 1 }}
+        transition={{ duration: 0.7, ease: "easeInOut" }}
+        aria-hidden={ready3d}
+      >
+        <IsoStageLegacy step={step} />
+      </motion.div>
+      {/* 3D layer — fades in over the base once ready; if WebGL is missing the
+          Scene3D renders nothing here and the SVG base simply stays */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: ready3d ? 1 : 0 }}
+        transition={{ duration: 0.7, ease: "easeInOut" }}
+      >
+        <Suspense fallback={null}>
+          <Scene3D
+            scene="workflow"
+            props={{ step }}
+            testid="workflow-iso-stage-3d"
+            fallback={null}
+            onReady={() => setReady3d(true)}
+            className="h-full w-full"
+          />
+        </Suspense>
+      </motion.div>
     </div>
   );
 }

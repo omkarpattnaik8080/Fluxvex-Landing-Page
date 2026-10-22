@@ -1,58 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Check, CircleDollarSign, Clock3, Copy, Info, Lock, TrendingUp, Zap } from "lucide-react";
+import { CalendarDays, Check, Clock3, Copy, Info, Lock } from "lucide-react";
 import { SectionShell } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
+import { useTween } from "@/hooks/useTween";
+import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 
-const fmt = (n) => n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+const fmt = (n) => Math.round(n).toLocaleString("en-US");
 
-/* Tween a number toward its target whenever the target changes */
-function useTween(target) {
-  const [val, setVal] = useState(target);
-  const fromRef = useRef(target);
-
-  useEffect(() => {
-    const from = fromRef.current;
-    if (from === target) return undefined;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      fromRef.current = target;
-      setVal(target);
-      return undefined;
-    }
-    const start = performance.now();
-    const dur = 480;
-    let raf;
-    const tick = (t) => {
-      const p = Math.min(1, (t - start) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setVal(Math.round(from + (target - from) * eased));
-      if (p < 1) raf = requestAnimationFrame(tick);
-      else fromRef.current = target;
-    };
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      fromRef.current = target;
-    };
-  }, [target]);
-
-  return val;
-}
-
-/* Labeled field + slim slider — mirrors the reference's form fields */
+/* Labeled field + slim slider with a display-grade value readout */
 function FieldSlider({ id, label, value, suffix, min, max, step, set, testid }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div>
-      <label className="text-xs font-medium text-ink-soft" htmlFor={id}>
-        {label}
-      </label>
-      <div className="mt-1.5 flex items-center justify-between gap-3 rounded-lg border border-line bg-white px-3.5 py-2.5">
-        <span className="font-display text-sm font-semibold text-ink" data-testid={`${testid}-value`}>
-          {value} <span className="font-normal text-ink-soft">{suffix}</span>
+    <div className="group/field rounded-xl border border-line bg-white p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent/35 hover:shadow-[0_18px_36px_-24px_rgba(61,67,232,0.45)]">
+      <div className="flex items-center justify-between gap-3">
+        <label className="text-xs font-medium text-ink-soft" htmlFor={id}>
+          {label}
+        </label>
+        <span className="font-display text-lg font-semibold tracking-tight text-ink" data-testid={`${testid}-value`}>
+          {value} <span className="text-xs font-normal text-ink-soft">{suffix}</span>
         </span>
-        <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse-dot" aria-hidden="true" />
       </div>
       <input
         id={id}
@@ -62,7 +30,7 @@ function FieldSlider({ id, label, value, suffix, min, max, step, set, testid }) 
         step={step}
         value={value}
         onChange={(e) => set(Number(e.target.value))}
-        className="range-light mt-2.5 w-full"
+        className="range-light mt-3 w-full"
         style={{ background: `linear-gradient(90deg, #3D43E8 ${pct}%, rgba(16,16,20,0.08) ${pct}%)` }}
         data-testid={testid}
       />
@@ -70,20 +38,92 @@ function FieldSlider({ id, label, value, suffix, min, max, step, set, testid }) 
   );
 }
 
-function CardTitle({ icon: Icon, tone = "accent", info, children }) {
+/* Floating tile cluster — the channels feeding the engine (instant SVG, no WebGL) */
+function CalculatorArt() {
+  const float = (delay) => ({
+    animate: { y: [0, -5, 0] },
+    transition: { duration: 3.2, repeat: Infinity, ease: "easeInOut", delay },
+  });
   return (
-    <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2.5">
-        <span className={`flex h-7 w-7 items-center justify-center rounded-lg ${tone === "green" ? "bg-[#0E8A3E]/10" : "bg-accent-tint"}`}>
-          <Icon className={`h-4 w-4 ${tone === "green" ? "text-[#0E8A3E]" : "text-accent"}`} strokeWidth={2} />
-        </span>
-        <h3 className="text-sm font-semibold text-ink">{children}</h3>
+    <div className="pointer-events-none absolute right-7 top-9 hidden select-none items-center gap-2.5 sm:flex" aria-hidden="true">
+      <motion.span {...float(0)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white shadow-[0_14px_28px_-14px_rgba(16,16,20,0.35)]">
+        <GoogleAdsMark size={20} />
+      </motion.span>
+      <motion.span {...float(0.45)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white shadow-[0_14px_28px_-14px_rgba(16,16,20,0.35)]">
+        <MetaMark size={20} />
+      </motion.span>
+      <motion.span {...float(0.9)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white shadow-[0_14px_28px_-14px_rgba(16,16,20,0.35)]">
+        <GA4Mark size={20} />
+      </motion.span>
+      <svg width="26" height="10" viewBox="0 0 26 10" className="text-accent/50" aria-hidden="true">
+        <line x1="0" y1="5" x2="26" y2="5" stroke="currentColor" strokeWidth="1.6" strokeDasharray="3 4" className="animate-dash-flow" />
+      </svg>
+      <motion.span {...float(1.3)} className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-[0_18px_36px_-14px_rgba(61,67,232,0.6)] ring-1 ring-accent/30">
+        <FluxvexMark size={24} />
+        <motion.span
+          className="absolute inset-0 rounded-xl border-2 border-accent/40"
+          animate={{ scale: [1, 1.28], opacity: [0.8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+        />
+      </motion.span>
+    </div>
+  );
+}
+
+/* Animated savings ring — the hero output of the whole calculator */
+function RingGauge({ pct, saved }) {
+  const R = 52;
+  const CIRC = 2 * Math.PI * R;
+  return (
+    <div className="relative h-[150px] w-[150px] shrink-0">
+      <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#43D675" />
+            <stop offset="100%" stopColor="#0E8A3E" />
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r={R} fill="none" stroke="rgba(16,16,20,0.07)" strokeWidth="10" />
+        <motion.circle
+          cx="60"
+          cy="60"
+          r={R}
+          fill="none"
+          stroke="url(#gaugeGrad)"
+          strokeWidth="10"
+          strokeLinecap="round"
+          strokeDasharray={CIRC}
+          initial={{ strokeDashoffset: CIRC }}
+          animate={{ strokeDashoffset: CIRC * (1 - pct / 100) }}
+          transition={{ type: "spring", stiffness: 55, damping: 18 }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center" data-testid="roi-gauge">
+        <motion.span
+          key={pct}
+          initial={{ opacity: 0.4 }}
+          animate={{ opacity: 1 }}
+          className="rounded-full bg-mint/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#0E8A3E]"
+        >
+          {pct}% less effort
+        </motion.span>
+        <p className="mt-1.5 font-display text-[26px] font-bold leading-none tracking-tight text-ink" data-testid="roi-saved-output">
+          {fmt(saved)}
+          <span className="text-sm font-medium text-ink-soft"> h</span>
+        </p>
+        <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-ink-soft">returned / year</p>
       </div>
-      {info && (
-        <span title={info} className="cursor-help">
-          <Info className="h-3.5 w-3.5 text-ink-soft/50" />
-        </span>
-      )}
+    </div>
+  );
+}
+
+function CardTitle({ icon: Icon, children }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-tint">
+        <Icon className="h-4 w-4 text-accent" strokeWidth={2} />
+      </span>
+      <h3 className="text-sm font-semibold text-ink">{children}</h3>
     </div>
   );
 }
@@ -98,15 +138,13 @@ export default function RoiCalculator() {
   const monthly = clients * hours * perMonth;
   const annual = monthly * 12;
   const saved = Math.round((annual * reduction) / 100);
-  const weekly = Math.round(annual / 52);
-  const workdaysManual = Math.round(annual / 8);
-  const workdaysLeft = Math.round((annual - saved) / 8);
+  const staysManual = annual - saved;
   const workdaysBack = Math.round(saved / 8);
 
   const monthlyView = useTween(monthly);
   const annualView = useTween(annual);
   const savedView = useTween(saved);
-  const weeklyView = useTween(weekly);
+  const staysView = useTween(staysManual);
   const workdaysBackView = useTween(workdaysBack);
 
   const copyResult = () => {
@@ -163,19 +201,9 @@ export default function RoiCalculator() {
           </div>
 
           <div className="grid lg:grid-cols-[1.04fr_1fr]">
-            {/* inputs — mirrors the reference form column */}
+            {/* inputs */}
             <div className="relative p-7 sm:p-10">
-              <div className="pointer-events-none absolute right-6 top-7 hidden items-start gap-2 sm:flex" aria-hidden="true">
-                <span className="flex h-11 w-11 -rotate-6 items-center justify-center rounded-xl border border-line bg-white shadow-sm">
-                  <GoogleAdsMark size={20} />
-                </span>
-                <span className="flex h-11 w-11 translate-y-1 rotate-[4deg] items-center justify-center rounded-xl border border-line bg-white shadow-sm">
-                  <MetaMark size={20} />
-                </span>
-                <span className="flex h-11 w-11 -rotate-3 items-center justify-center rounded-xl border border-line bg-white shadow-sm">
-                  <GA4Mark size={20} />
-                </span>
-              </div>
+              <CalculatorArt />
 
               <h2 className="max-w-xs font-display text-[34px] font-semibold leading-[1.1] tracking-tighter2 text-ink sm:text-4xl">
                 Set your reporting
@@ -188,7 +216,7 @@ export default function RoiCalculator() {
                 <span className="h-4 w-1 rounded-full bg-accent" aria-hidden="true" />
                 Your reporting workload
               </h3>
-              <div className="mt-4 grid gap-x-5 gap-y-6 sm:grid-cols-2">
+              <div className="mt-4 grid gap-x-5 gap-y-4 sm:grid-cols-2">
                 <FieldSlider
                   id="roi-clients-input"
                   label="Clients reported on"
@@ -202,7 +230,7 @@ export default function RoiCalculator() {
                 />
                 <FieldSlider
                   id="roi-reports-input"
-                  label="Reports per client per month"
+                  label="Reports per client / month"
                   value={perMonth}
                   suffix={perMonth === 1 ? "report" : "reports"}
                   min={1}
@@ -226,7 +254,7 @@ export default function RoiCalculator() {
                 </div>
               </div>
 
-              <h3 className="mt-10 flex items-center gap-2.5 text-base font-semibold text-ink">
+              <h3 className="mt-8 flex items-center gap-2.5 text-base font-semibold text-ink">
                 <span className="h-4 w-1 rounded-full bg-accent" aria-hidden="true" />
                 Your assumption
               </h3>
@@ -244,7 +272,7 @@ export default function RoiCalculator() {
                 />
               </div>
 
-              <div className="mt-10 rounded-xl border border-line bg-surface p-4">
+              <div className="mt-8 rounded-xl border border-line bg-surface p-4">
                 <p className="flex gap-2 text-xs leading-relaxed text-ink-soft">
                   <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={2} />
                   Estimates scale with your inputs—actual savings depend on your workflow and the features you use. Choosing
@@ -257,7 +285,7 @@ export default function RoiCalculator() {
               </p>
             </div>
 
-            {/* outputs — mirrors the reference result column */}
+            {/* outputs */}
             <div className="space-y-4 border-t border-line bg-surface p-5 sm:p-7 lg:border-l lg:border-t-0">
               {/* dark hero card */}
               <div className="relative overflow-hidden rounded-2xl bg-[#13131B] p-6 sm:p-7" data-testid="roi-dark-panel">
@@ -266,9 +294,23 @@ export default function RoiCalculator() {
                   style={{ animation: "hero-drift 9s ease-in-out infinite alternate" }}
                   aria-hidden="true"
                 />
-                <svg viewBox="0 0 200 80" className="pointer-events-none absolute -bottom-1 right-2 w-44 text-white/[0.08]" aria-hidden="true">
-                  <path d="M0 70 L30 58 L60 62 L90 40 L120 46 L150 22 L180 28 L200 8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                </svg>
+                <motion.svg
+                  key={`${monthly}-${reduction}`}
+                  viewBox="0 0 200 80"
+                  className="pointer-events-none absolute -bottom-1 right-2 w-44 text-white/[0.09]"
+                  aria-hidden="true"
+                >
+                  <motion.path
+                    d="M0 70 L30 58 L60 62 L90 40 L120 46 L150 22 L180 28 L200 8"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.4, ease: "easeOut" }}
+                  />
+                </motion.svg>
                 <div className="relative">
                   <div className="flex items-center gap-2.5">
                     <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10">
@@ -289,65 +331,60 @@ export default function RoiCalculator() {
                 </div>
               </div>
 
-              {/* reporting math — three stat columns */}
-              <div className="rounded-2xl border border-line bg-white p-5 sm:p-6">
-                <CardTitle icon={CircleDollarSign} tone="green">
-                  Reporting math
-                </CardTitle>
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  {[
-                    { v: fmt(monthlyView), l: "Monthly load" },
-                    { v: fmt(annualView), l: "Every year" },
-                    { v: fmt(weeklyView), l: "Weekly avg" },
-                  ].map((s) => (
-                    <div key={s.l}>
-                      <p className="font-display text-lg font-bold text-[#0E8A3E]">{s.v} h</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-ink-soft">{s.l}</p>
+              {/* savings story — ring + manual vs Fluxvex bars */}
+              <div className="rounded-2xl border border-line bg-white p-5 sm:p-6" data-testid="roi-savings-panel">
+                <CardTitle icon={CalendarDays}>Your savings story</CardTitle>
+                <div className="mt-5 flex flex-col items-center gap-6 sm:flex-row sm:items-center">
+                  <RingGauge pct={reduction} saved={savedView} />
+                  <div className="w-full flex-1 space-y-4">
+                    <div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-medium text-ink-soft">Today — assembled by hand</span>
+                        <span className="font-display font-semibold text-ink" data-testid="roi-manual-bar-value">{fmt(annualView)} h/yr</span>
+                      </div>
+                      <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-black/[0.06]">
+                        <motion.div
+                          className="h-full rounded-full bg-gradient-to-r from-[#F26D6D] to-[#F5A048]"
+                          initial={{ width: 0 }}
+                          animate={{ width: "100%" }}
+                          transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
+                        />
+                      </div>
                     </div>
-                  ))}
+                    <div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-medium text-ink-soft">With Fluxvex</span>
+                        <span className="font-display font-semibold text-[#0E8A3E]" data-testid="roi-fluxvex-bar-value">{fmt(staysView)} h/yr</span>
+                      </div>
+                      <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-black/[0.06]">
+                        <motion.div
+                          className="h-full rounded-full bg-gradient-to-r from-[#43D675] to-[#0E8A3E]"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${100 - reduction}%` }}
+                          transition={{ type: "spring", stiffness: 80, damping: 20 }}
+                        />
+                      </div>
+                      <p className="mt-1.5 text-[11px] leading-snug text-ink-soft/80">
+                        The hours that remain go to judgment and strategy—not assembly.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* effort projection */}
-              <div className="rounded-2xl border border-line bg-white p-5 sm:p-6">
-                <CardTitle icon={TrendingUp} info="Applies your reduction assumption to the annual load">
-                  Effort projection
-                </CardTitle>
-                <dl className="mt-4 space-y-2.5 text-sm">
-                  <div className="flex items-center justify-between gap-4">
-                    <dt className="text-ink-soft">Effort cut:</dt>
-                    <dd className="font-display font-semibold text-[#0E8A3E]">{reduction}%</dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <dt className="text-ink-soft">Hours returned each year:</dt>
-                    <dd className="font-display font-semibold text-[#0E8A3E]" data-testid="roi-saved-output">
-                      {fmt(savedView)} h
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-
-              {/* workdays */}
-              <div className="rounded-2xl border border-line bg-white p-5 sm:p-6">
-                <CardTitle icon={CalendarDays} info="Full 8-hour workdays equivalent">
-                  Workdays
-                </CardTitle>
-                <dl className="mt-4 space-y-2.5 text-sm">
-                  <div className="flex items-center justify-between gap-4">
-                    <dt className="text-ink-soft">Lost every year, manual:</dt>
-                    <dd className="font-display font-semibold text-[#0E8A3E]">{fmt(workdaysManual)}</dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <dt className="text-ink-soft">Still spent with Fluxvex:</dt>
-                    <dd className="font-display font-semibold text-[#0E8A3E]">{fmt(workdaysLeft)}</dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <dt className="text-ink-soft">You get back:</dt>
-                    <dd className="font-display font-semibold text-[#0E8A3E]" data-testid="roi-workdays-output">
-                      {fmt(workdaysBackView)}
-                    </dd>
-                  </div>
-                </dl>
+              {/* workdays equivalence strip */}
+              <div className="flex items-center justify-between gap-4 rounded-2xl border border-accent-border bg-accent-tint/50 px-5 py-4" data-testid="roi-workdays-strip">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-accent/20">
+                    <CalendarDays className="h-4 w-4 text-accent" strokeWidth={2} />
+                  </span>
+                  <p className="text-[13px] font-medium leading-snug text-ink">
+                    About <span className="font-display font-bold text-accent" data-testid="roi-workdays-output">{fmt(workdaysBackView)} full workdays</span> back in your team’s year.
+                  </p>
+                </div>
+                <span className="hidden rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-ink-soft ring-1 ring-black/[0.06] sm:block">
+                  8 h / day
+                </span>
               </div>
 
               {/* comparison bar */}
