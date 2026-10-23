@@ -7,20 +7,10 @@
    never before it. No swap is possible in any environment. */
 import { Suspense } from "react";
 import { motion } from "framer-motion";
-import Scene3D from "./Scene3D";
+import Scene3D, { glSupported } from "./Scene3D";
 
-let GL_SUPPORTED = null;
-function glSupported() {
-  if (GL_SUPPORTED === null) {
-    try {
-      const c = document.createElement("canvas");
-      GL_SUPPORTED = !!(c.getContext("webgl2") || c.getContext("webgl"));
-    } catch (e) {
-      GL_SUPPORTED = false;
-    }
-  }
-  return GL_SUPPORTED;
-}
+/* Single shared WebGL-capability probe (defined in Scene3D.jsx) — CrossFade3D
+   consumes the cached result instead of creating its own probe canvas. */
 
 export default function CrossFade3D({ scene, props, legacy, className = "", testid }) {
   const supported = glSupported();

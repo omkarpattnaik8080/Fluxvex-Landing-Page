@@ -8,6 +8,28 @@ import { View, OrthographicCamera } from "@react-three/drei";
 import { useReducedMotion } from "framer-motion";
 import { SCENES, WORLD } from "./scenes";
 
+/* Single shared WebGL-capability probe — one throwaway context for the whole
+   app, released via WEBGL_lose_context, so section checks never accumulate
+   contexts ("Too many active WebGL contexts" console spam). */
+let GL_SUPPORTED = null;
+export function glSupported() {
+  if (GL_SUPPORTED === null) {
+    try {
+      const c = document.createElement("canvas");
+      const gl = c.getContext("webgl2") || c.getContext("webgl");
+      GL_SUPPORTED = !!gl;
+      if (gl) {
+        const ext = gl.getExtension("WEBGL_lose_context");
+        if (ext) ext.loseContext();
+      }
+    } catch (e) {
+      GL_SUPPORTED = false;
+    }
+  }
+  return GL_SUPPORTED;
+}
+
+
 class SceneBoundary extends Component {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -64,12 +86,7 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
   }, [onReady]);
 
   useEffect(() => {
-    try {
-      const c = document.createElement("canvas");
-      setGlOk(!!(c.getContext("webgl2") || c.getContext("webgl")));
-    } catch (e) {
-      setGlOk(false);
-    }
+    setGlOk(glSupported());
   }, []);
 
   useEffect(() => {
