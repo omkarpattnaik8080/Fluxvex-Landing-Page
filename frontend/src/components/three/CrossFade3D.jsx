@@ -14,7 +14,7 @@ export default function CrossFade3D({ scene, props, legacy, className = "", test
       <motion.div
         className="absolute inset-0 flex items-center justify-center"
         animate={{ opacity: ready ? 0 : 1 }}
-        transition={{ duration: 0.7, ease: "easeInOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         aria-hidden={ready}
       >
         {legacy}
@@ -23,7 +23,7 @@ export default function CrossFade3D({ scene, props, legacy, className = "", test
         className="absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: ready ? 1 : 0 }}
-        transition={{ duration: 0.7, ease: "easeInOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <Suspense fallback={null}>
           <Scene3D

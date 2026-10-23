@@ -604,6 +604,15 @@ export function PlatformScene({ input, reduce, visible, zoom }) {
   const [gTex, mTex, aTex, fxTex] = useBrandTextures();
   const orbit = useRef(null);
   const radius = 2.8;
+  /* payment-ready pulse fires on its own every ~3s — the illustration never
+     sits still waiting for a pointer */
+  const [burst, setBurst] = useState(0);
+  useEffect(() => {
+    if (reduce || !visible) return undefined;
+    setBurst(performance.now());
+    const id = setInterval(() => setBurst(performance.now()), 3000);
+    return () => clearInterval(id);
+  }, [reduce, visible]);
   useFrame((s, dt) => {
     if (!orbit.current || reduce) return;
     const speed = input.hover ? 0.34 : 0.18;
@@ -617,7 +626,7 @@ export function PlatformScene({ input, reduce, visible, zoom }) {
       <IsoWorld input={input} reduce={reduce} dragClamp={1.1} ground={18}>
         <PulseRings position={[0, 0.03, 0]} input={input} />
         <Tile position={[0, 0, 0]} size={[1.9, 0.28, 1.9]} texture={fxTex} texScale={0.5} active base={C.accent} glowColor={C.violet} />
-        <Burst position={[0, 0.3, 0]} input={input} color={C.amber} count={10} />
+        <Burst position={[0, 0.3, 0]} trigger={burst} color={C.amber} count={10} />
         <Satellite radius={1.45} y={1.15} color={C.amber} phase={0.4} reduce={reduce} />
         <Satellite radius={1.45} y={1.2} color={C.violet} phase={Math.PI} speed={-0.75} reduce={reduce} />
         <Satellite radius={1.45} y={1.1} color={C.sky} phase={Math.PI * 0.55} speed={1.15} size={0.11} reduce={reduce} />

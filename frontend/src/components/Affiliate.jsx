@@ -28,18 +28,7 @@ const STEPS = [
   },
 ];
 
-/* Dotted connector with a traveling packet */
-function FlowWire({ delay = 0 }) {
-  return (
-    <span className="relative mx-1 hidden h-px min-w-[48px] flex-1 border-t border-dashed border-accent/35 lg:block" aria-hidden="true">
-      <motion.span
-        className="absolute -top-[3px] left-0 h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgba(61,67,232,0.3)]"
-        animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay }}
-      />
-    </span>
-  );
-}
+/* Dotted connector removed — packets now run along the card's shared line */
 
 function EarningsCard() {
   const reduce = useReducedMotion();
@@ -68,38 +57,58 @@ function EarningsCard() {
   return (
     <div
       ref={ref}
-      className="flex h-full flex-col items-center justify-center gap-6 rounded-2xl border border-line bg-[linear-gradient(160deg,#EAF6E9_0%,#F7FBF5_55%,#FDFDFA_100%)] p-8 text-center"
+      className="flex h-full flex-col items-center justify-center gap-5 rounded-2xl border border-line bg-[linear-gradient(165deg,#EAF6E9_0%,#F7FBF5_55%,#FDFDFA_100%)] p-8 text-center"
       data-testid="affiliate-earnings-card"
     >
-      <div className="relative flex h-40 w-40 items-center justify-center">
-        <svg viewBox="0 0 120 120" className="h-40 w-40 -rotate-90" aria-hidden="true">
-          <circle cx="60" cy="60" r="52" fill="none" stroke="#E9E7E1" strokeWidth="10" />
+      <div className="relative flex h-52 w-52 items-center justify-center">
+        {/* slowly rotating dashed halo */}
+        <motion.svg
+          viewBox="0 0 200 200"
+          className="absolute inset-0 h-full w-full"
+          animate={reduce ? undefined : { rotate: 360 }}
+          transition={{ duration: 44, repeat: Infinity, ease: "linear" }}
+          aria-hidden="true"
+        >
+          <circle cx="100" cy="100" r="97" fill="none" stroke="rgba(16,16,20,0.16)" strokeWidth="1" strokeDasharray="2 7" />
+        </motion.svg>
+        <svg viewBox="0 0 160 160" className="h-44 w-44 -rotate-90" aria-hidden="true">
+          <defs>
+            <linearGradient id="earnGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#43D675" />
+              <stop offset="100%" stopColor="#3D43E8" />
+            </linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="64" fill="none" stroke="#E9E7E1" strokeWidth="12" />
           <motion.circle
-            cx="60"
-            cy="60"
-            r="52"
+            cx="80"
+            cy="80"
+            r="64"
             fill="none"
-            stroke="#0E8A3E"
-            strokeWidth="10"
+            stroke="url(#earnGrad)"
+            strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={C}
             initial={reduce ? false : { strokeDashoffset: C }}
             animate={reduce || !inView ? {} : { strokeDashoffset: C * 0.8 }}
-            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+            transition={{ duration: 1.4, ease: [0.19, 1, 0.22, 1] }}
           />
         </svg>
         <span className="absolute flex flex-col items-center">
-          <span className="font-display text-3xl font-semibold tracking-tight text-ink">
+          <span className="font-display text-5xl font-bold tracking-tight text-ink">
             {pct}
-            <span className="text-xl">%</span>
+            <span className="text-2xl">%</span>
           </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-black/45">of subscription</span>
+          <span className="mt-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-soft">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#0E8A3E] animate-pulse-dot" aria-hidden="true" /> recurring
+          </span>
         </span>
       </div>
-      <p className="text-[15px] leading-relaxed text-ink-soft">
-        That is what you earn on every subscription payment from an agency you refer.
+      <p className="max-w-[250px] text-[14px] leading-relaxed text-ink-soft">
+        of every subscription payment from the agencies you refer — paid monthly, tracked automatically.
       </p>
-      <p className="text-xs text-black/45">Full program terms are announced at launch.</p>
+      <span className="rounded-full bg-[#0E8A3E]/10 px-3 py-1 text-[10.5px] font-bold uppercase tracking-wide text-[#0E8A3E]">
+        Earnings dashboard at launch
+      </span>
     </div>
   );
 }
@@ -200,28 +209,46 @@ export default function Affiliate() {
                 UP TO 20% RECURRING
               </span>
             </div>
-            <div className="mt-7 flex flex-1 flex-col gap-6 lg:flex-row lg:items-start">
-              {STEPS.map((s, i) => (
-                <div key={s.title} className="flex flex-1 items-start gap-4 lg:flex-col lg:gap-4" data-testid={`affiliate-step-${i + 1}`}>
-                  {i > 0 && <FlowWire delay={i * 0.7} />}
-                  <motion.span
-                    initial={{ opacity: 0, scale: 0.7 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+            <div className="relative mt-9 flex-1">
+              {/* connecting line with traveling packets — runs behind the chips */}
+              <div
+                className="absolute left-[16.6%] right-[16.6%] top-7 hidden h-0 border-t-2 border-dashed border-accent/30 sm:block"
+                aria-hidden="true"
+              >
+                <motion.span
+                  className="absolute -top-[4px] h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(61,67,232,0.4)]"
+                  animate={{ left: ["0%", "100%"], opacity: [0, 1, 1, 0] }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.span
+                  className="absolute -top-[4px] h-2 w-2 rounded-full bg-[#0E8A3E] shadow-[0_0_10px_2px_rgba(67,214,117,0.4)]"
+                  animate={{ left: ["100%", "0%"], opacity: [0, 1, 1, 0] }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 1.3 }}
+                />
+              </div>
+              <div className="relative grid gap-8 sm:grid-cols-3 sm:gap-5">
+                {STEPS.map((s, i) => (
+                  <motion.div
+                    key={s.title}
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: 0.15 + i * 0.15, type: "spring", stiffness: 280, damping: 20 }}
-                    className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-line bg-white text-accent shadow-[0_14px_28px_-14px_rgba(16,16,20,0.35)]"
+                    transition={{ duration: 0.6, delay: 0.15 + i * 0.15, ease: [0.25, 1, 0.5, 1] }}
+                    whileHover={{ y: -4 }}
+                    className="flex flex-col items-start text-left sm:items-center sm:text-center"
+                    data-testid={`affiliate-step-${i + 1}`}
                   >
-                    <s.icon className="h-5 w-5" strokeWidth={1.8} />
-                    <span className="absolute -left-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-ink font-display text-[9px] font-bold text-white">
-                      {i + 1}
+                    <span className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-white text-accent shadow-[0_16px_30px_-14px_rgba(16,16,20,0.35)]">
+                      <s.icon className="h-6 w-6" strokeWidth={1.8} />
+                      <span className="absolute -left-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-ink font-display text-[10px] font-bold text-white">
+                        {i + 1}
+                      </span>
                     </span>
-                  </motion.span>
-                  <div className="min-w-0">
-                    <h3 className="font-display text-[15px] font-semibold tracking-tight text-ink">{s.title}</h3>
-                    <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-soft">{s.desc}</p>
-                  </div>
-                </div>
-              ))}
+                    <h3 className="mt-4 font-display text-[15px] font-semibold tracking-tight text-ink">{s.title}</h3>
+                    <p className="mt-1.5 max-w-[240px] text-[12.5px] leading-relaxed text-ink-soft">{s.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </Reveal>

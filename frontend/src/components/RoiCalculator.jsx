@@ -1,150 +1,121 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Check, Clock3, Copy, Info, Lock } from "lucide-react";
+import { CalendarDays, Check, Copy } from "lucide-react";
 import { SectionShell } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import { useTween } from "@/hooks/useTween";
-import { FluxvexMark } from "@/components/brand/FluxvexLogo";
-import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
+import { useWaitlist } from "@/components/WaitlistContext";
 
 const fmt = (n) => Math.round(n).toLocaleString("en-US");
 
-/* Labeled field + slim slider with a display-grade value readout */
-function FieldSlider({ id, label, value, suffix, min, max, step, set, testid }) {
+/* Field: bordered box with a display-grade value + gradient slider + ticks */
+function FieldSlider({ id, label, value, unit, min, max, step, set, ticks, testid }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div className="group/field rounded-xl border border-line bg-white p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent/35 hover:shadow-[0_18px_36px_-24px_rgba(61,67,232,0.45)]">
-      <div className="flex items-center justify-between gap-3">
-        <label className="text-xs font-medium text-ink-soft" htmlFor={id}>
-          {label}
-        </label>
-        <span className="font-display text-lg font-semibold tracking-tight text-ink" data-testid={`${testid}-value`}>
-          {value} <span className="text-xs font-normal text-ink-soft">{suffix}</span>
-        </span>
-      </div>
-      <input
-        id={id}
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => set(Number(e.target.value))}
-        className="range-light mt-3 w-full"
-        style={{ background: `linear-gradient(90deg, #3D43E8 ${pct}%, rgba(16,16,20,0.08) ${pct}%)` }}
-        data-testid={testid}
-      />
-    </div>
-  );
-}
-
-/* Floating tile cluster — the channels feeding the engine (instant SVG, no WebGL) */
-function CalculatorArt() {
-  const float = (delay) => ({
-    animate: { y: [0, -5, 0] },
-    transition: { duration: 3.2, repeat: Infinity, ease: "easeInOut", delay },
-  });
-  return (
-    <div className="pointer-events-none absolute right-7 top-9 hidden select-none items-center gap-2.5 sm:flex" aria-hidden="true">
-      <motion.span {...float(0)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white shadow-[0_14px_28px_-14px_rgba(16,16,20,0.35)]">
-        <GoogleAdsMark size={20} />
-      </motion.span>
-      <motion.span {...float(0.45)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white shadow-[0_14px_28px_-14px_rgba(16,16,20,0.35)]">
-        <MetaMark size={20} />
-      </motion.span>
-      <motion.span {...float(0.9)} className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-white shadow-[0_14px_28px_-14px_rgba(16,16,20,0.35)]">
-        <GA4Mark size={20} />
-      </motion.span>
-      <svg width="26" height="10" viewBox="0 0 26 10" className="text-accent/50" aria-hidden="true">
-        <line x1="0" y1="5" x2="26" y2="5" stroke="currentColor" strokeWidth="1.6" strokeDasharray="3 4" className="animate-dash-flow" />
-      </svg>
-      <motion.span {...float(1.3)} className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-[0_18px_36px_-14px_rgba(61,67,232,0.6)] ring-1 ring-accent/30">
-        <FluxvexMark size={24} />
-        <motion.span
-          className="absolute inset-0 rounded-xl border-2 border-accent/40"
-          animate={{ scale: [1, 1.28], opacity: [0.8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-        />
-      </motion.span>
-    </div>
-  );
-}
-
-/* Animated savings ring — the hero output of the whole calculator */
-function RingGauge({ pct, saved }) {
-  const R = 52;
-  const CIRC = 2 * Math.PI * R;
-  return (
-    <div className="relative h-[150px] w-[150px] shrink-0">
-      <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-        <defs>
-          <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#43D675" />
-            <stop offset="100%" stopColor="#0E8A3E" />
-          </linearGradient>
-        </defs>
-        <circle cx="60" cy="60" r={R} fill="none" stroke="rgba(16,16,20,0.07)" strokeWidth="10" />
-        <motion.circle
-          cx="60"
-          cy="60"
-          r={R}
-          fill="none"
-          stroke="url(#gaugeGrad)"
-          strokeWidth="10"
-          strokeLinecap="round"
-          strokeDasharray={CIRC}
-          initial={{ strokeDashoffset: CIRC }}
-          animate={{ strokeDashoffset: CIRC * (1 - pct / 100) }}
-          transition={{ type: "spring", stiffness: 55, damping: 18 }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center" data-testid="roi-gauge">
-        <motion.span
-          key={pct}
-          initial={{ opacity: 0.4 }}
-          animate={{ opacity: 1 }}
-          className="rounded-full bg-mint/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#0E8A3E]"
-        >
-          {pct}% less effort
-        </motion.span>
-        <p className="mt-1.5 font-display text-[26px] font-bold leading-none tracking-tight text-ink" data-testid="roi-saved-output">
-          {fmt(saved)}
-          <span className="text-sm font-medium text-ink-soft"> h</span>
+    <div className="mt-6 first:mt-0">
+      <p className="text-[15px] font-semibold text-ink">{label}</p>
+      <div className="mt-2.5 rounded-2xl border border-black/[0.12] px-5 pb-5 pt-4 transition-[border-color,box-shadow] duration-300 focus-within:border-[#0F2E33]/50 hover:border-[#0F2E33]/40 hover:shadow-[0_20px_40px_-26px_rgba(15,46,51,0.45)]">
+        <p className="font-display text-[28px] font-semibold leading-none tracking-tight text-ink" data-testid={`${testid}-value`}>
+          {value}
+          <span className="ml-1.5 text-lg font-medium text-black/35">{unit}</span>
         </p>
-        <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.14em] text-ink-soft">returned / year</p>
+        <input
+          id={id}
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(e) => set(Number(e.target.value))}
+          className="ref-slider mt-4 w-full"
+          style={{
+            background: `linear-gradient(90deg, #BFE0D6 0%, #F2997E ${pct}%, #E9E7E1 ${pct}%)`,
+          }}
+          data-testid={testid}
+        />
+      </div>
+      <div className="mt-1.5 flex justify-between text-[11px] font-medium text-black/35">
+        {ticks.map((t) => (
+          <span key={t}>{t}</span>
+        ))}
       </div>
     </div>
   );
 }
 
-function CardTitle({ icon: Icon, children }) {
+/* The dark-band illustration — coral bars, one mint hero bar, tooltip + cursor */
+function BandBars() {
+  const bars = [
+    { h: 34, mint: false },
+    { h: 52, mint: false },
+    { h: 96, mint: true },
+    { h: 42, mint: false },
+    { h: 30, mint: false },
+    { h: 46, mint: false },
+  ];
   return (
-    <div className="flex items-center gap-2.5">
-      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-tint">
-        <Icon className="h-4 w-4 text-accent" strokeWidth={2} />
-      </span>
-      <h3 className="text-sm font-semibold text-ink">{children}</h3>
+    <div className="relative w-fit">
+      {/* tooltip card */}
+      <motion.div
+        className="absolute -top-12 left-1/2 z-10 -translate-x-1/2"
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+        aria-hidden="true"
+      >
+        <div className="relative rounded-xl bg-white px-3.5 py-2 shadow-[0_18px_36px_-14px_rgba(0,0,0,0.5)]">
+          <span className="absolute left-2 top-1.5 h-2 w-4 rounded-sm bg-[#F2997E]" aria-hidden="true" />
+          <p className="text-right font-display text-xl font-bold leading-none text-ink">
+            40<span className="text-[11px]">%</span>
+          </p>
+          <span className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-white" aria-hidden="true" />
+        </div>
+      </motion.div>
+      {/* bars */}
+      <div className="flex h-28 items-end gap-2.5" aria-hidden="true">
+        {bars.map((b, i) => (
+          <motion.span
+            key={i}
+            className={`w-7 rounded-t-lg ${b.mint ? "bg-gradient-to-t from-[#2FA36B] to-[#43D675] shadow-[0_10px_26px_-8px_rgba(67,214,117,0.65)]" : "bg-gradient-to-t from-[#E98A70] to-[#F5AE97]"}`}
+            style={{ height: `${b.h}%`, transformOrigin: "bottom" }}
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 + i * 0.09, ease: [0.25, 1, 0.5, 1] }}
+          />
+        ))}
+        {/* cursor */}
+        <motion.svg
+          viewBox="0 0 24 24"
+          className="h-7 w-7 drop-shadow-[0_6px_10px_rgba(0,0,0,0.45)]"
+          animate={{ x: [0, 6, -4, 0], y: [0, -8, 4, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          aria-hidden="true"
+        >
+          <path d="M5 3 L19 12 L12.5 13.5 L9.5 20 Z" fill="#FFFFFF" stroke="#0F2E33" strokeWidth="1.4" strokeLinejoin="round" />
+        </motion.svg>
+      </div>
+      <p className="mt-3 text-[12.5px] font-medium text-white/70">40% less effort — the assumption most teams make</p>
     </div>
   );
 }
 
 export default function RoiCalculator() {
+  const { openWaitlist } = useWaitlist();
   const [clients, setClients] = useState(8);
   const [hours, setHours] = useState(3);
   const [perMonth, setPerMonth] = useState(2);
   const [reduction, setReduction] = useState(40);
+  const [mode, setMode] = useState("monthly");
   const [copied, setCopied] = useState(false);
 
   const monthly = clients * hours * perMonth;
   const annual = monthly * 12;
   const saved = Math.round((annual * reduction) / 100);
-  const staysManual = annual - saved;
   const workdaysBack = Math.round(saved / 8);
 
   const monthlyView = useTween(monthly);
   const annualView = useTween(annual);
   const savedView = useTween(saved);
-  const staysView = useTween(staysManual);
   const workdaysBackView = useTween(workdaysBack);
 
   const copyResult = () => {
@@ -176,239 +147,245 @@ export default function RoiCalculator() {
     <SectionShell id="calculator">
       <Reveal>
         <div
-          className="overflow-hidden rounded-2xl border border-line bg-white shadow-[0_60px_120px_-60px_rgba(20,21,122,0.45)]"
+          className="overflow-hidden rounded-[28px] shadow-[0_70px_140px_-70px_rgba(15,46,51,0.65)]"
           data-testid="roi-calculator"
         >
-          {/* toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line px-5 py-3 sm:px-8">
-            <div className="flex min-w-0 items-center gap-2.5">
-              <span className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white">
-                <span className="h-1.5 w-1.5 rounded-full bg-white/90 animate-pulse-dot" aria-hidden="true" />
-                Live tool
-              </span>
-              <span className="truncate text-sm font-medium text-ink">Reporting cost calculator</span>
-              <span className="rounded-full bg-mint/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#0E8A3E]">Free</span>
+          {/* ── dark band ─────────────────────────────────────────────── */}
+          <div className="relative bg-[#0F2E33] px-7 pb-20 pt-11 sm:px-10 lg:px-14" data-testid="roi-dark-panel">
+            <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(67,214,117,0.14),transparent_70%)] blur-3xl" aria-hidden="true" />
+            <div className="relative grid items-center gap-12 lg:grid-cols-2">
+              <div>
+                <h2 className="font-display text-[34px] font-semibold leading-[1.08] tracking-tight text-white sm:text-[42px] lg:text-[46px]">
+                  See your reporting load.
+                  <br />
+                  and shrink it
+                </h2>
+                {/* skeleton lines + cursor */}
+                <div className="relative mt-9 max-w-sm space-y-3.5" aria-hidden="true">
+                  <div className="relative h-4 rounded-full bg-white/[0.08]">
+                    <motion.svg
+                      viewBox="0 0 24 24"
+                      className="absolute -top-4 right-10 h-7 w-7 drop-shadow-[0_6px_10px_rgba(0,0,0,0.5)]"
+                      animate={{ x: [0, 10, -6, 0], y: [0, -6, 4, 0] }}
+                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <path d="M5 3 L19 12 L12.5 13.5 L9.5 20 Z" fill="#FFFFFF" stroke="#0F2E33" strokeWidth="1.4" strokeLinejoin="round" />
+                    </motion.svg>
+                  </div>
+                  <div className="h-4 w-2/3 rounded-full bg-white/[0.08]" />
+                </div>
+              </div>
+              <div className="flex lg:justify-end">
+                <BandBars />
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={copyResult}
-              className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-1.5 text-xs font-semibold text-ink transition-colors duration-150 hover:bg-surface"
-              data-testid="roi-copy-result"
-            >
-              {copied ? <Check className="h-3.5 w-3.5 text-[#0E8A3E]" strokeWidth={2.4} /> : <Copy className="h-3.5 w-3.5 text-ink-soft" strokeWidth={2} />}
-              {copied ? "Copied" : "Copy result"}
-            </button>
           </div>
 
-          <div className="grid lg:grid-cols-[1.04fr_1fr]">
-            {/* inputs */}
-            <div className="relative p-7 sm:p-10">
-              <CalculatorArt />
+          {/* ── white calculator (overlaps the dark band) ─────────────── */}
+          <div className="relative -mt-10 rounded-t-[28px] bg-white px-7 pb-9 pt-11 sm:px-10 lg:px-14">
+            {/* avatars trio straddling the seam */}
+            <div className="absolute -top-8 right-8 flex -space-x-3 sm:right-12 lg:right-14" aria-hidden="true">
+              {[
+                { init: "NM", bg: "#F2997E" },
+                { init: "KA", bg: "#43D675" },
+                { init: "+9", bg: "#7B5CFF" },
+              ].map((a) => (
+                <span
+                  key={a.init}
+                  className="flex h-12 w-12 items-center justify-center rounded-full font-display text-[13px] font-bold text-white ring-4 ring-white"
+                  style={{ backgroundColor: a.bg }}
+                >
+                  {a.init}
+                </span>
+              ))}
+            </div>
 
-              <h2 className="max-w-xs font-display text-[34px] font-semibold leading-[1.1] tracking-tighter2 text-ink sm:text-4xl">
-                Set your reporting
-                <br />
-                cost with <span className="text-accent-soft">confidence.</span>
-              </h2>
-              <p className="mt-3 text-sm text-ink-soft">Understand your team’s effort in today’s market.</p>
+            <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr]">
+              {/* left — sliders */}
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-display text-[26px] font-semibold tracking-tight text-[#0E8A3E]">
+                    Reporting Calculator
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={copyResult}
+                    className="flex items-center gap-1.5 rounded-lg border border-line bg-white px-3 py-1.5 text-xs font-semibold text-ink transition-colors duration-150 hover:bg-surface"
+                    data-testid="roi-copy-result"
+                  >
+                    {copied ? <Check className="h-3.5 w-3.5 text-[#0E8A3E]" strokeWidth={2.4} /> : <Copy className="h-3.5 w-3.5 text-ink-soft" strokeWidth={2} />}
+                    {copied ? "Copied" : "Copy result"}
+                  </button>
+                </div>
 
-              <h3 className="mt-10 flex items-center gap-2.5 text-base font-semibold text-ink">
-                <span className="h-4 w-1 rounded-full bg-accent" aria-hidden="true" />
-                Your reporting workload
-              </h3>
-              <div className="mt-4 grid gap-x-5 gap-y-4 sm:grid-cols-2">
                 <FieldSlider
                   id="roi-clients-input"
-                  label="Clients reported on"
+                  label="Choose your reporting workload"
                   value={clients}
-                  suffix={clients === 1 ? "client" : "clients"}
+                  unit={clients === 1 ? "client" : "clients"}
                   min={1}
                   max={50}
                   step={1}
                   set={setClients}
+                  ticks={["1", "50"]}
                   testid="roi-clients-input"
                 />
                 <FieldSlider
+                  id="roi-hours-input"
+                  label="How much time each report takes"
+                  value={hours}
+                  unit={hours === 1 ? "hour" : "hours"}
+                  min={0.5}
+                  max={10}
+                  step={0.5}
+                  set={setHours}
+                  ticks={["0.5", "5", "10"]}
+                  testid="roi-hours-input"
+                />
+                <FieldSlider
                   id="roi-reports-input"
-                  label="Reports per client / month"
+                  label="How many reports per client"
                   value={perMonth}
-                  suffix={perMonth === 1 ? "report" : "reports"}
+                  unit={perMonth === 1 ? "report" : "reports"}
                   min={1}
                   max={4}
                   step={1}
                   set={setPerMonth}
+                  ticks={["1", "2", "3", "4"]}
                   testid="roi-reports-input"
                 />
-                <div className="sm:col-span-2">
-                  <FieldSlider
-                    id="roi-hours-input"
-                    label="Hours to prepare each client report"
-                    value={hours}
-                    suffix={hours === 1 ? "hour" : "hours"}
-                    min={0.5}
-                    max={10}
-                    step={0.5}
-                    set={setHours}
-                    testid="roi-hours-input"
-                  />
-                </div>
-              </div>
-
-              <h3 className="mt-8 flex items-center gap-2.5 text-base font-semibold text-ink">
-                <span className="h-4 w-1 rounded-full bg-accent" aria-hidden="true" />
-                Your assumption
-              </h3>
-              <div className="mt-4">
                 <FieldSlider
                   id="roi-reduction-input"
-                  label="If reporting effort dropped by"
+                  label="How much effort you expect to drop"
                   value={reduction}
-                  suffix="%"
+                  unit="%"
                   min={10}
                   max={60}
                   step={5}
                   set={setReduction}
+                  ticks={["10%", "30%", "60%"]}
                   testid="roi-reduction-input"
                 />
               </div>
 
-              <div className="mt-8 rounded-xl border border-line bg-surface p-4">
-                <p className="flex gap-2 text-xs leading-relaxed text-ink-soft">
-                  <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={2} />
-                  Estimates scale with your inputs—actual savings depend on your workflow and the features you use. Choosing
-                  your own reduction keeps this honest; nothing here is a promised result.
+              {/* right — total */}
+              <div className="flex flex-col lg:items-end lg:text-right">
+                <p className="text-[15px] font-semibold text-ink">Total hours</p>
+                {/* period toggle */}
+                <div className="mt-3 flex self-start rounded-full border-2 border-black/[0.12] p-1 lg:self-end" data-testid="roi-period-toggle">
+                  {[
+                    { key: "monthly", label: "Monthly" },
+                    { key: "yearly", label: "Yearly" },
+                  ].map((m) => (
+                    <button
+                      key={m.key}
+                      type="button"
+                      onClick={() => setMode(m.key)}
+                      className={`rounded-full px-4 py-1 text-[12px] font-bold transition-colors duration-150 ${
+                        mode === m.key ? "bg-[#BFE0D6] text-[#0F2E33]" : "text-ink-soft hover:text-ink"
+                      }`}
+                      data-testid={`roi-toggle-${m.key}`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* big number */}
+                <p className="mt-8 font-display text-[84px] font-bold leading-none tracking-tight text-ink sm:text-[104px]">
+                  {mode === "monthly" ? (
+                    <span data-testid="roi-monthly-output">
+                      {fmt(monthlyView)}
+                      <span className="text-3xl font-semibold text-black/35"> h</span>
+                    </span>
+                  ) : (
+                    <span data-testid="roi-annual-output">
+                      {fmt(annualView)}
+                      <span className="text-3xl font-semibold text-black/35"> h</span>
+                    </span>
+                  )}
                 </p>
+
+                {/* handwritten annotation + drawn arrow */}
+                <div className="relative mt-2 self-start lg:self-end">
+                  <svg viewBox="0 0 90 46" className="absolute -left-24 -top-6 hidden h-12 w-24 sm:block" aria-hidden="true">
+                    <path
+                      d="M84 8 C 62 34, 34 40, 8 30"
+                      fill="none"
+                      stroke="#0F2E33"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                    />
+                    <path d="M14 24 L7 30 L16 33" fill="none" stroke="#0F2E33" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <p
+                    className="-rotate-6 text-[17px] leading-tight text-[#0F2E33]"
+                    style={{ fontFamily: "'Caveat', cursive" }}
+                  >
+                    hours your team spends
+                    <br />
+                    assembling reports
+                  </p>
+                </div>
+
+                {/* CTA */}
+                <div className="mt-10 flex items-center gap-4 self-start lg:flex-col lg:items-end lg:gap-5">
+                  <button
+                    type="button"
+                    onClick={() => openWaitlist("roi-calculator")}
+                    className="inline-flex h-12 items-center rounded-full bg-gradient-to-r from-[#F2997E] to-[#F6C39B] px-7 font-display text-[15px] font-semibold text-[#0F2E33] shadow-[0_18px_36px_-14px_rgba(242,153,126,0.7)] transition-transform duration-200 hover:scale-[1.03]"
+                    data-testid="roi-cta-button"
+                  >
+                    Join the waitlist
+                  </button>
+                  <p className="text-[11px] leading-snug text-black/40">
+                    Runs entirely in your browser.
+                    <br className="hidden lg:block" /> Nothing is stored or sent.
+                  </p>
+                </div>
               </div>
-              <p className="mt-3.5 flex items-center gap-2 text-xs text-ink-soft/75">
-                <Lock className="h-3.5 w-3.5 shrink-0" />
-                Runs entirely in your browser and stores nothing.
-              </p>
             </div>
 
-            {/* outputs */}
-            <div className="space-y-4 border-t border-line bg-surface p-5 sm:p-7 lg:border-l lg:border-t-0">
-              {/* dark hero card */}
-              <div className="relative overflow-hidden rounded-2xl bg-[#13131B] p-6 sm:p-7" data-testid="roi-dark-panel">
-                <div
-                  className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(93,99,255,0.30),transparent_70%)] blur-2xl"
-                  style={{ animation: "hero-drift 9s ease-in-out infinite alternate" }}
-                  aria-hidden="true"
-                />
-                <motion.svg
-                  key={`${monthly}-${reduction}`}
-                  viewBox="0 0 200 80"
-                  className="pointer-events-none absolute -bottom-1 right-2 w-44 text-white/[0.09]"
-                  aria-hidden="true"
-                >
-                  <motion.path
-                    d="M0 70 L30 58 L60 62 L90 40 L120 46 L150 22 L180 28 L200 8"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1.4, ease: "easeOut" }}
-                  />
-                </motion.svg>
-                <div className="relative">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10">
-                      <Clock3 className="h-4 w-4 text-[#A3A8FF]" strokeWidth={2.1} />
-                    </span>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/60">Monthly reporting load</p>
-                  </div>
-                  <p className="mt-4 flex items-baseline gap-2">
-                    <span className="font-display text-[52px] font-semibold leading-none tracking-tight text-[#A3A8FF]" data-testid="roi-monthly-output">
-                      {fmt(monthlyView)}
-                    </span>
-                    <span className="font-display text-lg text-white/50">/ month</span>
-                  </p>
-                  <p className="mt-3 text-sm leading-relaxed text-white/55" data-testid="roi-annual-output">
-                    Your team’s manual reporting load —<br />
-                    <span className="font-semibold text-white/85">{fmt(annualView)} hours</span> every year
-                  </p>
-                </div>
-              </div>
-
-              {/* savings story — ring + manual vs Fluxvex bars */}
-              <div className="rounded-2xl border border-line bg-white p-5 sm:p-6" data-testid="roi-savings-panel">
-                <CardTitle icon={CalendarDays}>Your savings story</CardTitle>
-                <div className="mt-5 flex flex-col items-center gap-6 sm:flex-row sm:items-center">
-                  <RingGauge pct={reduction} saved={savedView} />
-                  <div className="w-full flex-1 space-y-4">
-                    <div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-ink-soft">Today — assembled by hand</span>
-                        <span className="font-display font-semibold text-ink" data-testid="roi-manual-bar-value">{fmt(annualView)} h/yr</span>
-                      </div>
-                      <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-black/[0.06]">
-                        <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-[#F26D6D] to-[#F5A048]"
-                          initial={{ width: 0 }}
-                          animate={{ width: "100%" }}
-                          transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-ink-soft">With Fluxvex</span>
-                        <span className="font-display font-semibold text-[#0E8A3E]" data-testid="roi-fluxvex-bar-value">{fmt(staysView)} h/yr</span>
-                      </div>
-                      <div className="mt-1.5 h-3 overflow-hidden rounded-full bg-black/[0.06]">
-                        <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-[#43D675] to-[#0E8A3E]"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${100 - reduction}%` }}
-                          transition={{ type: "spring", stiffness: 80, damping: 20 }}
-                        />
-                      </div>
-                      <p className="mt-1.5 text-[11px] leading-snug text-ink-soft/80">
-                        The hours that remain go to judgment and strategy—not assembly.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* workdays equivalence strip */}
-              <div className="flex items-center justify-between gap-4 rounded-2xl border border-accent-border bg-accent-tint/50 px-5 py-4" data-testid="roi-workdays-strip">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-accent/20">
-                    <CalendarDays className="h-4 w-4 text-accent" strokeWidth={2} />
+            {/* savings strip — the outputs, kept slim under the reference card */}
+            <div className="mt-10 rounded-2xl bg-[#F2F7F5] p-5 sm:p-6">
+              <div className="grid items-center gap-5 sm:grid-cols-[auto_auto_1fr]">
+                <div className="flex items-center gap-3" data-testid="roi-savings-panel">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-black/[0.06]">
+                    <CalendarDays className="h-4 w-4 text-[#0E8A3E]" strokeWidth={2} />
                   </span>
-                  <p className="text-[13px] font-medium leading-snug text-ink">
-                    About <span className="font-display font-bold text-accent" data-testid="roi-workdays-output">{fmt(workdaysBackView)} full workdays</span> back in your team’s year.
+                  <p className="text-[13.5px] font-medium leading-snug text-ink">
+                    <span className="font-display font-bold text-[#0E8A3E]" data-testid="roi-saved-output">
+                      {fmt(savedView)} h
+                    </span>{" "}
+                    returned / year
                   </p>
                 </div>
-                <span className="hidden rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-ink-soft ring-1 ring-black/[0.06] sm:block">
-                  8 h / day
-                </span>
-              </div>
-
-              {/* comparison bar */}
-              <div className="rounded-2xl border border-line bg-white p-5 sm:p-6">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-sm font-semibold text-ink">How this compares</h3>
-                  <span className="text-xs text-ink-soft">Reporting effort</span>
-                </div>
-                <div className="relative mt-6" data-testid="roi-compare-bar">
-                  <div className="h-2.5 w-full rounded-full bg-gradient-to-r from-[#F26D6D] via-[#F5D748] to-[#43D675]" />
-                  <div
-                    className="absolute -top-1 z-10 -translate-x-1/2 transition-[left] duration-300"
-                    style={{ left: `${100 - reduction}%` }}
-                    data-testid="roi-you-marker"
-                  >
-                    <span className="flex h-5 items-center rounded-full bg-ink px-2 text-[9px] font-bold tracking-wide text-white shadow-md">
-                      YOU
-                    </span>
-                    <span className="mx-auto block h-1.5 w-0.5 bg-ink" />
+                <p className="text-[13.5px] font-medium leading-snug text-ink">
+                  ≈{" "}
+                  <span className="font-display font-bold text-[#0E8A3E]" data-testid="roi-workdays-output">
+                    {fmt(workdaysBackView)} workdays
+                  </span>{" "}
+                  back in your team's year
+                </p>
+                {/* comparison bar with YOU marker */}
+                <div>
+                  <div className="relative" data-testid="roi-compare-bar">
+                    <div className="h-2.5 w-full rounded-full bg-gradient-to-r from-[#F26D6D] via-[#F5D748] to-[#43D675]" />
+                    <div
+                      className="absolute -top-1 z-10 -translate-x-1/2 transition-[left] duration-300"
+                      style={{ left: `${100 - reduction}%` }}
+                      data-testid="roi-you-marker"
+                    >
+                      <span className="flex h-5 items-center rounded-full bg-ink px-2 text-[9px] font-bold tracking-wide text-white shadow-md">
+                        YOU
+                      </span>
+                      <span className="mx-auto block h-1.5 w-0.5 bg-ink" />
+                    </div>
                   </div>
-                </div>
-                <div className="mt-2.5 flex items-center justify-between text-[11px] font-medium text-ink-soft">
-                  <span>100% manual</span>
-                  <span>fully automated</span>
+                  <div className="mt-2 flex justify-between text-[10.5px] font-medium text-black/40">
+                    <span>100% manual</span>
+                    <span>fully automated</span>
+                  </div>
                 </div>
               </div>
             </div>

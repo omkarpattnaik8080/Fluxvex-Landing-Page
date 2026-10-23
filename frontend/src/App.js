@@ -56,11 +56,12 @@ function ScrollManager() {
 
   /* Pre-warm the 3D scene chunk immediately — starting the download with the
      first frame (instead of on idle) means illustrations are already mounted,
-     or fade in within a beat, long before the user reaches any 3D section. */
+     or fade in within a beat, long before the user reaches any 3D section.
+     webpackPrefetch additionally hints the browser to fetch during idle time. */
   useEffect(() => {
     const warm = () => {
-      import("@/components/three/Scene3D").catch(() => {});
-      import("@/components/three/SceneCanvas").catch(() => {});
+      import(/* webpackPrefetch: true */ "@/components/three/Scene3D").catch(() => {});
+      import(/* webpackPrefetch: true */ "@/components/three/SceneCanvas").catch(() => {});
     };
     const raf = requestAnimationFrame(() => requestAnimationFrame(warm));
     return () => cancelAnimationFrame(raf);
