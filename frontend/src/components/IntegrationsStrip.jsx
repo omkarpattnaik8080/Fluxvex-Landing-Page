@@ -114,9 +114,7 @@ function HumanCard() {
           transition={{ duration: 0.5, delay: 0.65 }}
           className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2 rounded-full bg-[#B9F27C]/95 px-4 py-2 shadow-lg"
         >
-          <span className="relative flex h-5 w-5 items-center justify-center rounded-full bg-ink">
-            <FluxvexMark size={12} />
-          </span>
+          <FluxvexMark size={16} className="drop-shadow-[0_1px_2px_rgba(12,46,27,0.35)]" />
           <span className="text-[11.5px] font-bold text-[#0C2E1B]">New report delivered</span>
         </motion.span>
       </div>
