@@ -48,6 +48,7 @@ const ALL_PAGES = [
   { title: "Features", desc: "What the workflow automates", href: "/#features" },
   { title: "Integrations", desc: "Initial channel focus", href: "/#integrations" },
   { title: "Security", desc: "Data handling and safeguards", href: "/security" },
+  { title: "Our Team", desc: "The people behind Fluxvex", href: "/team" },
   { title: "Pricing", desc: "Two plans, coming soon", href: "/pricing" },
   { title: "Blog", desc: "Client reporting guides & AI essays", href: "/blog" },
   { title: "Careers", desc: "Internships with guaranteed PPOs", href: "/careers" },

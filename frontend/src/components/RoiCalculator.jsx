@@ -71,11 +71,11 @@ function BandBars() {
         </div>
       </motion.div>
       {/* bars */}
-      <div className="flex h-28 items-end gap-2.5" aria-hidden="true">
+      <div className="flex h-32 items-end gap-3" aria-hidden="true">
         {bars.map((b, i) => (
           <motion.span
             key={i}
-            className={`w-7 rounded-t-lg ${b.mint ? "bg-gradient-to-t from-[#2FA36B] to-[#43D675] shadow-[0_10px_26px_-8px_rgba(67,214,117,0.65)]" : "bg-gradient-to-t from-[#E98A70] to-[#F5AE97]"}`}
+            className={`w-9 rounded-t-lg ${b.mint ? "bg-gradient-to-t from-[#2FA36B] to-[#43D675] shadow-[0_10px_26px_-8px_rgba(67,214,117,0.65)]" : "bg-gradient-to-t from-[#E98A70] to-[#F5AE97]"}`}
             style={{ height: `${b.h}%`, transformOrigin: "bottom" }}
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
@@ -155,7 +155,7 @@ export default function RoiCalculator() {
             <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(67,214,117,0.14),transparent_70%)] blur-3xl" aria-hidden="true" />
             <div className="relative grid items-center gap-12 lg:grid-cols-2">
               <div>
-                <h2 className="font-display text-[34px] font-semibold leading-[1.08] tracking-tight text-white sm:text-[42px] lg:text-[46px]">
+                <h2 className="font-display text-[34px] font-bold leading-[1.06] tracking-tight text-white sm:text-[42px] lg:text-[48px]">
                   See your reporting load.
                   <br />
                   and shrink it

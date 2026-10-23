@@ -10,6 +10,7 @@ import Home from "@/pages/Home";
 const Pricing = lazy(() => import("@/pages/Pricing"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const Security = lazy(() => import("@/pages/Security"));
+const Team = lazy(() => import("@/pages/Team"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Terms = lazy(() => import("@/pages/Terms"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
@@ -114,6 +115,7 @@ function App() {
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/security" element={<Security />} />
+              <Route path="/team" element={<Team />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/blog" element={<Blog />} />
