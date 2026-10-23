@@ -1,0 +1,22 @@
+{
+  "summary": "Verified camera-stomp fix across all Home 3D illustrations at 1440x900 and 390x844. All drei <View> scenes (platform-cloud-3d, workflow-iso-stage-3d, showcase-layers-3d, outcome-scene-01..04, vision-scene-3d, security-stage, affiliate-flow-3d) render contained within their own section bounding box with no bleed top/bottom/left/right. The reported 'Branded delivery' oversized/misplaced bug is fixed: platform-cloud-3d bbox 607x652 inside a 1440x1070 section on desktop, 348x400 inside 390x1555 on mobile. Hero + lazy-mount + frameloop pause/resume intact (scrolled top->bottom->top->back to platform scene; still visible). Vision hub animation alive (captures 1.8s apart). /, /team, /partners show no horizontal overflow at desktop or mobile. Zero substantive console errors across the full scroll on both viewports.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Scene3D.jsx SceneHost scale-about-target approach is sound; one shared OrthographicCamera plus per-section group scale/position is the correct fix for drei <View> sharing a root camera.",
+    "Consider documenting CAM_TARGETS semantics (what the [x,y,z] represents in local scene space) above the export for maintainability."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Camera-stomp bug (iteration 33) verified fixed. All 3D scenes correctly contained in sections at 1440x900 and 390x844. No console errors. If future scene additions use <View>, make sure they rely on CAM_TARGETS + the shared BASE_ZOOM=45 OrthographicCamera from SceneCanvas.jsx and avoid any makeDefault camera inside scenes.jsx.",
+  "rca of the issue": "Each scene mounted <OrthographicCamera makeDefault> under drei <View>; because <View> shares the Canvas root camera, the last-mounted scene's camera (with its own fitZoom) overwrote framing for all other views, causing oversized/misplaced renders. Fix: remove per-scene makeDefault cameras (Cam returns null), keep ONE OrthographicCamera at SceneCanvas root, and compose each scene's framing via group scale=(zoom/45) + position=-target*scale using exported CAM_TARGETS."
+}

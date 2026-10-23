@@ -58,7 +58,10 @@ function useCanvasTexture(w, h, draw) {
    Per-scene cameras with makeDefault would fight over the shared default and
    break other illustrations — instead each scene is fit-scaled by SceneHost.
    Scenes that compose off-center declare their look-at target here so the fit
-   transform can map it back to the viewport center. */
+   transform can map it back to the viewport center.
+   CAM_TARGETS semantics: the [x, y, z] point (in the scene's local world space)
+   that the scene was originally framed around — Scene3D scales the scene about
+   this point so it lands at the viewport center. Scene key must match SCENES. */
 export const CAM_TARGETS = {
   platform: [0.5, 0.55, 0],
   layers: [0, 0.82, 0],
