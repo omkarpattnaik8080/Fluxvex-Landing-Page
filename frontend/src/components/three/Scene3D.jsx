@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { View, OrthographicCamera } from "@react-three/drei";
 import { useReducedMotion } from "framer-motion";
 import { SCENES, WORLD } from "./scenes";
+import { reportViewVisible } from "./viewVisibility";
 
 /* Single shared WebGL-capability probe — one throwaway context for the whole
    app, released via WEBGL_lose_context, so section checks never accumulate
@@ -76,6 +77,7 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
   const [glOk, setGlOk] = useState(false);
   const [size, setSize] = useState(null);
   const [inView, setInView] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const reduce = useReducedMotion();
   const input = useRef({ px: 0, py: 0, hover: false, yaw: 0, pulseAt: 0, down: false, lastX: 0 }).current;
   const readySentRef = useRef(false);
@@ -106,6 +108,19 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
       io.disconnect();
     };
   }, [glOk]);
+
+  /* Report visibility to the shared canvas so it can pause its render loop
+     when no 3D section is near the viewport. */
+  useEffect(() => {
+    reportViewVisible(inView ? 1 : -1);
+    return () => reportViewVisible(inView ? -1 : 0);
+  }, [inView]);
+
+  /* Lazy scene build — the scene graph is constructed only once its section
+     approaches the viewport (20% margin), never all-at-once at page load. */
+  useEffect(() => {
+    if (inView) setMounted(true);
+  }, [inView]);
 
   if (!glOk) {
     return (
@@ -171,7 +186,7 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
         data-testid={testid}
         {...handlers}
       >
-        {size && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} onReady={handleReady} />}
+        {size && mounted && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} onReady={handleReady} />}
       </View>
     </SceneBoundary>
   );

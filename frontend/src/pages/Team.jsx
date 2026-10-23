@@ -11,10 +11,10 @@ const TEAM = [
   { name: "Omkar Pattnaik", handle: "@omkarpattnaik", ago: "2m ago", status: "Handling everything", init: "OP", grad: "from-[#3D43E8] to-[#7B5CFF]", photo: "/team/omkar.jpg", title: "Instigator · roadmap", linkedin: "https://www.linkedin.com/in/omkar-pattnaik/" },
   { name: "Sneha Pradhan", handle: "@sneha.pradhan", ago: "12m ago", status: "Also handling everything", init: "SP", grad: "from-[#7B5CFF] to-[#C084FC]", photo: "/team/sneha.jpg", title: "Product & priorities", linkedin: "https://www.linkedin.com/in/sneha-pradhan-4a8832221/" },
   { name: "Sakti Swarupa Mallick", handle: "@sakti.swarupa", ago: "1h ago", status: "Making the tech behave", init: "SM", grad: "from-[#0E8A3E] to-[#43D675]", photo: null, title: "Architecture", linkedin: "https://www.linkedin.com/in/sakti-swarupa-mallick/" },
-  { name: "Srestha", handle: "@srestha", ago: "3h ago", status: "Shipping the details", init: "SR", grad: "from-[#F2997E] to-[#F5C59F]", photo: "/team/srestha.jpg", title: "Distribution + strategy", linkedin: "https://www.linkedin.com/in/srestha735/" },
-  { name: "Saswat Mohanty", handle: "@saswat.mohanty", ago: "5h ago", status: "Turning coffee into commits", init: "SM2", grad: "from-[#0F2E33] to-[#3D43E8]", photo: "/team/saswat.jpg", title: "Drawing — UI & UX", linkedin: "https://www.linkedin.com/in/saswat-mohanty-0a570a3a2/" },
-  { name: "Nikhil Kumar Rana", handle: "@nikhil.rana", ago: "1d ago", status: "Teaching the AI manners", init: "NR", grad: "from-[#F5C518] to-[#F2997E]", photo: "/team/nikhil.jpg", title: "Architecture · AI", linkedin: "https://www.linkedin.com/in/nikhal-kumar-rana-88871828b/" },
-  { name: "Ankit Swain", handle: "@ankit.swain", ago: "2d ago", status: "Fixing things before they break", init: "AS", grad: "from-[#3B82F6] to-[#8B5CF6]", photo: "/team/ankit.jpg", title: "Distribution + strategy", linkedin: null },
+  { name: "Srestha", handle: "@srestha", ago: "3h ago", status: "Shipping the details", init: "SR", grad: "from-[#F2997E] to-[#F5C59F]", photo: "/team/srestha.jpg", pos: "center 55%", title: "Distribution + strategy", linkedin: "https://www.linkedin.com/in/srestha735/" },
+  { name: "Saswat Mohanty", handle: "@saswat.mohanty", ago: "5h ago", status: "Turning coffee into commits", init: "SM2", grad: "from-[#0F2E33] to-[#3D43E8]", photo: "/team/saswat.jpg", pos: "center 28%", title: "Drawing — UI & UX", linkedin: "https://www.linkedin.com/in/saswat-mohanty-0a570a3a2/" },
+  { name: "Nikhil Kumar Rana", handle: "@nikhil.rana", ago: "1d ago", status: "Teaching the AI manners", init: "NR", grad: "from-[#F5C518] to-[#F2997E]", photo: "/team/nikhil.jpg", pos: "center 32%", title: "Architecture · AI", linkedin: "https://www.linkedin.com/in/nikhal-kumar-rana-88871828b/" },
+  { name: "Ankit Swain", handle: "@ankit.swain", ago: "2d ago", status: "Fixing things before they break", init: "AS", grad: "from-[#3B82F6] to-[#8B5CF6]", photo: "/team/ankit.jpg", pos: "center 24%", title: "Distribution + strategy", linkedin: null },
   { name: "Jigisha Bhatnagar", handle: "@jigisha.b", ago: "3d ago", status: "Building the quiet parts", init: "JB", grad: "from-[#F472B6] to-[#FB923C]", photo: null, title: "Distribution + strategy", linkedin: null },
 ];
 
@@ -49,7 +49,7 @@ function MemberCard({ m, i }) {
         </p>
         <div className="mt-4 h-[250px] overflow-hidden rounded-t-xl">
           {m.photo ? (
-            <img src={m.photo} alt={m.name} className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            <img src={m.photo} alt={m.name} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" style={{ objectPosition: m.pos || "center top" }} loading="lazy" decoding="async" />
           ) : (
             <span className={`flex h-full w-full items-center justify-center bg-gradient-to-b ${m.grad}`}>
               <span className="font-display text-5xl font-bold text-white/90 transition-transform duration-700 group-hover:scale-110">{m.init}</span>
@@ -61,7 +61,7 @@ function MemberCard({ m, i }) {
       <div className="flex items-center justify-between gap-3 px-2 py-3.5">
         <div className="flex min-w-0 items-center gap-2.5">
           <span className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br ${m.grad} font-display text-[11px] font-bold text-white`}>
-            {m.photo ? <img src={m.photo} alt="" className="h-full w-full object-cover object-top" loading="lazy" /> : m.init}
+            {m.photo ? <img src={m.photo} alt="" className="h-full w-full object-cover" style={{ objectPosition: m.pos || "center top" }} loading="lazy" decoding="async" /> : m.init}
           </span>
           <div className="min-w-0">
             <p className="truncate text-[13px] font-bold leading-tight text-ink">{m.handle}</p>
