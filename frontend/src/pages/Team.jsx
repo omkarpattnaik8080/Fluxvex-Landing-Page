@@ -1,41 +1,75 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Facebook, Linkedin, Twitter } from "lucide-react";
+import { motion } from "framer-motion";
+import { Sparkles, Plus } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import Seo from "@/components/Seo";
 
 /* Team members — drop `photo` URLs in when the portraits are ready; until then
-   the cards render gradient monogram blocks in the same layout. */
+   the inner panel renders a gradient monogram block in the same layout. */
 const TEAM = [
-  { name: "Aarav Shah", role: "Founder", init: "AS", grad: "from-[#3D43E8] to-[#7B5CFF]", photo: null },
-  { name: "Meera Kapoor", role: "Head of Product", init: "MK", grad: "from-[#7B5CFF] to-[#C084FC]", photo: null },
-  { name: "Rohan Iyer", role: "Engineering Lead", init: "RI", grad: "from-[#0E8A3E] to-[#43D675]", photo: null },
-  { name: "Sana Qureshi", role: "Design Lead", init: "SQ", grad: "from-[#F2997E] to-[#F5C59F]", photo: null },
-  { name: "Dev Patel", role: "AI Engineer", init: "DP", grad: "from-[#0F2E33] to-[#3D43E8]", photo: null },
-  { name: "Nikita Rao", role: "Customer Success", init: "NR", grad: "from-[#F5C518] to-[#F2997E]", photo: null },
+  { name: "Aarav Shah", handle: "@aarav.s", ago: "2m ago", status: "Connecting", init: "AS", grad: "from-[#3D43E8] to-[#7B5CFF]", photo: null },
+  { name: "Meera Kapoor", handle: "@meera.k", ago: "12m ago", status: "Building", init: "MK", grad: "from-[#7B5CFF] to-[#C084FC]", photo: null },
+  { name: "Rohan Iyer", handle: "@rohan.i", ago: "1h ago", status: "Shipping", init: "RI", grad: "from-[#0E8A3E] to-[#43D675]", photo: null },
+  { name: "Sana Qureshi", handle: "@sana.q", ago: "3h ago", status: "Designing", init: "SQ", grad: "from-[#F2997E] to-[#F5C59F]", photo: null },
+  { name: "Dev Patel", handle: "@dev.p", ago: "5h ago", status: "Training", init: "DP", grad: "from-[#0F2E33] to-[#3D43E8]", photo: null },
+  { name: "Nikita Rao", handle: "@nikita.r", ago: "1d ago", status: "Supporting", init: "NR", grad: "from-[#F5C518] to-[#F2997E]", photo: null },
 ];
 
 const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
+/* One member card — exact copy of the "Sienna Brooks" reference */
+function MemberCard({ m, i }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "0px 0px -60px 0px" }}
+      transition={{ duration: 0.6, delay: (i % 3) * 0.1, ease: [0.25, 1, 0.5, 1] }}
+      whileHover={{ y: -6 }}
+      className="rounded-[24px] bg-white p-3 shadow-[0_36px_72px_-40px_rgba(16,16,20,0.35)]"
+      data-testid={`team-card-${slug(m.name)}`}
+    >
+      {/* inner panel */}
+      <div className="rounded-[18px] bg-[#E9E9E7] px-4 pb-0 pt-5">
+        <p className="text-center font-display text-[22px] font-semibold tracking-tight text-ink">{m.name}</p>
+        <p className="mt-1 flex items-center justify-center gap-1.5 text-[12px] font-medium text-black/50">
+          <Sparkles className="h-3.5 w-3.5" strokeWidth={2} /> {m.status}
+        </p>
+        <div className="mt-4 h-[250px] overflow-hidden rounded-t-xl">
+          {m.photo ? (
+            <img src={m.photo} alt={m.name} className="h-full w-full object-cover" loading="lazy" />
+          ) : (
+            <span className={`flex h-full w-full items-center justify-center bg-gradient-to-b ${m.grad}`}>
+              <span className="font-display text-5xl font-bold text-white/90">{m.init}</span>
+            </span>
+          )}
+        </div>
+      </div>
+      {/* footer row */}
+      <div className="flex items-center justify-between gap-3 px-2 py-3.5">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${m.grad} font-display text-[11px] font-bold text-white`}>
+            {m.init}
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-bold leading-tight text-ink">{m.handle}</p>
+            <p className="text-[11px] leading-tight text-black/45">{m.ago}</p>
+          </div>
+        </div>
+        <a
+          href="/careers"
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-[12px] font-semibold text-white transition-colors duration-200 hover:bg-black/85"
+          aria-label={`Join the team like ${m.name}`}
+        >
+          <Plus className="h-3.5 w-3.5" strokeWidth={2.5} /> Add member
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Team() {
-  const reduce = useReducedMotion();
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const hoverRef = useRef(null);
-
-  const go = (dir) => setActive((v) => (v + dir + TEAM.length) % TEAM.length);
-
-  useEffect(() => {
-    if (reduce || paused) return undefined;
-    const id = setInterval(() => setActive((v) => (v + 1) % TEAM.length), 4200);
-    return () => clearInterval(id);
-  }, [reduce, paused]);
-
-  /* five visible slots, active always centered */
-  const visible = [0, 1, 2, 3, 4].map((off) => TEAM[(active - 2 + off + TEAM.length * 2) % TEAM.length]);
-
   return (
     <>
       <Seo
@@ -44,120 +78,27 @@ export default function Team() {
         path="/team"
       />
       <Navbar />
-      <main className="bg-[#0B0B0D] pb-20 pt-[76px]" data-testid="team-page">
-        <div className="fine-grid pointer-events-none absolute" aria-hidden="true" />
-        <div className="mx-auto max-w-[1100px] px-5 pt-14 lg:px-8 lg:pt-20">
-          <div
-            className="relative overflow-hidden rounded-[32px] bg-white px-6 py-12 shadow-[0_80px_160px_-60px_rgba(0,0,0,0.8)] sm:px-10 lg:px-14"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-            ref={hoverRef}
-          >
-            {/* header */}
-            <div className="flex flex-col items-center text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-soft">
-                <span className="text-accent">001</span>
-                <span className="h-2.5 w-px bg-line" aria-hidden="true" /> Team
-              </span>
-              <h1 className="mt-5 font-display text-[32px] font-bold tracking-tight text-ink sm:text-[40px]">
-                Meet the Fluxvex Minds
-              </h1>
-            </div>
+      <main className="bg-[#F1F2F1] pb-24 pt-[76px]" data-testid="team-page">
+        <div className="mx-auto max-w-[1100px] px-5 pt-14 lg:pt-20">
+          {/* header */}
+          <div className="flex flex-col items-center text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-soft shadow-sm">
+              <span className="text-accent">001</span>
+              <span className="h-2.5 w-px bg-line" aria-hidden="true" /> Team
+            </span>
+            <h1 className="mt-5 font-display text-[32px] font-bold tracking-tight text-ink sm:text-[40px]">
+              Meet the Fluxvex Minds
+            </h1>
+            <p className="mt-3.5 max-w-md text-[13.5px] leading-relaxed text-black/55">
+              The people assembling the reporting workflow — small team, deep agency roots.
+            </p>
+          </div>
 
-            {/* carousel */}
-            <div className="mt-12 flex items-end justify-center gap-3 sm:gap-4">
-              {visible.map((m, slot) => {
-                const isActive = slot === 2;
-                return (
-                  <motion.button
-                    key={m.name}
-                    type="button"
-                    onClick={() => setActive(TEAM.indexOf(m))}
-                    initial={false}
-                    animate={{
-                      width: isActive ? 196 : 148,
-                      opacity: isActive ? 1 : 0.55,
-                    }}
-                    transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
-                    className={`hidden shrink-0 flex-col text-left md:flex ${slot === 0 || slot === 4 ? "lg:flex" : ""} ${slot === 0 || slot === 4 ? "hidden lg:flex" : ""}`}
-                    data-testid={`team-card-${slug(m.name)}`}
-                    aria-label={`${m.name}, ${m.role}`}
-                  >
-                    <span
-                      className={`relative block w-full overflow-hidden rounded-2xl transition-all duration-500 ${
-                        isActive ? "h-[240px] shadow-[0_40px_80px_-32px_rgba(16,16,20,0.55)]" : "h-[190px] grayscale"
-                      }`}
-                    >
-                      {m.photo ? (
-                        <img src={m.photo} alt={m.name} className={`h-full w-full object-cover ${isActive ? "" : "grayscale"}`} />
-                      ) : (
-                        <span className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${m.grad}`}>
-                          <span className="font-display text-4xl font-bold text-white/90">{m.init}</span>
-                        </span>
-                      )}
-                      {isActive && (
-                        <motion.span
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2, duration: 0.4 }}
-                          className="absolute inset-x-0 bottom-3 flex justify-center gap-2"
-                        >
-                          {[Facebook, Linkedin, Twitter].map((Icon, i) => (
-                            <span
-                              key={i}
-                              className="flex h-7 w-7 items-center justify-center rounded-full bg-ink/85 text-white backdrop-blur transition-colors hover:bg-ink"
-                            >
-                              <Icon className="h-3.5 w-3.5" strokeWidth={2} />
-                            </span>
-                          ))}
-                        </motion.span>
-                      )}
-                    </span>
-                    <span className={`mt-3 block truncate text-[14px] font-semibold ${isActive ? "text-ink" : "text-ink/60"}`}>
-                      {m.name}
-                    </span>
-                    {isActive && <span className="mt-0.5 block truncate text-[11.5px] text-black/45">({m.role})</span>}
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            {/* active member — mobile */}
-            <div className="mt-8 text-center md:hidden">
-              <p className="font-display text-xl font-bold text-ink">{TEAM[active].name}</p>
-              <p className="mt-1 text-xs text-black/45">{TEAM[active].role}</p>
-            </div>
-
-            {/* controls: progress line + arrows */}
-            <div className="mt-10 flex items-center gap-6">
-              <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-black/[0.08]" data-testid="team-progress" aria-hidden="true">
-                <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-[#43D675] via-[#3D43E8] to-[#7B5CFF]"
-                  animate={{ width: `${((active + 1) / TEAM.length) * 100}%` }}
-                  transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-                />
-              </div>
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => go(-1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white transition-transform duration-200 hover:scale-105"
-                  data-testid="team-prev"
-                  aria-label="Previous team member"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => go(1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-ink text-white transition-transform duration-200 hover:scale-105"
-                  data-testid="team-next"
-                  aria-label="Next team member"
-                >
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
+          {/* member cards */}
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {TEAM.map((m, i) => (
+              <MemberCard key={m.name} m={m} i={i} />
+            ))}
           </div>
         </div>
       </main>
