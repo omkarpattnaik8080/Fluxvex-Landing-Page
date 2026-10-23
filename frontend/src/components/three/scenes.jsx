@@ -327,7 +327,7 @@ export function FeatureSourcesScene({ input, reduce, visible, zoom }) {
       <Cam zoom={zoom} />
       <IsoWorld input={input} reduce={reduce} ground={14}>
         <PulseRings position={[0.4, 0.025, 0]} input={input} />
-        <Beam position={[0.4, 0, 0]} color={C.accent} height={2.1} width={1.5} opacity={0.13} />
+        <Beam position={[0.4, 0, 0]} color={C.accent} height={1.4} width={1.5} opacity={0.13} />
         {sources.map((s, i) => (
           <Tile key={i} position={s.pos} size={[1.1, 0.2, 1.1]} texture={s.tex} base={s.base} />
         ))}
@@ -453,7 +453,7 @@ export function FeatureAiScene({ input, reduce, visible, zoom }) {
         <Tile position={[-1.35, 0, 0]} size={[1.3, 0.26, 1.3]} texture={fxTex} texScale={0.5} active base={C.violet} glowColor={C.violet} />
         <Wire from={[-0.65, 0.05, 0]} to={[0.14, 0.05, 0.1]} delay={0.45} period={1.4} />
         <DraftDoc reduce={reduce} />
-        <Beam position={[1.55, 0, 0.15]} color={C.violet} height={2.7} width={2.1} opacity={0.12} />
+        <Beam position={[1.55, 0, 0.15]} color={C.violet} height={1.6} width={2.1} opacity={0.12} />
         <group position={[1.55, 0, 0.15]}>
           <Satellite radius={2.05} y={1.3} color={C.amber} phase={0.8} reduce={reduce} />
           <Satellite radius={2.05} y={1.38} color={C.sky} phase={Math.PI + 0.8} speed={-0.8} size={0.11} reduce={reduce} />
@@ -984,7 +984,7 @@ export function OutcomeBrandScene({ input, reduce, zoom }) {
         <Satellite radius={1.9} y={1.12} color={C.amber} phase={Math.PI + 0.2} speed={-0.85} size={0.1} reduce={reduce} />
         <Billboard position={[1.45, 1.85, -0.75]} reduce={reduce}
           spec={{ lines: [{ text: "✓ Client-ready", color: C.green, size: 21 }], size: 21, h: 0.48 }} />
-        <Beam position={[0, 0, 0]} color={C.accent} height={2.0} width={1.9} opacity={0.1} />
+        <Beam position={[0, 0, 0]} color={C.accent} height={1.4} width={1.9} opacity={0.1} />
       </IsoWorld>
     </>
   );

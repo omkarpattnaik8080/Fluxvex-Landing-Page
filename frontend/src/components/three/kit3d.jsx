@@ -89,6 +89,7 @@ export function useTextTexture(spec) {
     if (cached) return cached;
     const s = 3;
     const pad = 14 * s;
+    const m = 14 * s; // shadow margin — the drop shadow renders fully instead of clipping at the canvas edge
     const font = (w, size) => `${w} ${size * s}px "Inter Tight", Inter, sans-serif`;
     const c = document.createElement("canvas");
     const ctx = c.getContext("2d");
@@ -96,8 +97,8 @@ export function useTextTexture(spec) {
     ctx.font = font(spec.weight || 600, spec.size || 26);
     const textW = Math.max(...lines.map((l) => ctx.measureText(l.text).width), 1);
     const lineH = (spec.size || 26) * s * 1.3;
-    const w = Math.ceil(textW + pad * 2 + (spec.accentChip ? 0 : 0));
-    const h = Math.ceil(lineH * lines.length + pad * 1.4);
+    const w = Math.ceil(textW + pad * 2 + m * 2);
+    const h = Math.ceil(lineH * lines.length + pad * 1.4 + m * 2);
     c.width = w;
     c.height = h;
     const draw = () => {
@@ -109,15 +110,15 @@ export function useTextTexture(spec) {
       }
       if (spec.pill) {
         ctx.fillStyle = spec.bg || C.accent;
-        roundRect(ctx, 0, 0, w, h, h / 2);
+        roundRect(ctx, m, m, w - m * 2, h - m * 2, (h - m * 2) / 2);
         ctx.fill();
       } else {
         ctx.fillStyle = spec.bg || "#FFFFFF";
-        roundRect(ctx, 0, 0, w, h, 12 * s);
+        roundRect(ctx, m, m, w - m * 2, h - m * 2, 12 * s);
         ctx.fill();
         ctx.strokeStyle = spec.border || "rgba(16,16,20,0.14)";
         ctx.lineWidth = 1.5 * s;
-        roundRect(ctx, 0.75 * s, 0.75 * s, w - 1.5 * s, h - 1.5 * s, 11.5 * s);
+        roundRect(ctx, m + 0.75 * s, m + 0.75 * s, w - m * 2 - 1.5 * s, h - m * 2 - 1.5 * s, 11.5 * s);
         ctx.stroke();
       }
       ctx.shadowColor = "transparent";
@@ -128,13 +129,13 @@ export function useTextTexture(spec) {
         ctx.font = font(l.weight || spec.weight || 600, l.size || spec.size || 26);
         ctx.fillStyle = l.color || spec.color || C.ink;
         ctx.textAlign = l.align || "center";
-        ctx.fillText(l.text, l.align === "left" ? pad : w / 2, pad * 0.75 + lineH * i + lineH / 2);
+        ctx.fillText(l.text, l.align === "left" ? m + pad : w / 2, m + pad * 0.75 + lineH * i + lineH / 2);
       });
       if (spec.dots) {
         ctx.fillStyle = spec.dotsColor || C.accent;
         for (let i = 0; i < 3; i++) {
           ctx.beginPath();
-          ctx.arc(w / 2 + (i - 1) * 10 * s, h - pad * 0.75, 2.4 * s, 0, Math.PI * 2);
+          ctx.arc(w / 2 + (i - 1) * 10 * s, h - m - pad * 0.75, 2.4 * s, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -252,7 +253,7 @@ export function Tile({ position = [0, 0, 0], size = [1, 0.2, 1], texture, texSca
     grp.current.position.y = lift.current;
     if (halo.current) {
       const m = halo.current.material;
-      const t = (active ? 0.5 : 0) + (hovered && !dim ? 0.25 : 0);
+      const t = (active ? 0.32 : 0) + (hovered && !dim ? 0.16 : 0);
       m.opacity += (t - m.opacity) * k;
       const s = 1 + Math.sin(_.clock.elapsedTime * 2.2) * 0.03;
       halo.current.scale.set(s, s, 1);
@@ -282,7 +283,7 @@ export function Tile({ position = [0, 0, 0], size = [1, 0.2, 1], texture, texSca
           </mesh>
         )}
       </group>
-      <sprite ref={halo} position={[0, size[1] / 2, 0]} scale={[w, w * 0.72, 1]}>
+      <sprite ref={halo} position={[0, size[1] / 2, 0]} scale={[w * 0.85, w * 0.6, 1]}>
         <spriteMaterial map={glow} transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} />
       </sprite>
     </group>
@@ -391,7 +392,7 @@ export function PulseRings({ position = [0, 0.02, 0], input, burst = true }) {
 }
 
 /* Volumetric light column under/around a tile (two crossed additive planes) */
-export function Beam({ position = [0, 0, 0], height = 2.4, width = 1.3, color = C.accent, opacity = 0.2 }) {
+export function Beam({ position = [0, 0, 0], height = 1.25, width = 1.3, color = C.accent, opacity = 0.17 }) {
   const m1 = useRef(null);
   const m2 = useRef(null);
   const glow = useGlowTexture(color);

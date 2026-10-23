@@ -1,0 +1,41 @@
+{
+  "summary": "Frontend-only regression for iteration 28 focused on (1) the densified Home ROI calculator dark band and interactive calculator, (2) the rebuilt /security page with hub-and-spoke diagram, tinted cards, compliance badges, controls, promise, regulation, and contact CTA, and (3) a quick site-wide navigation/overflow sweep. All targeted areas pass on both desktop (1440x900) and mobile (390x844). No console errors of substance.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "roi_calculator": {
+      "sliders_update_total": "PASS (monthly 48h -> 296h after setting clients=20, hours=5, reports=3)",
+      "monthly_yearly_toggle": "PASS (yearly shows 3,600 h)",
+      "copy_result_toggle": "PASS ('Copy result' -> 'Copied')",
+      "waitlist_cta": "PASS (opens dialog, 10 dialog-related elements detected; closable via Escape)",
+      "dark_band_no_html_overflow": "PASS (documentElement.scrollWidth == innerWidth at 1440 and 390)",
+      "note": "roi-annual-output is conditionally rendered only when Yearly toggle is active - not a bug, just visibility toggling with roi-monthly-output."
+    },
+    "security_page": {
+      "hub_diagram_desktop": "PASS (Google Ads, Meta Ads, GA4, TikTok Ads all present wired to black Fluxvex center pill with vertical arrow)",
+      "hub_diagram_mobile": "PASS (stacked flow with ArrowDown; no horizontal overflow at 390px)",
+      "tinted_cards": "PASS (security-tinted-scope / -encryption / -control render with inline chips)",
+      "compliance_badges": "PASS (gdpr/hipaa/ccpa/dpdp all present)",
+      "control_cards_and_promise": "PASS (security-page-control-1..6, security-page-promise present)",
+      "contact_cta": "PASS (security-page-contact-link navigates to /contact)",
+      "overflow": "PASS at 1440x900 and 390x844"
+    },
+    "site_wide_regression": {
+      "home_pricing_about_navigation": "PASS",
+      "console_errors": "None of substance"
+    }
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 28 verified the densified ROI calculator dark band (trust chips, report window with chrome/channel-chips/animated bars/40% tooltip/Auto-synced footer) and the rebuilt Security page (hub-and-spoke diagram, tinted scope/encryption/control cards, compliance badges, 6 control cards, dark green promise card, regulation block, contact CTA). All interactions (sliders, monthly/yearly toggle, copy result, waitlist CTA, contact link) work. No horizontal overflow on html at 1440px or 390px on / or /security. Cookie banner must be dismissed with 'Accept all' before capturing screenshots. Decorative radial-glow divs inside the calculator dark band intentionally overflow and are clipped by the outer card - that is expected."
+}

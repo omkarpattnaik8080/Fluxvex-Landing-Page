@@ -23,3 +23,6 @@
 
 ## Done 2026-10-22 (session 16)
 - Six-section premium polish: integrations strip (status module + sync rail + donut + build progress), how-it-works crossfade load fix (Scene3D onReady), calculator savings-ring redesign (+ shared useTween hook), promise cards + commitments ticker, agency-loop auto-cycling highlight + count-up stats + cycling AI chat, sample-report count-up KPIs + self-drawing trend chart. Iteration 21: backend 19/19, frontend 100%.
+
+## Done 2026-10-23 (session 17)
+- Security & Privacy page rebuilt on the retainable-style reference (lavender container, badge, hub-spoke diagram with Fluxvex core, three tinted mini-UI cards); ROI calculator dark band densified (report window + trust chips); 3D label color-bleed fixed everywhere (shorter Beams, softer Tile halos, un-clipped label shadows in kit3d.jsx). Iteration 28: frontend 100%.
