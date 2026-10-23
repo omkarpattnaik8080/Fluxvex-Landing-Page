@@ -1,109 +1,62 @@
 {
-  "theme": "light",
   "typography": {
-    "headings": "Inherit from existing setup, ensure tight tracking (`tracking-tight`) for large sizes.",
-    "body": "Inherit from existing setup, maintain high legibility (`leading-relaxed`).",
-    "labels": "Use 3D DOM overlays (`<Html>` from `@react-three/drei`) for all text inside 3D canvases to keep it crisp, accessible, and easily selectable. Use uppercase + wide tracking (`tracking-[0.2em]`) for overlines."
+    "headings": "Use existing font-display for all large headings. Do not switch to Inter. Apply tight tracking (tracking-tight or tracking-tighter) for massive effect.",
+    "body": "Clean, readable geometric sans. Keep line heights generous (leading-relaxed) for body paragraphs.",
+    "annotations": "Caveat handwriting font. Used specifically for small, playful floating notes (e.g., 'This is where you save!' on the calculator).",
+    "subtitles": "Max width md, greyed out, balanced leading for readability."
   },
   "colors": {
-    "primary": "#3D43E8",
-    "background_main": "#FFFFFF",
-    "background_alt": "#F4F2ED",
-    "ink": "#0B0B0D",
-    "success_mint": "#10B981"
-  },
-  "visual_enhancers": {
-    "isometric_3d": "Orthographic projection to perfectly match existing SVG angles. No perspective distortion.",
-    "materials": "Flat shading only. Use `meshBasicMaterial` to prevent realistic lighting, shadows, or glossy gradients. The aesthetic must remain strictly vector-like.",
-    "hairlines": "Use Drei's `<Edges>` or `EdgesGeometry` with color `#0B0B0D` and thin line width to replicate the exact SVG stroke look.",
-    "glow": "For glowing packets on wires, use pure colors with bloom post-processing, or fake it using bright flat colors with a soft HTML radial shadow behind them."
-  },
-  "3d_libraries": [
-    "three",
-    "@react-three/fiber",
-    "@react-three/drei",
-    "framer-motion-3d"
-  ],
-  "scenes": {
-    "features_section": {
-      "composition": "3 separate isometric islands (SOURCES, FLUXVEX AI, DELIVERY).",
-      "camera": "OrthographicCamera, positioned at [10, 10, 10] looking at [0,0,0].",
-      "motion": {
-        "idle": "Islands slowly float (sine wave on Y axis).",
-        "hover": "Target island lifts slightly, drop shadow softens.",
-        "drag": "Slight tilt/rotation of the island (clamped to +/- 15 degrees) using cursor mapping."
-      },
-      "labels": "<Html> billboards floating above elements with 'data-testid' attributes."
-    },
-    "why_a_prompt_isnt_a_reporting_system": {
-      "composition": "Split view. Left: Messy, chaotic dashed wires looping (Claude representation). Right: Clean, straight, organized pipeline (Fluxvex).",
-      "camera": "OrthographicCamera.",
-      "motion": {
-        "idle": "Chaotic particles moving wildly on left, smooth synchronized glowing packets moving on right.",
-        "hover": "Messy wires repel cursor (spring physics). Pipeline wires glow brighter on hover."
-      }
-    },
-    "how_it_works": {
-      "composition": "Sequential pipeline: Source tiles (Google Ads, Meta) -> Hub -> Report Doc.",
-      "camera": "OrthographicCamera. Pan camera or sequence reveal based on scroll.",
-      "motion": {
-        "idle": "Packets continuously traverse dashed lines.",
-        "hover": "Hovering a node pauses the local packet flow, node expands, reveals detailed `<Html>` tooltip."
-      }
-    },
-    "inside_fluxvex": {
-      "composition": "Dashboard representation separated into isometric Z-layers.",
-      "camera": "OrthographicCamera.",
-      "motion": {
-        "idle": "Layers sit mostly flat.",
-        "hover": "Hovering expands the gap between Z-layers (parallax effect), demonstrating depth and architecture."
-      }
-    },
-    "platform": {
-      "composition": "Central Fluxvex AI Hub with orbiting source tiles connected by dashed wires.",
-      "camera": "OrthographicCamera.",
-      "motion": {
-        "idle": "Slow continuous orbital rotation of the source tiles around the hub.",
-        "drag": "User can grab and spin the entire orbit.",
-        "click": "Clicking a source tile centers it and reveals its data points."
-      }
-    },
-    "our_vision": {
-      "composition": "Grand overarching scene. Hub, Docs, floating 'Authorized', 'Client-ready' billboards.",
-      "camera": "OrthographicCamera, zoomed out to show the full ecosystem.",
-      "motion": {
-        "idle": "Billboards gently bob.",
-        "hover": "Cursor movement tilts the entire scene slightly (parallax on mouse move)."
-      }
+    "primary": "#0F2E33",
+    "primary_description": "Dark ink, used as the heavy structural base for 'vault' or outcome cards.",
+    "accent_1": "#43D675",
+    "accent_1_description": "Mint. Used for positive financial outcomes, primary CTAs, and active slider states.",
+    "accent_2": "#F2997E",
+    "accent_2_description": "Coral. Used for secondary interaction states or danger/warning cues.",
+    "security_gradient": "bg-gradient-to-b from-[#E9E9F0] to-[#F4F3F7]",
+    "security_tints": {
+      "card_1": "#F2EDF8",
+      "card_2": "#EEF3FA",
+      "card_3": "#FAF0E6"
     }
   },
-  "performance_rules": {
-    "dpr": "Cap at 2. `<Canvas dpr={[1, 2]}>`",
-    "context": "Use `@react-three/drei`'s `<View>` component to share a single WebGL context across the entire page while rendering in multiple DOM nodes. If `<View>` is too complex for setup, use separate canvases but heavily optimize.",
-    "visibility": "Pause rendering when offscreen. Use `frameloop='demand'` if scenes are mostly static, but since they have traveling packets, use `frameloop='always'` but early return in `useFrame` if an IntersectionObserver marks the canvas as off-screen.",
-    "geometry": "InstancedMesh for repeated elements like data packets to reduce draw calls."
+  "visual_enhancers": {
+    "glassmorphism": "Only use high-quality crystal glass (backdrop-blur-xl bg-white/70 or bg-black/60) with a 1px border. Never use muddy gray transparency.",
+    "neumorphism": "Not applicable for this light editorial aesthetic.",
+    "borders": "1px subtle borders (border-black/5 or border-white/10) to separate stacked containers.",
+    "textures": "Subtle grain texture or a faint grid/checker pattern over the security tinted feature cards to eliminate 'digital flatness'."
   },
-  "accessibility_and_fallback": {
-    "reduced_motion": "Detect `@media (prefers-reduced-motion)`. If true, disable idle floating and travelling packets.",
-    "webgl_fallback": "Keep the existing SVG `<IsoKit>` components as fallback if WebGL fails to initialize or is disabled.",
-    "dom_labels": "Because text is rendered in the DOM via `<Html>`, screen readers can access it. Ensure `aria-hidden='true'` on the Canvas itself, and handle focus manually on the DOM overlays."
+  "grids": {
+    "bento": "Universal bento approach for the calculator page: Use grid-cols-1 lg:grid-cols-12 with wide gaps (gap-8 or gap-12). Leave intentional breathing room.",
+    "dense": "Tight grids for internal UI mockups in feature cards."
   },
-  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
-    "You are writing for a React 19 CRA environment (use .js / .jsx, not .tsx unless configured).",
-    "DO NOT use generic 3D looks (no PBR, no gloss, no shadows baked into textures). The aesthetic is strict flat vector isometric.",
-    "Ensure all DOM overlay elements (buttons, billboards, labels) have `data-testid` attributes. Example: `data-testid='how-it-works-hub-label'`.",
-    "When positioning `<Html>` components from Drei, use `center` and `transform` props for crisp UI.",
-    "Use Tailwind for styling all `<Html>` DOM nodes, preserving the exact #3D43E8 and #F4F2ED brand colors.",
-    "Never use fully transparent backgrounds behind text in the `<Html>` popups; always give them a solid background (e.g., `#FFFFFF`) with a 1px border (`#0B0B0D`) to stand out.",
-    "To achieve isometric dashed wires, use Drei's `<Line>` component with `dashed={true}`, or build a custom line material.",
-    "Implement mouse-driven tilt using `framer-motion-3d` or raw `useFrame` math with `THREE.MathUtils.lerp` for smooth dampening. Target 60fps."
-  ],
-  "instructions_to_main_agent": {
-    "step_1": "Install dependencies: `yarn add three @react-three/fiber @react-three/drei framer-motion-3d`.",
-    "step_2": "Create a new `Iso3DKit.jsx` (or `.js`) equivalent to the old `IsoKit.jsx`. It should contain reusable `IsoPlane`, `IsoWire`, `IsoHub`, `IsoBillboard` implemented as R3F components.",
-    "step_3": "Setup a master `<Canvas>` or implement IntersectionObserver logic to only run `useFrame` animations when the user is actively viewing a section.",
-    "step_4": "Migrate `FeaturesGrid`, `HowItWorks`, `Platform`, `Vision`, and `WhyAiComparison` one by one, replacing the SVG components with the 3D `<Canvas>` wrapped components.",
-    "step_5": "Verify `data-testid` is present on all `<Html>` overlays and interactive elements.",
-    "step_6": "Test on mobile viewport (scale down zoom, disable expensive hover listeners)."
-  }
+  "layouts": {
+    "calculator": "Redesign RoiCalculator.jsx. Convert to an asymmetric 12-column bento layout. Left Side (Inputs, col-span-7): Clean, spacious area for interactive sliders. Use custom thick slider tracks with mint/coral active states. Add Caveat hand-drawn annotations nearby. Right Side (Outputs, col-span-5): The 'Vault'. Solid Dark Ink (#0F2E33) container, rounded-[28px], p-10. Massive typography for animated total hours and savings. Use Mint (#43D675) for the final metrics to make them glow against the dark background. Integrate the copy-result and Waitlist CTA seamlessly at the bottom.",
+    "security": "Rebuild pages/Security.jsx to exactly match the provided reference design. Outer Container: Large rounded-[28px] card with the soft lavender-grey gradient (from-[#E9E9F0] to-[#F4F3F7]) and p-12 md:p-20. Top: Centered small white pill badge (sparkle icon + uppercase tracking-widest label). Headings: Centered ~44px bold display heading and grey 13px subtitle. Hub & Spoke Diagram: Left pills (Asana, Monday), Right pills (Trello, ClickUp), Center Pill (Black #0F2E33 with Fluxvex text/logo). Use 1px orthogonal line elbows to connect them. Bottom Cards: Three equal-width rounded-xl cards with soft tints (lavender #F2EDF8, sky blue #EEF3FA, peach #FAF0E6). Each contains an icon, 15px bold title, 2-line grey description, and a white mini-UI mockup panel embedded at the bottom. Keep all honest pre-launch copy, ComplianceBadges, and Waitlist CTA."
+  },
+  "motion": {
+    "calculator": "Animate the 'total hours' and savings outputs on slider change. Use Framer Motion for a smooth counting effect. Add subtle entrance stagger for the input sliders.",
+    "interactions": "Hover states on CTAs must lift slightly (-translate-y-1) and increase shadow. Sliders must have active/focus states that are accessible."
+  },
+  "accessibility": {
+    "contrast": "Ensure white text on Dark Ink background meets WCAG AAA. Ensure slider focus rings are visible. Keep all data-testid attributes perfectly intact for interactive elements.",
+    "motion": "Respect prefers-reduced-motion for the animated counting."
+  },
+  "component_instructions": {
+    "Sliders": "Do not use standard HTML input styles. Apply Tailwind appearance-none and build thick custom tracks and large tactile thumbs.",
+    "HubAndSpoke": "Use absolute positioned divs with border-t and border-l/r to create the 90-degree orthogonal connector lines. Center them perfectly behind the relative z-10 logo pills.",
+    "MiniUIMockups": "Build these purely with Tailwind inside the security feature cards. Example: tiny colored progress bars (h-2 rounded-full), bold fake numbers, floating overlapping stat cards, tiny avatar dots, and task rows with minimal tag capsules."
+  },
+  "image_urls": {
+    "mini_ui_avatars": {
+      "description": "Professional avatar portraits for overlapping dots in the security mini-UI mockups.",
+      "category": "security_mockups",
+      "urls": [
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0fGVufDB8fHx8MTc5Mjc0MzMyMnww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1609436132311-e4b0c9370469?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0fGVufDB8fHx8MTc5Mjc0MzMyMnww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0fGVufDB8fHx8MTc5Mjc0MzMyMnww&ixlib=rb-4.1.0&q=85"
+      ]
+    }
+  },
+  "instructions_to_main_agent": "1. Execute the calculator bento grid redesign in RoiCalculator.jsx without removing any existing state logic or data-testids. Add the dark ink container for outputs. 2. Fully replace the Security.jsx UI with the exact reference design instructed. 3. Install 'react-icons' using yarn if not present, and use 'react-icons/si' for the hub-and-spoke brand logos (SiAsana, SiMonday, SiTrello, SiClickup). 4. Use lucide-react for all generic icons (Sparkles, Check, etc.). 5. Strictly apply the defined E1 generous spacing (p-12 to p-20 on large containers) and avoid generic centered 'AI slop' layouts.",
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": "Do not apply universal transition (transition: all). Use specific transitions. Never center align the main App container globally. Build layered depth with z-index. Do not use AI emojis for icons. Prioritize existing ui components when available."
 }

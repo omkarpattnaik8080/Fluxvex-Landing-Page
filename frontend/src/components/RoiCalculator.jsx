@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Check, Copy } from "lucide-react";
+import { CalendarDays, Check, Copy, Lock, ShieldCheck } from "lucide-react";
 import { SectionShell } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
 import { useTween } from "@/hooks/useTween";
@@ -43,8 +43,8 @@ function FieldSlider({ id, label, value, unit, min, max, step, set, ticks, testi
   );
 }
 
-/* The dark-band illustration — coral bars, one mint hero bar, tooltip + cursor */
-function BandBars() {
+/* Dark-band illustration — mock report window: chrome, channel chips, coral bars with mint hero + tooltip, sync footer */
+function ReportWindow() {
   const bars = [
     { h: 34, mint: false },
     { h: 52, mint: false },
@@ -53,14 +53,44 @@ function BandBars() {
     { h: 30, mint: false },
     { h: 46, mint: false },
   ];
+  const channels = [
+    { label: "Google", dot: "#F4B400" },
+    { label: "Meta", dot: "#0866FF" },
+    { label: "TikTok", dot: "#8AB4F8" },
+  ];
   return (
-    <div className="relative w-fit">
+    <div
+      className="relative w-full max-w-[460px] rounded-2xl border border-white/10 bg-white/[0.05] p-5 shadow-[0_50px_100px_-45px_rgba(0,0,0,0.85)] backdrop-blur-sm"
+      aria-hidden="true"
+    >
+      {/* window chrome */}
+      <div className="flex items-center gap-3">
+        <span className="flex gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#F26D6D]/80" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#F5D748]/80" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#43D675]/80" />
+        </span>
+        <span className="rounded-full bg-white/[0.08] px-3 py-1 text-[10px] font-medium text-white/50">
+          report.fluxvex.com
+        </span>
+      </div>
+      {/* channel chips */}
+      <div className="mt-4 flex gap-2">
+        {channels.map((c) => (
+          <span
+            key={c.label}
+            className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[10px] font-semibold text-white/70"
+          >
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: c.dot }} />
+            {c.label}
+          </span>
+        ))}
+      </div>
       {/* tooltip card */}
       <motion.div
-        className="absolute -top-12 left-1/2 z-10 -translate-x-1/2"
+        className="absolute right-8 top-[88px] z-10"
         animate={{ y: [0, -4, 0] }}
         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-        aria-hidden="true"
       >
         <div className="relative rounded-xl bg-white px-3.5 py-2 shadow-[0_18px_36px_-14px_rgba(0,0,0,0.5)]">
           <span className="absolute left-2 top-1.5 h-2 w-4 rounded-sm bg-[#F2997E]" aria-hidden="true" />
@@ -70,12 +100,12 @@ function BandBars() {
           <span className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-white" aria-hidden="true" />
         </div>
       </motion.div>
-      {/* bars */}
-      <div className="flex h-32 items-end gap-3" aria-hidden="true">
+      {/* bars + cursor */}
+      <div className="mt-7 flex h-32 items-end gap-2 min-w-0 sm:gap-3">
         {bars.map((b, i) => (
           <motion.span
             key={i}
-            className={`w-9 rounded-t-lg ${b.mint ? "bg-gradient-to-t from-[#2FA36B] to-[#43D675] shadow-[0_10px_26px_-8px_rgba(67,214,117,0.65)]" : "bg-gradient-to-t from-[#E98A70] to-[#F5AE97]"}`}
+            className={`w-6 rounded-t-lg sm:w-9 ${b.mint ? "bg-gradient-to-t from-[#2FA36B] to-[#43D675] shadow-[0_10px_26px_-8px_rgba(67,214,117,0.65)]" : "bg-gradient-to-t from-[#E98A70] to-[#F5AE97]"}`}
             style={{ height: `${b.h}%`, transformOrigin: "bottom" }}
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
@@ -83,18 +113,23 @@ function BandBars() {
             transition={{ duration: 0.7, delay: 0.2 + i * 0.09, ease: [0.25, 1, 0.5, 1] }}
           />
         ))}
-        {/* cursor */}
         <motion.svg
           viewBox="0 0 24 24"
           className="h-7 w-7 drop-shadow-[0_6px_10px_rgba(0,0,0,0.45)]"
           animate={{ x: [0, 6, -4, 0], y: [0, -8, 4, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          aria-hidden="true"
         >
           <path d="M5 3 L19 12 L12.5 13.5 L9.5 20 Z" fill="#FFFFFF" stroke="#0F2E33" strokeWidth="1.4" strokeLinejoin="round" />
         </motion.svg>
       </div>
-      <p className="mt-3 text-[12.5px] font-medium text-white/70">40% less effort — the assumption most teams make</p>
+      {/* footer — sparkline + sync status */}
+      <div className="mt-5 flex items-center justify-between gap-4 border-t border-white/10 pt-3.5">
+        <p className="text-[11.5px] font-medium text-white/65">40% less effort — what most teams assume</p>
+        <span className="flex shrink-0 items-center gap-1.5 text-[10px] font-semibold text-white/50">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#43D675] animate-pulse-dot" />
+          Auto-synced
+        </span>
+      </div>
     </div>
   );
 }
@@ -152,31 +187,35 @@ export default function RoiCalculator() {
         >
           {/* ── dark band ─────────────────────────────────────────────── */}
           <div className="relative bg-[#0F2E33] px-7 pb-20 pt-11 sm:px-10 lg:px-14" data-testid="roi-dark-panel">
-            <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(67,214,117,0.14),transparent_70%)] blur-3xl" aria-hidden="true" />
-            <div className="relative grid items-center gap-12 lg:grid-cols-2">
-              <div>
+            <div className="fine-grid pointer-events-none absolute inset-0 opacity-[0.12]" aria-hidden="true" />
+            <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(67,214,117,0.16),transparent_70%)] blur-3xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute -left-24 bottom-0 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(242,153,126,0.12),transparent_70%)] blur-3xl" aria-hidden="true" />
+            <div className="relative grid items-center gap-12 lg:grid-cols-2 [&>*]:min-w-0">
+              <div className="min-w-0">
                 <h2 className="font-display text-[34px] font-bold leading-[1.06] tracking-tight text-white sm:text-[42px] lg:text-[48px]">
                   See your reporting load.
                   <br />
-                  and shrink it
+                  then shrink it
                 </h2>
-                {/* skeleton lines + cursor */}
-                <div className="relative mt-9 max-w-sm space-y-3.5" aria-hidden="true">
-                  <div className="relative h-4 rounded-full bg-white/[0.08]">
-                    <motion.svg
-                      viewBox="0 0 24 24"
-                      className="absolute -top-4 right-10 h-7 w-7 drop-shadow-[0_6px_10px_rgba(0,0,0,0.5)]"
-                      animate={{ x: [0, 10, -6, 0], y: [0, -6, 4, 0] }}
-                      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                {/* trust chips */}
+                <ul className="mt-9 flex flex-wrap gap-2.5">
+                  {[
+                    { icon: ShieldCheck, label: "Runs in your browser" },
+                    { icon: Lock, label: "Nothing stored or sent" },
+                    { icon: Copy, label: "Copy & share results" },
+                  ].map((c) => (
+                    <li
+                      key={c.label}
+                      className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[11px] font-semibold text-white/70"
                     >
-                      <path d="M5 3 L19 12 L12.5 13.5 L9.5 20 Z" fill="#FFFFFF" stroke="#0F2E33" strokeWidth="1.4" strokeLinejoin="round" />
-                    </motion.svg>
-                  </div>
-                  <div className="h-4 w-2/3 rounded-full bg-white/[0.08]" />
-                </div>
+                      <c.icon className="h-3.5 w-3.5 text-[#43D675]" strokeWidth={2.2} aria-hidden="true" />
+                      {c.label}
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div className="flex lg:justify-end">
-                <BandBars />
+                <ReportWindow />
               </div>
             </div>
           </div>

@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Heart, MessageCircle } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Heart, MessageCircle } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import CinematicText from "@/components/ui/CinematicText";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
+import { useWaitlist } from "@/components/WaitlistContext";
 
 /* Card A — hours tracking with floating pill + accent bars (reference "Track Clicks & Revenue") */
 function TrackCard() {
@@ -10,18 +11,16 @@ function TrackCard() {
   return (
     <div className="flex h-full flex-col rounded-2xl bg-white p-6 shadow-[0_18px_44px_-30px_rgba(16,16,20,0.35)]">
       <div className="relative flex-1 rounded-xl bg-[#F4F7F6] px-5 pb-4 pt-5">
-        <motion.span
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="absolute -top-3 left-5 z-10 rounded-lg bg-white px-3 py-1.5 shadow-[0_14px_28px_-12px_rgba(16,16,20,0.4)]"
-        >
-          <span className="block font-display text-[15px] font-bold leading-none text-ink" data-testid="integrations-status">
-            3 of 5
-          </span>
-          <span className="mt-0.5 block text-[9px] font-medium text-black/45">channels live for you</span>
-        </motion.span>
+        <span className="absolute -top-3 left-5 z-10">
+          <motion.span initial={{ opacity: 0, y: -10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="block">
+            <motion.span animate={{ y: [0, -4, 0] }} transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }} className="block rounded-lg bg-white px-3 py-1.5 shadow-[0_14px_28px_-12px_rgba(16,16,20,0.4)]">
+              <span className="block font-display text-[15px] font-bold leading-none text-ink" data-testid="integrations-status">
+                3 of 5
+              </span>
+              <span className="mt-0.5 block text-[9px] font-medium text-black/45">channels live for you</span>
+            </motion.span>
+          </motion.span>
+        </span>
         <div className="mt-4 flex h-20 items-end gap-2" aria-hidden="true">
           {bars.map((h, i) => (
             <motion.span
@@ -53,10 +52,17 @@ function BrandCard() {
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
+          animate={{ y: [0, -6, 0] }}
           transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
-          className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
+          className="relative flex h-24 w-24 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
         >
-          <FluxvexMark size={52} />
+          <motion.span
+            animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.08, 1] }}
+            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+            className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
+          >
+            <FluxvexMark size={52} />
+          </motion.span>
         </motion.span>
       </div>
       <h3 className="font-display text-[19px] font-bold tracking-tight text-ink">White-Label, Every Time</h3>
@@ -71,12 +77,14 @@ function BrandCard() {
 function HumanCard() {
   return (
     <div className="flex h-full flex-col rounded-2xl bg-white p-4 shadow-[0_18px_44px_-30px_rgba(16,16,20,0.35)]">
-      <div className="relative flex-1 overflow-hidden rounded-xl" aria-hidden="true">
-        <img
+      <div className="relative flex-1 overflow-hidden rounded-xl">
+        <motion.img
           src="/team-portrait.jpg"
           alt="Agency team member smiling"
           className="h-full min-h-[300px] w-full object-cover"
           loading="lazy"
+          animate={{ scale: [1, 1.06, 1] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
         />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/35 to-transparent" />
         <motion.span
@@ -84,6 +92,7 @@ function HumanCard() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.35, type: "spring", stiffness: 260, damping: 18 }}
+          animate={{ y: [0, -3, 0] }}
           className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1.5 shadow-lg"
         >
           <Heart className="h-3.5 w-3.5 fill-[#E8506E] text-[#E8506E]" />
@@ -122,7 +131,7 @@ function HumanCard() {
 }
 
 /* Card D — wide pipeline card (reference "Smart affiliate link management") */
-function PipelineCard() {
+function PipelineCard({ onCta }) {
   return (
     <div className="flex h-full flex-col gap-6 rounded-2xl bg-white p-6 shadow-[0_18px_44px_-30px_rgba(16,16,20,0.35)] sm:flex-row sm:items-center">
       <div className="max-w-xs">
@@ -132,22 +141,24 @@ function PipelineCard() {
         <p className="mt-2 text-[13px] leading-relaxed text-black/55">
           Turn scattered channel data into consistent, instant client reports with auto-linked metric definitions.
         </p>
-        <TapLink />
       </div>
-      {/* floating report thumbnails + pills */}
-      <div className="relative flex flex-1 items-center justify-center gap-4 py-2">
+      {/* floating report thumbnails + pills + CTA */}
+      <div className="relative flex flex-1 items-center justify-center gap-5 py-2">
         <div className="relative h-36 w-36 shrink-0">
           {[
-            { cls: "left-0 top-2 rotate-[-8deg]", grad: "from-[#D9E4F5] to-[#B9CCEC]", z: "z-10" },
-            { cls: "left-14 top-0 rotate-[2deg]", grad: "from-[#E8D9F5] to-[#CDB9EC]", z: "z-20" },
-            { cls: "left-28 top-6 rotate-[9deg]", grad: "from-[#D9F5E4] to-[#B9ECC9]", z: "z-30" },
+            { cls: "left-0 top-2 rotate-[-8deg]", grad: "from-[#D9E4F5] to-[#B9CCEC]", z: "z-10", d: 0 },
+            { cls: "left-14 top-0 rotate-[2deg]", grad: "from-[#E8D9F5] to-[#CDB9EC]", z: "z-20", d: 0.5 },
+            { cls: "left-28 top-6 rotate-[9deg]", grad: "from-[#D9F5E4] to-[#B9ECC9]", z: "z-30", d: 1 },
           ].map((t, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: [0, -5, 0] }}
               viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: 0.2 + i * 0.12, ease: [0.25, 1, 0.5, 1] }}
+              transition={{
+                opacity: { duration: 0.55, delay: 0.2 + i * 0.12 },
+                y: { duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: t.d },
+              }}
               className={`absolute ${t.cls} ${t.z} h-32 w-24 rounded-lg bg-gradient-to-b ${t.grad} p-2 shadow-[0_18px_36px_-16px_rgba(16,16,20,0.45)]`}
             >
               <span className="block h-1.5 w-3/4 rounded bg-black/15" />
@@ -172,23 +183,30 @@ function PipelineCard() {
           ))}
         </div>
       </div>
+      {/* animated CTA */}
+      <div className="mt-6 border-t border-black/[0.06] pt-5">
+        <button
+          type="button"
+          onClick={onCta}
+          className="group relative inline-flex h-11 cursor-pointer items-center gap-2 whitespace-nowrap overflow-hidden rounded-full bg-ink px-6 font-display text-[13.5px] font-semibold text-white shadow-[0_20px_40px_-16px_rgba(16,16,20,0.6)] transition-transform duration-200 hover:scale-[1.04]"
+          data-testid="integrations-early-access"
+        >
+          <motion.span
+            className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+            animate={{ left: ["-35%", "110%"] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.1 }}
+            aria-hidden="true"
+          />
+          <span className="relative">Get early access</span>
+          <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </button>
+      </div>
     </div>
   );
 }
 
-function TapLink() {
-  return (
-    <button
-      type="button"
-      onClick={(e) => e.preventDefault()}
-      className="mt-4 inline-flex w-fit cursor-default items-center gap-1.5 text-[12.5px] font-semibold text-ink underline-offset-4 hover:underline"
-    >
-      See the pipeline <ArrowUpRight className="h-3.5 w-3.5" />
-    </button>
-  );
-}
-
 export default function IntegrationsStrip() {
+  const { openWaitlist } = useWaitlist();
   return (
     <section id="integrations" className="bg-[#F1F2F1]" data-testid="section-integrations">
       <div className="mx-auto max-w-[1100px] px-5 py-16 lg:py-24">
@@ -217,7 +235,7 @@ export default function IntegrationsStrip() {
             <HumanCard />
           </Reveal>
           <Reveal delay={0.12} className="h-full md:col-span-2 lg:col-span-2">
-            <PipelineCard />
+            <PipelineCard onCta={() => openWaitlist("integrations-pipeline")} />
           </Reveal>
         </div>
       </div>
