@@ -16,6 +16,7 @@ const PAGE_LINKS = [
   ["Pricing", "/pricing"],
   ["Blog", "/blog"],
   ["Careers", "/careers"],
+  ["Partner program", "/partners"],
   ["FAQ", "/#faq"],
   ["Contact", "/contact"],
 ];

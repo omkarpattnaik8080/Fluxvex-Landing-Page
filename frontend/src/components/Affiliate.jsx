@@ -5,7 +5,6 @@ import { Link2, Share2, BadgePercent, ArrowRight, Check, Bell, Wallet } from "lu
 import { IsoTile, IsoWire, IsoBillboard, PLANE } from "@/components/iso/IsoKit";
 import { SectionShell, SectionHeader } from "@/components/SectionShell";
 import { Reveal } from "@/components/Reveal";
-import { useWaitlist } from "@/components/WaitlistContext";
 import TapCTA from "@/components/ui/TapCTA";
 import CrossFade3D from "@/components/three/CrossFade3D";
 import { FluxvexMark } from "@/components/brand/FluxvexLogo";
@@ -190,7 +189,6 @@ function AffiliateSceneLegacy() {
 }
 
 export default function Affiliate() {
-  const { openWaitlist } = useWaitlist();
   return (
     <SectionShell id="partners">
       <SectionHeader
@@ -306,7 +304,7 @@ export default function Affiliate() {
             </div>
             <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center">
               <TapCTA
-                onClick={() => openWaitlist("affiliate")}
+                to="/partners"
                 className="group inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white px-6 font-display text-sm font-semibold text-ink transition-colors hover:bg-mint/90"
                 testid="affiliate-cta-button"
               >

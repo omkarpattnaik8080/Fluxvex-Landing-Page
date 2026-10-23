@@ -13,6 +13,7 @@ Fluxvex is an automated client-reporting platform for digital marketing agencies
 - / — Main landing page: product story, workflow, features, sample report, ROI calculator, pricing preview, FAQ.
 - /pricing — Two upcoming plans (Starter, Growth); pricing is not yet disclosed—shown as a locked preview with USD and INR views, final pricing announced before launch.
 - /security — Security and privacy approach: what data Fluxvex plans to access and the current control status.
+- /partners — Affiliate partner program waitlist: creators and agencies can sign up to earn a recurring share for referrals when the program opens.
 - /contact — Short inquiry form for product and walkthrough questions.
 - /privacy-policy — Privacy Policy (draft pending final legal review; highlighted fields completed before final publication).
 - /terms — Terms of Service (draft pending final legal review).

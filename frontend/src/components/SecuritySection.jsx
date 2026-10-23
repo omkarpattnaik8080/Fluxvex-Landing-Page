@@ -12,12 +12,12 @@ import ComplianceBadges from "@/components/ComplianceBadges";
    Animated: wires draw on view, packets travel into the core, core pulses, cards stagger. */
 
 const WIRES = [
-  "M220 75 H296 Q304 75 304 83 V102 Q304 110 312 110 H348",
-  "M220 165 H296 Q304 165 304 157 V138 Q304 130 312 130 H348",
-  "M660 75 H584 Q576 75 576 83 V102 Q576 110 568 110 H532",
-  "M660 165 H584 Q576 165 576 157 V138 Q576 130 568 130 H532",
+  "M220 75 H296 Q304 75 304 83 V102 Q304 110 312 110 H354",
+  "M220 165 H296 Q304 165 304 157 V138 Q304 130 312 130 H354",
+  "M660 75 H584 Q576 75 576 83 V102 Q576 110 568 110 H526",
+  "M660 165 H584 Q576 165 576 157 V138 Q576 130 568 130 H526",
 ];
-const DROP = "M440 157 V290";
+const DROP = "M440 157 V296";
 
 const SOURCES = {
   left: [
@@ -39,7 +39,7 @@ function SourcePill({ name, dot, className = "", style }) {
       transition={{ duration: 0.55, delay: 0.35, type: "spring", stiffness: 220, damping: 18 }}
       whileHover={{ y: -3 }}
       style={style}
-      className={`flex h-11 w-[220px] items-center gap-2.5 rounded-xl bg-white px-4 shadow-[0_18px_36px_-20px_rgba(23,23,28,0.45)] ${className}`}
+      className={`flex h-11 items-center gap-2.5 rounded-xl bg-white px-4 shadow-[0_18px_36px_-20px_rgba(23,23,28,0.45)] ${className}`}
     >
       <span className="h-2.5 w-2.5 rounded-[4px]" style={{ backgroundColor: dot }} aria-hidden="true" />
       <span className="text-[13px] font-semibold text-[#17171C]">{name}</span>
@@ -61,7 +61,7 @@ function HubDiagram() {
     <>
       {/* desktop — fixed 880×300 stage, wires draw on view, packets loop into the core */}
       <div className="relative mx-auto hidden h-[300px] w-full max-w-[880px] lg:block" aria-hidden="true">
-        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 880 300" fill="none">
+        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 880 300" preserveAspectRatio="none" fill="none">
           <g stroke="#C6C6D2" strokeWidth="1.5">
             {WIRES.map((d, i) => (
               <motion.path
@@ -100,17 +100,17 @@ function HubDiagram() {
           <WirePacket d={DROP} dur={2} begin={1.2} color="#0E8A3E" />
         </svg>
         {SOURCES.left.map((s) => (
-          <SourcePill key={s.name} name={s.name} dot={s.dot} className="absolute left-0" style={{ top: s.top }} />
+          <SourcePill key={s.name} name={s.name} dot={s.dot} className="absolute left-0 w-[25%]" style={{ top: s.top }} />
         ))}
         {SOURCES.right.map((s) => (
-          <SourcePill key={s.name} name={s.name} dot={s.dot} className="absolute right-0" style={{ top: s.top }} />
+          <SourcePill key={s.name} name={s.name} dot={s.dot} className="absolute right-0 w-[25%]" style={{ top: s.top }} />
         ))}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.8, x: "-50%" }}
+          whileInView={{ opacity: 1, scale: 1, x: "-50%" }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.55, type: "spring", stiffness: 200, damping: 16 }}
-          className="absolute left-1/2 top-[89px] -translate-x-1/2"
+          className="absolute left-1/2 top-[89px] w-[20.5%]"
         >
           <motion.span
             className="absolute -inset-3 rounded-full border-2 border-[#131318]/20"
@@ -119,7 +119,7 @@ function HubDiagram() {
             aria-hidden="true"
           />
           <motion.div
-            className="relative flex h-[62px] items-center gap-2.5 rounded-full bg-[#131318] pl-4 pr-6 shadow-[0_28px_60px_-20px_rgba(19,19,24,0.65)]"
+            className="relative flex h-[62px] items-center justify-center gap-2.5 rounded-full bg-[#131318] shadow-[0_28px_60px_-20px_rgba(19,19,24,0.65)]"
             animate={{ y: [0, -5, 0] }}
             transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
           >
@@ -161,14 +161,14 @@ function TintedCard({ wash, icon: Icon, title, desc, chip, children, testid }) {
     <motion.div
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className={`relative flex h-full flex-col overflow-hidden rounded-2xl p-6 ${wash}`}
+      className={`relative flex h-full flex-col overflow-hidden rounded-2xl p-6 ring-1 ring-white/90 shadow-[0_30px_60px_-34px_rgba(23,23,28,0.45)] ${wash}`}
       data-testid={testid}
     >
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+            "linear-gradient(rgba(255,255,255,0.55) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.55) 1px, transparent 1px)",
           backgroundSize: "22px 22px",
         }}
         aria-hidden="true"
@@ -214,7 +214,7 @@ function ScopeCard() {
   ];
   return (
     <TintedCard
-      wash="bg-[linear-gradient(165deg,#F1ECF9_0%,#F7F4FC_100%)]"
+      wash="bg-[linear-gradient(165deg,#EDE5F8_0%,#F5F0FB_100%)]"
       icon={KeyRound}
       title="Least-privilege access"
       desc="Connections are authorized through OAuth and request only the scopes they need—nothing broader."
@@ -257,7 +257,7 @@ function EncryptionCard() {
   ];
   return (
     <TintedCard
-      wash="bg-[linear-gradient(165deg,#EAF1FA_0%,#F4F8FD_100%)]"
+      wash="bg-[linear-gradient(165deg,#E6EFFA_0%,#F0F6FD_100%)]"
       icon={Lock}
       title="Encrypted in transit & at rest"
       desc="TLS on every hop, AES-256 at rest. Tokens live sealed in a vault and never surface in reports."
@@ -305,7 +305,7 @@ function EncryptionCard() {
 function ControlCard() {
   return (
     <TintedCard
-      wash="bg-[linear-gradient(165deg,#FAF0E4_0%,#FDF8F0_100%)]"
+      wash="bg-[linear-gradient(165deg,#FAECDA_0%,#FDF7EE_100%)]"
       icon={Users}
       title="You stay in control"
       desc="Agency and client data stay isolated, retention windows are defined, and disconnect ends the tokens."
@@ -381,7 +381,7 @@ export default function SecuritySection() {
             <HubDiagram />
           </Reveal>
 
-          <div className="relative mt-10 grid gap-5 md:grid-cols-3">
+          <div className="relative mt-6 grid gap-5 md:grid-cols-3">
             <Reveal delay={0.05} className="h-full">
               <ScopeCard />
             </Reveal>

@@ -261,6 +261,61 @@ async def join_waitlist(input: WaitlistCreate, request: Request):
     return {"ok": True, "duplicate": bool(existing), "sheet_status": sheet_status}
 
 
+class PartnerCreate(BaseModel):
+    name: str
+    email: str
+    audience: str = "individual"  # "individual" | "agency"
+    organization: str = ""
+    reach: str = ""
+    channels: List[str] = []
+    message: str = ""
+    source: str = "partner-page"
+    trap: str = ""
+
+
+@api_router.post("/partners")
+async def join_partner_waitlist(input: PartnerCreate, request: Request):
+    if not _rate_ok(request.client.host if request.client else "unknown"):
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again shortly.")
+    if input.trap:
+        return {"ok": True, "duplicate": False, "position": None, "sheet_status": "skipped"}
+    email = input.email.strip().lower()
+    if not EMAIL_RE.match(email):
+        raise HTTPException(status_code=400, detail="Please enter a valid email.")
+    if len(email) > 254:
+        raise HTTPException(status_code=400, detail="Please enter a valid email.")
+    name = input.name.strip()
+    if not name or len(name) > 120:
+        raise HTTPException(status_code=400, detail="Please tell us your name.")
+    audience = input.audience if input.audience in ("individual", "agency") else "individual"
+
+    existing = await db.partner_waitlist.find_one({"email": email})
+    created_at = existing["created_at"] if existing else _now_iso()
+    doc = {
+        "name": name[:120],
+        "email": email,
+        "audience": audience,
+        "organization": input.organization.strip()[:160],
+        "reach": input.reach.strip()[:60],
+        "channels": input.channels[:8],
+        "message": input.message.strip()[:600],
+        "source": input.source[:60],
+        "created_at": created_at,
+        "updated_at": _now_iso(),
+    }
+    await db.partner_waitlist.update_one({"email": email}, {"$set": doc}, upsert=True)
+
+    earlier = await db.partner_waitlist.count_documents({"created_at": {"$lt": created_at}})
+    position = earlier + 1
+
+    sheet_status = await forward_to_sheets(
+        "Partner applications",
+        ["Timestamp", "Name", "Email", "Audience", "Organization", "Reach", "Channels", "Message", "Source"],
+        [created_at, doc["name"], email, audience, doc["organization"], doc["reach"], ", ".join(doc["channels"]), doc["message"], doc["source"]],
+    )
+    return {"ok": True, "duplicate": bool(existing), "position": position, "sheet_status": sheet_status}
+
+
 _waitlist_count_cache = {}
 
 
@@ -564,6 +619,8 @@ async def startup_seed():
     # Perf: hot-path indexes (dedupe lookups, admin listings, public job fetch)
     await db.waitlist.create_index("email")
     await db.waitlist.create_index("created_at")
+    await db.partner_waitlist.create_index("email")
+    await db.partner_waitlist.create_index("created_at")
     await db.contact_messages.create_index("email")
     await db.contact_messages.create_index("created_at")
     await db.career_applications.create_index("email")
