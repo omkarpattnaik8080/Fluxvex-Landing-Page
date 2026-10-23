@@ -1,5 +1,9 @@
 # Fluxvex — Changelog
 
+## 2026-10-23 (session 17g — pill-logo glitch fix + final site audit)
+- FIXED (user-reported with screenshot): the "New report delivered" pill in the Home #integrations Live Channel Sync card rendered a muddy/glitched logo — a 12px FluxvexMark raster squeezed into a 20px dark chip subpixel-scaled at non-integer DPR. Fix: dark chip removed; the yellow FluxvexMark (16px, subtle drop shadow) now sits directly on the green pill — crisp at every DPR.
+- FINAL AUDIT (iteration 32, frontend 100%): all 12 routes (/, /pricing, /contact, /security, /partners, /team, /privacy-policy, /terms, /blog, /careers, /integrations/google-ads, /admin/jobs) render with no blank pages, no horizontal overflow at 1440/390, no substantive console errors; waitlist modal, calculator sliders, partner toggle, nav/footer links verified; 3D scenes render after scroll (lazy-mount + frameloop pause intact); /integrations/:slug 404s on unknown slugs (correct); /admin/jobs 401s are the expected login gate.
+
 ## 2026-10-23 (session 17f — face crops + scroll performance pass)
 - TEAM photos: per-member objectPosition — srestha "center 55%", ankit "center 24%", saswat "center 28%", nikhil "center 32%" (was blanket object-top, cutting faces) — applied to card photo AND mini avatar; decoding=async added.
 - SCROLL PERFORMANCE (user: glitchy/hanging): (1) NEW three/viewVisibility.js pub/sub — SceneCanvas frameloop flips "always"↔"never" so the WebGL canvas costs ZERO GPU/CPU per frame whenever no 3D section is near (hero, calculator, pricing, security stage, footer). (2) Scene3D lazily builds each scene graph on first viewport approach (20% IO margin, latch-mounted) instead of building all ~10 scenes at page load — kills the initial mount hang and idle per-frame useFrame work for unvisited scenes. (3) Unified the WebGL probe (SceneCanvas now reuses Scene3D's glSupported, which releases the probe context via WEBGL_lose_context).

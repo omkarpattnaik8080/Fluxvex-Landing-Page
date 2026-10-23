@@ -1,0 +1,22 @@
+{
+  "summary": "Iteration 32 — Final audit after pill-logo glitch fix in IntegrationsStrip HumanCard. (a) Pill-logo bug: VERIFIED FIXED — the 'New report delivered' pill now renders as a single green pill (rgba(185,242,124,0.95)) with exactly 1 FluxvexMark image and 0 inline SVG inside (no dark chip, no doubled logo) at both desktop 1440x900 (278x33px) and mobile 390x844 (286x33px). (b) Full-site route sweep across /, /pricing, /contact, /security, /partners, /team, /privacy-policy, /terms, /blog, /careers, /integrations/google-ads (real slug), /admin/jobs — all 200, no horizontal overflow, no console errors of substance. (c) Interactive flows: nav-join-waitlist-button opens the waitlist modal, ROI slider accepts keyboard input, footer 'Partner program' resolves to /partners, 'All Pages' navbar trigger present. (d) 3D scenes: canvas mounts after scroll (lazy-mount working). (e) Mobile 390x844 Home/Team/Partners render with scrollWidth==innerWidth==390 (no overflow). /integrations/instagram correctly renders the 404 page (not a real slug); /integrations/google-ads shows the integration detail (H1='Google Ads + Fluxvex'). /admin/jobs renders the Admin sign-in form cleanly (the 2x 401s are the expected auth-check on the admin API, not errors).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "IntegrationsStrip.jsx HumanCard fix is clean — FluxvexMark size={16} directly on the #B9F27C pill with a subtle drop-shadow renders crisply at both DPRs; the muddy dark-chip artifact is gone."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100%"},
+  "test_credentials": "n/a — /admin/jobs login form rendered only; credentials not exercised per request.",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Pill-logo glitch (iteration 32 scope) is resolved. Full-site audit across 12 routes is green on desktop 1440x900 and mobile 390x844. No overflow, no substantive console errors. Only 401s observed are the expected admin API auth-check on /admin/jobs (login gate — not a bug). The /integrations/:slug route 404s on unknown slugs (correct behavior) and renders the detail page for real slugs (google-ads/meta-ads/ga4). The 'Too many WebGL contexts' warning does not appear in a single-session audit — only shows up when harnesses re-screenshot the shared canvas repeatedly; not user-facing.",
+  "rca of the issue": "Previous bug: HumanCard wrapped the 12px FluxvexMark raster inside a 20px dark chip, which at non-integer DPR scaled with subpixel blur and produced a 'glitchy/doubled' logo on the green pill. Fix: removed the chip, placed the FluxvexMark directly on the pill at 16px with a drop-shadow for contrast — rasterizes cleanly at every DPR. Confirmed at 1440x900 and 390x844: 1 img, 0 svg, green bg intact, no artifacts."
+}
