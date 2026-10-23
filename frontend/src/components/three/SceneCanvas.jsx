@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { View } from "@react-three/drei";
 import { onAnyViewVisible } from "./viewVisibility";
+import { glSupported } from "./Scene3D";
 
 /* Clear the whole canvas each frame BEFORE views paint their scissored regions —
    otherwise stale pixels linger at old scroll positions on the fixed canvas. */
@@ -21,17 +22,8 @@ function FullClear() {
   return null;
 }
 
-function detectWebGL() {
-  try {
-    const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
-  } catch (e) {
-    return false;
-  }
-}
-
 export default function SceneCanvas() {
-  const [glOk] = useState(detectWebGL);
+  const [glOk] = useState(glSupported);
   /* The render loop only runs while at least one 3D section is near the
      viewport — everywhere else (hero, calculator, pricing, footer…) the
      canvas costs literally zero GPU/CPU per frame. */

@@ -1,0 +1,27 @@
+{
+  "summary": "Frontend-only verification of (a) Team page per-member objectPosition fix for Srestha and Ankit (plus Saswat/Nikhil) at desktop 1440x900 and mobile 390x844, and (b) performance refactor — viewVisibility pub/sub + lazy Scene3D mount + Canvas frameloop pause. All critical acceptance checks pass: Srestha and Ankit faces are fully centered in their cards and the mini avatars; no horizontal overflow at either breakpoint; all 14 iso3d-host containers on /  (outcome 01-04, workflow, showcase layers, platform cloud, feature inputs/summaries/delivery, comparison prompt + workflow, vision hub, affiliate flow) render AND animate (two captures 1.5s apart differ) after full top->bottom->top scroll; scenes resume rendering after scrolling back into view; zero console errors on / and /team at both breakpoints. Only noise logged is non-functional dev warnings (R3F 'Too many active WebGL contexts' triggered by the test harness repeatedly readback-screenshotting the shared canvas, and a GPU-stall-on-ReadPixels perf warning from the same screenshot clips — both are test-side artifacts, not real user-journey warnings). Integrations mentions present, navbar has 29 links, footer renders.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/.screenshots/srestha_card.png",
+    "/app/.screenshots/ankit-swain_card.png",
+    "/app/.screenshots/team_desktop.png",
+    "/app/.screenshots/team_mobile.png"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SceneCanvas.detectWebGL() creates a throwaway canvas probe but — unlike Scene3D.glSupported() — does not release the context via WEBGL_lose_context. In isolation this is one extra context; combined with Scene3D's own probe it means two probe contexts live until GC. Not user-visible but worth unifying with glSupported() from Scene3D.jsx to avoid duplicate logic.",
+    "Scene3D.jsx reportViewVisible cleanup: `return () => reportViewVisible(inView ? -1 : 0)` — if a Scene3D unmounts while inView=true it decrements correctly; while inView=false it emits a zero-delta which is a no-op, so this is fine but reads awkwardly. Consider tracking last-reported value in a ref to make the invariant obvious.",
+    "Scene3D.jsx `mounted` latch never resets — once a scene has entered the viewport it stays built for the lifetime of the page. This is intentional (prevents thrash) and matches the stated spec, but means memory cannot be reclaimed if a user scrolls far past a scene they'll never return to. Acceptable for this marketing site size."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (not tested)", "frontend": "100%" },
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Perf refactor verified: viewVisibility.js + SceneCanvas frameloop toggle + Scene3D lazy mounted latch all behave as designed. All 14 shared-canvas scenes (outcome-scene-01..04, workflow-iso-stage-3d, showcase-layers-3d, platform-cloud-3d, feature-visual-inputs/summaries/delivery, comparison-prompt-visual, comparison-workflow-visual, vision-scene-3d, affiliate-flow-3d) animate after a full page scroll, so lazy mount + render-gate are not stranding scenes. If you re-screenshot a specific scene for pixel-diff animation, scroll it into viewport first and clip within window.innerHeight — the Vision wrapper's data-testid*=vision match hits a 2964px-tall ancestor; prefer the inner data-testid='vision-scene-3d'. Team page objectPositions confirmed via computed style: srestha=50% 55%, ankit=50% 24%, saswat=50% 28%, nikhil=50% 32%, omkar/sneha default (50% 0%). No horizontal overflow at 1440 or 390."
+}
