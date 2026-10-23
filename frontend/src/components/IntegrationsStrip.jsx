@@ -54,14 +54,14 @@ function BrandCard() {
           viewport={{ once: true }}
           animate={{ y: [0, -6, 0] }}
           transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
-          className="relative flex h-24 w-24 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
+          className="relative flex h-24 w-24 items-center justify-center rounded-[22px] bg-white/70 shadow-[0_20px_44px_-20px_rgba(16,16,20,0.4)] ring-1 ring-white/60 backdrop-blur-sm"
         >
           <motion.span
-            animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.08, 1] }}
+            animate={{ opacity: [0.75, 1, 0.75], scale: [1, 1.06, 1] }}
             transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-            className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/25 backdrop-blur-sm"
+            className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-[0_14px_30px_-14px_rgba(16,16,20,0.5)]"
           >
-            <FluxvexMark size={52} />
+            <FluxvexMark size={56} />
           </motion.span>
         </motion.span>
       </div>
@@ -114,8 +114,8 @@ function HumanCard() {
           transition={{ duration: 0.5, delay: 0.65 }}
           className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2 rounded-full bg-[#B9F27C]/95 px-4 py-2 shadow-lg"
         >
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-ink">
-            <FluxvexMark size={10} />
+          <span className="relative flex h-5 w-5 items-center justify-center rounded-full bg-ink">
+            <FluxvexMark size={12} />
           </span>
           <span className="text-[11.5px] font-bold text-[#0C2E1B]">New report delivered</span>
         </motion.span>
@@ -197,6 +197,7 @@ function PipelineCard({ onCta }) {
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.1 }}
             aria-hidden="true"
           />
+          <FluxvexMark size={16} className="relative" />
           <span className="relative">Get early access</span>
           <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
