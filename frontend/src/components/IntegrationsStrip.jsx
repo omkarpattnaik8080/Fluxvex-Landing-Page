@@ -135,8 +135,8 @@ function PipelineCard() {
         <TapLink />
       </div>
       {/* floating report thumbnails + pills */}
-      <div className="relative flex flex-1 items-center justify-center py-2" aria-hidden="true">
-        <div className="relative h-36 w-40">
+      <div className="relative flex flex-1 items-center justify-center gap-4 py-2">
+        <div className="relative h-36 w-36 shrink-0">
           {[
             { cls: "left-0 top-2 rotate-[-8deg]", grad: "from-[#D9E4F5] to-[#B9CCEC]", z: "z-10" },
             { cls: "left-14 top-0 rotate-[2deg]", grad: "from-[#E8D9F5] to-[#CDB9EC]", z: "z-20" },
@@ -157,7 +157,7 @@ function PipelineCard() {
             </motion.div>
           ))}
         </div>
-        <div className="flex flex-col gap-2.5">
+        <div className="relative z-40 flex shrink-0 flex-col gap-2.5">
           {["Open report", "Share link"].map((p, i) => (
             <motion.span
               key={p}
@@ -165,7 +165,7 @@ function PipelineCard() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.45 + i * 0.14 }}
-              className="flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[11.5px] font-semibold text-ink shadow-[0_12px_26px_-12px_rgba(16,16,20,0.45)] ring-1 ring-black/[0.06]"
+              className="flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white px-3.5 py-1.5 text-[11.5px] font-semibold text-ink shadow-[0_12px_26px_-12px_rgba(16,16,20,0.45)] ring-1 ring-black/[0.06]"
             >
               <ArrowUpRight className="h-3 w-3 text-accent" /> {p}
             </motion.span>
@@ -178,13 +178,13 @@ function PipelineCard() {
 
 function TapLink() {
   return (
-    <a
-      href="#integrations"
+    <button
+      type="button"
       onClick={(e) => e.preventDefault()}
-      className="mt-4 inline-flex w-fit items-center gap-1.5 text-[12.5px] font-semibold text-ink underline-offset-4 hover:underline"
+      className="mt-4 inline-flex w-fit cursor-default items-center gap-1.5 text-[12.5px] font-semibold text-ink underline-offset-4 hover:underline"
     >
       See the pipeline <ArrowUpRight className="h-3.5 w-3.5" />
-    </a>
+    </button>
   );
 }
 
