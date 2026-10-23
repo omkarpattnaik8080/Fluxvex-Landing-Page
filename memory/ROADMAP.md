@@ -26,3 +26,4 @@
 
 ## Done 2026-10-23 (session 17)
 - Security & Privacy page rebuilt on the retainable-style reference (lavender container, badge, hub-spoke diagram with Fluxvex core, three tinted mini-UI cards); ROI calculator dark band densified (report window + trust chips); 3D label color-bleed fixed everywhere (shorter Beams, softer Tile halos, un-clipped label shadows in kit3d.jsx). Iteration 28: frontend 100%.
+- New /partners page: affiliate partner waitlist for individuals + agencies (audience toggle, POST /api/partners, position badge); Home #security hub alignment fixed (framer x-stomp root cause) + cards made more visible; affiliate CTA links to /partners; sitemap/llms/nav updated.

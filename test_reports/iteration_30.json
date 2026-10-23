@@ -1,0 +1,31 @@
+{
+  "summary": "Verified Partners page E2E (individual + agency), POST /api/partners validation, duplicate dedupe, honeypot. Verified Home #security hub alignment (desktop 1440 + mobile 390) with 0px horizontal overflow at both breakpoints. Verified affiliate CTA now links to /partners (href=/partners, click navigates). Verified /partners presence in sitemap.xml, footer-link-partner-program, and Navbar All Pages panel.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_partners.py",
+    "/app/test_reports/pytest/partners_results.xml"
+  ],
+  "action_items": [
+    "(Low priority / informational) React logged a dev hydration warning on /partners: '<span> cannot be a child of <option>'. The warning is emitted by the Emergent dev tooling that wraps array-mapped children in a dev-only <span data-ve-dynamic='true' x-excluded='true'> for the CLIENT_RANGES <option> map (Partners.jsx line 253-257). It only appears in the dev React build and does not break the <select> (agency 'Clients today' selector works and submits correctly). No action required unless the dev tooling needs an exemption for <option> children."
+  ],
+  "critical_code_review_comments": [
+    "backend/server.py — PartnerCreate missing length guards on name upfront (handled after strip, fine). Position calculation uses count_documents with created_at < existing created_at — safe but will drift under concurrent inserts due to non-unique timestamps; add a unique index on email (currently non-unique index 'email' exists which is sufficient for the upsert).",
+    "Partners.jsx — email regex EMAIL_RE requires 2+ chars after the dot; backend EMAIL_RE accepts 1+. Minor mismatch (frontend stricter) — fine.",
+    "server.py — _rate_bucket is in-process and resets on reload; acceptable for single-worker dev but will not rate-limit in multi-worker production."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_partners.py (new)"
+  ],
+  "success_rate": { "backend": "100%", "frontend": "100%" },
+  "test_credentials": "n/a (no auth testing requested this iteration)",
+  "seed_data_creation": "Created & deleted 2 QA rows in db.partner_waitlist (qa-iteration30-ind@test.local, qa-iteration30-agy@test.local) during E2E test. Also deleted 2 pytest rows. partner_waitlist final count = 0 (verified).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend regression file at /app/backend/tests/test_partners.py (6 tests, all pass, ~1s). Hub-and-spoke diagram alignment & cards now stable; no horizontal overflow at 1440 or 390. Affiliate CTA on home correctly uses <a href='/partners'> via TapCTA. Note: Playwright page.is_visible checks viewport-visibility; after SPA state transitions on long pages, elements may be off-screen even though functional — use JS click + content assertions instead when verifying form-restoration flows. Dev hydration warning about <span> in <option> is emitted by Emergent's dev wrapper tooling, not the production bundle.",
+  "rca of the issue": "No functional bugs found. Hub alignment fix (motion x:'-50%' + preserveAspectRatio='none' + percentage pills) renders correctly at both breakpoints — wires meet pill edges, core pill is centered, drop arrow points into the three tinted cards. Partners flow works end-to-end: validation, individual submit, agency submit (requires org), duplicate dedupe (position preserved), honeypot (sheet_status=skipped), success state with position badge + email echo, Done restores the form."
+}
