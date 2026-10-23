@@ -40,7 +40,11 @@ export default function SceneCanvas() {
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         camera={{ position: [14, 14, 14], zoom: 45, near: -100, far: 500 }}
-        onCreated={({ gl }) => gl.setClearAlpha(0)}
+        onCreated={({ gl, camera }) => {
+          gl.setClearAlpha(0);
+          camera.lookAt(0, 0, 0);
+          camera.updateProjectionMatrix();
+        }}
       >
         <FullClear />
         <View.Port />

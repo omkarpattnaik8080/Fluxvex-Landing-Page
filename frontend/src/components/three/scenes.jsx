@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { OrthographicCamera, Line, Edges } from "@react-three/drei";
+import { Line, Edges } from "@react-three/drei";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { HelpCircle, MessageSquare, Repeat, Plug, SlidersHorizontal, Sparkles, Send, Link2, Wallet } from "lucide-react";
 import { C, IsoWorld, Tile, Wire, Billboard, PulseRings, Beam, Chip, Burst, Satellite, useSvgTexture, useTextTexture, useGlowTexture, useImgTexture } from "./kit3d";
@@ -54,17 +54,18 @@ function useCanvasTexture(w, h, draw) {
   }, []);
 }
 
+/* Single shared orthographic camera (the Canvas default) is used by every view.
+   Per-scene cameras with makeDefault would fight over the shared default and
+   break other illustrations — instead each scene is fit-scaled by SceneHost.
+   Scenes that compose off-center declare their look-at target here so the fit
+   transform can map it back to the viewport center. */
+export const CAM_TARGETS = {
+  platform: [0.5, 0.55, 0],
+  layers: [0, 0.82, 0],
+};
+
 function Cam({ zoom, target = [0, 0, 0] }) {
-  return (
-    <OrthographicCamera
-      makeDefault
-      position={[14, 14, 14]}
-      zoom={zoom || 40}
-      near={-100}
-      far={500}
-      onUpdate={(c) => c.lookAt(target[0], target[1], target[2])}
-    />
-  );
+  return null;
 }
 
 /* ---------- How it works — step-driven pipeline ---------- */

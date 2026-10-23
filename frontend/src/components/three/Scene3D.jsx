@@ -4,10 +4,16 @@
    from taking down the page). */
 import { Component, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { View, OrthographicCamera } from "@react-three/drei";
+import { View } from "@react-three/drei";
 import { useReducedMotion } from "framer-motion";
-import { SCENES, WORLD } from "./scenes";
+import { SCENES, WORLD, CAM_TARGETS } from "./scenes";
 import { reportViewVisible } from "./viewVisibility";
+
+/* The Canvas default orthographic camera (zoom 45) is the ONE camera every
+   view renders with — per-scene makeDefault cameras would stomp it and break
+   every other illustration. Each scene is instead fit-scaled about its look-at
+   target so it fills its section exactly. */
+const BASE_ZOOM = 45;
 
 /* Single shared WebGL-capability probe — one throwaway context for the whole
    app, released via WEBGL_lose_context, so section checks never accumulate
@@ -43,6 +49,11 @@ class SceneBoundary extends Component {
 
 function SceneHost({ scene, props, input, reduce, visible, zoom, onReady }) {
   const Scene = SCENES[scene];
+  /* Fit-scale about the scene's look-at target: the shared camera (zoom 45)
+     then renders the scene exactly fitted to its section, for every view,
+     regardless of mount order. */
+  const s = (zoom || BASE_ZOOM) / BASE_ZOOM;
+  const t = CAM_TARGETS[scene] || [0, 0, 0];
   /* Two rAFs past mount = the scene's first painted frame — signal the host so
      it can cross-fade the SVG stage out instead of hard-swapping. */
   useEffect(() => {
@@ -52,17 +63,9 @@ function SceneHost({ scene, props, input, reduce, visible, zoom, onReady }) {
   }, [onReady]);
   if (!Scene) return null;
   return (
-    <>
-      <OrthographicCamera
-        makeDefault
-        position={[14, 14, 14]}
-        zoom={zoom || 40}
-        near={-100}
-        far={500}
-        onUpdate={(c) => c.lookAt(0, 0, 0)}
-      />
+    <group scale={s} position={[-t[0] * s, -t[1] * s, -t[2] * s]}>
       <Scene input={input} reduce={reduce} visible={visible} zoom={zoom} {...props} />
-    </>
+    </group>
   );
 }
 
