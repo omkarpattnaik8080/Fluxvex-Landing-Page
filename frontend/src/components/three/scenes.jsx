@@ -2,7 +2,7 @@
    interactive: cursor tilt, drag-to-rotate, hover-reactive packets, click pulses. */
 import { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
+import { useSceneFrame as useFrame } from "./sceneFrame";
 import { Line, Edges } from "@react-three/drei";
 import { GoogleAdsMark, MetaMark, GA4Mark } from "@/components/brand/IntegrationMarks";
 import { HelpCircle, MessageSquare, Repeat, Plug, SlidersHorizontal, Sparkles, Send, Link2, Wallet } from "lucide-react";

@@ -161,12 +161,16 @@ export default function Showcase() {
   const data = PERIODS[period];
   const typed = useTypewriter(data.ai, { reduce });
   const [chipIdx, setChipIdx] = useState(0);
+  /* Autoplay only while the section is on screen — an off-screen interval
+     re-renders this whole subtree every couple of seconds and that shows up as
+     a dropped frame mid-scroll. */
+  const onScreen = useInView(ref, { amount: 0.05 });
 
   useEffect(() => {
-    if (reduce) return undefined;
+    if (reduce || !onScreen) return undefined;
     const t = setInterval(() => setChipIdx((v) => (v + 1) % data.chips.length), 2200);
     return () => clearInterval(t);
-  }, [reduce, data]);
+  }, [reduce, data, onScreen]);
 
   useEffect(() => {
     if (!exportNote) return undefined;

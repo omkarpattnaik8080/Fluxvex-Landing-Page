@@ -4,10 +4,13 @@
    from taking down the page). */
 import { Component, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { useThree } from "@react-three/fiber";
 import { View } from "@react-three/drei";
 import { useReducedMotion } from "framer-motion";
 import { SCENES, WORLD, CAM_TARGETS } from "./scenes";
 import { reportViewVisible } from "./viewVisibility";
+import { SceneActiveContext } from "./sceneFrame";
+import { queueIdleMount } from "./idleMount";
 
 /* The Canvas default orthographic camera (zoom 45) is the ONE camera every
    view renders with — per-scene makeDefault cameras would stomp it and break
@@ -47,7 +50,25 @@ class SceneBoundary extends Component {
   }
 }
 
-function SceneHost({ scene, props, input, reduce, visible, zoom, onReady }) {
+/* Uploads geometries/textures and compiles this scene's programs the moment it
+   is built (in an idle slot) instead of on the frame it first becomes visible —
+   so scrolling into a section never pays the first-render cost. */
+function Prewarm() {
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  const camera = useThree((s) => s.camera);
+  useEffect(() => {
+    try {
+      if (gl.compileAsync) gl.compileAsync(scene, camera).catch(() => {});
+      else gl.compile(scene, camera);
+    } catch (e) {
+      /* pre-warm is best-effort */
+    }
+  }, [gl, scene, camera]);
+  return null;
+}
+
+function SceneHost({ scene, props, input, reduce, visible, zoom, onReady, gate }) {
   const Scene = SCENES[scene];
   /* Fit-scale about the scene's look-at target: the shared camera (zoom 45)
      then renders the scene exactly fitted to its section, for every view,
@@ -63,9 +84,12 @@ function SceneHost({ scene, props, input, reduce, visible, zoom, onReady }) {
   }, [onReady]);
   if (!Scene) return null;
   return (
-    <group scale={s} position={[-t[0] * s, -t[1] * s, -t[2] * s]}>
-      <Scene input={input} reduce={reduce} visible={visible} zoom={zoom} {...props} />
-    </group>
+    <SceneActiveContext.Provider value={gate}>
+      <group scale={s} position={[-t[0] * s, -t[1] * s, -t[2] * s]}>
+        <Scene input={input} reduce={reduce} visible={visible} zoom={zoom} {...props} />
+      </group>
+      <Prewarm />
+    </SceneActiveContext.Provider>
   );
 }
 
@@ -83,6 +107,9 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
   const [mounted, setMounted] = useState(false);
   const reduce = useReducedMotion();
   const input = useRef({ px: 0, py: 0, hover: false, yaw: 0, pulseAt: 0, down: false, lastX: 0 }).current;
+  /* Animation gate shared with every primitive inside this scene — flipping it
+     costs no re-render and stops all per-frame work while off screen. */
+  const gate = useRef(false);
   const readySentRef = useRef(false);
   const handleReady = useCallback(() => {
     if (readySentRef.current) return;
@@ -104,7 +131,7 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     measure();
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { rootMargin: "20% 0px" });
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { rootMargin: "30% 0px" });
     io.observe(el);
     return () => {
       ro.disconnect();
@@ -112,18 +139,31 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
     };
   }, [glOk]);
 
-  /* Report visibility to the shared canvas so it can pause its render loop
-     when no 3D section is near the viewport. */
+  /* Report visibility to the shared canvas so it can pause its render loop when
+     no 3D section is near the viewport. Exactly one claim per visible view,
+     released exactly once (on hide or unmount). Releasing twice — as an earlier
+     version did — paused the canvas while illustrations were still on screen,
+     and because the canvas is fixed, its last drawn frame stayed frozen on the
+     viewport: illustrations appeared to slide out of their cards while
+     scrolling. Never report from both the body and the cleanup. */
   useEffect(() => {
-    reportViewVisible(inView ? 1 : -1);
-    return () => reportViewVisible(inView ? -1 : 0);
+    gate.current = inView;
+    if (!inView) return undefined;
+    reportViewVisible(1);
+    return () => reportViewVisible(-1);
   }, [inView]);
 
-  /* Lazy scene build — the scene graph is constructed only once its section
-     approaches the viewport (20% margin), never all-at-once at page load. */
+  /* Scene build — a section that is approaching gets built immediately, every
+     other scene is pre-built in an idle moment (never during a scroll), so no
+     illustration is ever constructed on the scroll path. */
   useEffect(() => {
-    if (inView) setMounted(true);
-  }, [inView]);
+    if (mounted) return undefined;
+    if (inView) {
+      setMounted(true);
+      return undefined;
+    }
+    return queueIdleMount(() => setMounted(true));
+  }, [inView, mounted]);
 
   if (!glOk) {
     return (
@@ -189,7 +229,7 @@ export default function Scene3D({ scene, props = {}, fallback, className = "", s
         data-testid={testid}
         {...handlers}
       >
-        {size && mounted && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} onReady={handleReady} />}
+        {size && mounted && <SceneHost scene={scene} props={props} input={input} reduce={!!reduce} visible={inView} zoom={fitZoom(size, world)} onReady={handleReady} gate={gate} />}
       </View>
     </SceneBoundary>
   );

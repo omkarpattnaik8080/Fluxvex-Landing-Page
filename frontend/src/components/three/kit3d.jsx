@@ -3,7 +3,7 @@
    accent dashed wires with traveling packets, screen-facing label billboards. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
+import { useSceneFrame as useFrame } from "./sceneFrame";
 import { Line, Edges } from "@react-three/drei";
 import { renderToStaticMarkup } from "react-dom/server";
 

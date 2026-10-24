@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { WaitlistProvider } from "@/components/WaitlistContext";
+import { emitPostScrollFrame } from "@/components/three/frameBus";
 import Home from "@/pages/Home";
 
 /* Route-level code splitting — keeps the landing page bundle lean */
@@ -72,7 +73,10 @@ function ScrollManager() {
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
-    const lenis = new Lenis({ lerp: 0.11, smoothWheel: true });
+    /* lerp 0.11 took ~25 frames to settle, which reads as the page "sliding"
+       after the user has stopped — the most common complaint about smooth
+       scroll. 0.16 keeps the glide but responds immediately. */
+    const lenis = new Lenis({ lerp: 0.16, smoothWheel: true, wheelMultiplier: 1 });
     /* One rAF for everything: GSAP ticker drives Lenis so scroll + marquees
        update in the same frame — no competing loops, no mid-frame jank. */
     const rafFn = (time) => lenis.raf(time * 1000);
@@ -99,6 +103,19 @@ function ScrollManager() {
       document.removeEventListener("click", onClick);
       lenis.destroy();
     };
+  }, []);
+
+  /* Added to the ticker AFTER the Lenis callback above, so it fires once this
+     frame's scroll position is already written to the DOM. The 3D canvas
+     renders from here instead of its own rAF — drawing before the scroll was
+     applied left every illustration a frame behind the card it sits in, which
+     looked like the illustrations sliding out of place while scrolling.
+     Runs with reduced motion too (where Lenis is skipped). */
+  useEffect(() => {
+    const tick = (time) => emitPostScrollFrame(time);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+    return () => gsap.ticker.remove(tick);
   }, []);
 
   return null;

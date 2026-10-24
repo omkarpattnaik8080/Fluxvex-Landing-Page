@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import CinematicText from "@/components/ui/CinematicText";
 import { Reveal } from "@/components/Reveal";
@@ -29,14 +29,16 @@ const TICKER = [
 /* Insight ticker — the product quietly working while you read */
 function InsightTicker() {
   const reduce = useReducedMotion();
+  const ref = useRef(null);
+  const onScreen = useInView(ref, { amount: 0.5 });
   const [i, setI] = useState(0);
   useEffect(() => {
-    if (reduce) return undefined;
+    if (reduce || !onScreen) return undefined;
     const t = setInterval(() => setI((v) => (v + 1) % TICKER.length), 2600);
     return () => clearInterval(t);
-  }, [reduce]);
+  }, [reduce, onScreen]);
   return (
-    <div className="mt-9 flex h-9 items-center justify-center overflow-hidden" data-testid="final-cta-insight-ticker" aria-live="polite">
+    <div ref={ref} className="mt-9 flex h-9 items-center justify-center overflow-hidden" data-testid="final-cta-insight-ticker" aria-live="polite">
       <AnimatePresence mode="wait">
         <motion.span
           key={i}
