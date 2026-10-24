@@ -59,6 +59,7 @@ const BACKERS = [
 ];
 
 export default function BackersBand() {
+  const wrapRef = useRef(null);
   const trackRef = useRef(null);
   const tweenRef = useRef(null);
 
@@ -69,7 +70,11 @@ export default function BackersBand() {
     gsap.set(track, { force3D: true });
     const tween = gsap.to(track, { xPercent: -50, duration: 32, ease: "none", repeat: -1 });
     tweenRef.current = tween;
+    /* Only animate while the band is on screen — see Marquee.jsx. */
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? tween.play() : tween.pause()));
+    if (wrapRef.current) io.observe(wrapRef.current);
     return () => {
+      io.disconnect();
       tween.kill();
       gsap.set(track, { clearProps: "transform" });
     };
@@ -80,6 +85,7 @@ export default function BackersBand() {
 
   return (
     <section
+      ref={wrapRef}
       className="border-y border-line bg-page"
       data-testid="backers-band"
       aria-label="Programs and platforms Fluxvex is part of"

@@ -1,0 +1,26 @@
+{
+  "summary": "Visual regression + routes check for the illustration-glitch fix (frameBus/FrameDriver/visibility gating/sceneFrame/idleMount/Reveal/Lenis). Scrolled the Home page in 15 step positions (0->10000px) plus 6 mid-flight smooth scrolls, then back to top; also navigated Home->Pricing->Home. Across every captured frame the 3D illustrations stay CONTAINED inside their iso3d-host cards (workflow 4 feature cards, HowItWorks step panel, Vision three-layers, Platform cloud, three outcome mini-scenes, A-prompt-vs-Fluxvex pair, final affiliate flow). No ghost illustration appeared in sections without a card (hero, ROI calc, pricing preview, FAQ, footer). After nav away and back, the shared SceneCanvas parent is visibility:hidden at rest (correct gating behavior), confirming no leftover WebGL pixels. All 12 routes (/, /pricing, /contact, /security, /partners, /team, /blog, /integrations, /careers, /privacy, /terms, /admin/jobs) returned HTTP 200. Only console errors are two 401s on /admin/jobs auth session probe (expected when unauthenticated); the rest are benign THREE/WebGL perf warnings (KHR_parallel_shader_compile not supported, GL_CLOSE_PATH_NV ReadPixels GPU stall, THREE.Clock deprecation).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home (all pages)", "issues": ["Privacy choices cookie banner centered mid-viewport overlaps hero CTA area; consider positioning bottom-right or dismissing on scroll to avoid obscuring content during the first-visit journey (minor UX)"]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "frameBus/FrameDriver ordering (lenis.raf -> gsap.ticker emitPostScrollFrame -> SceneCanvas advance) is the correct fix for the one-frame scroll-lag; keep the ticker-callback ordering immutable in App.js. A regression here will re-introduce the illustration-outside-card bug.",
+    "Canvas parent being visibility:hidden at rest (verified) is the right secondary safety net — leaves no stale pixels when loop pauses. Keep the paint-gate reveal gated on a fresh frame rather than on time.",
+    "Two console warnings worth cleaning: 'container has a non-static position' (one scene-host wrapper lacks relative/absolute); and THREE.Clock deprecation (switch to THREE.Timer at your convenience)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per request)", "frontend": "100%"},
+  "test_credentials": "/app/memory/test_credentials.md (admin@example.com / admin123) — not exercised this iteration since focus was visual regression",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Illustration-outside-card bug confirmed fixed on 1440x900. 14 iso3d-host elements, canvas parent correctly visibility:hidden when no scene is on-screen. Routes all 200. If future work touches App.js ScrollManager or SceneCanvas FrameDriver, re-run multi-depth scroll screenshot test (positions 0,400,800,1400,2000,2800,3600,4400,5200,6000,6800,7600,8400,9200,10000) and also mid-flight smooth-scroll captures to catch any re-introduction of the one-frame draw lag.",
+  "rca of the issue": "Previous bug: shared fixed WebGL canvas drew each frame BEFORE Lenis applied scroll, leaving every 3D illustration one scroll-step (up to 450px) behind its card during flings. Fix verified visually: frameloop='never' on canvas + FrameDriver advances it from gsap.ticker callback registered AFTER lenis.raf in App.js, so paint and DOM scroll land on the same frame. Visibility counter double-release was fixed in Scene3D.jsx; canvas layer is also hidden when loop is idle (parentVisibility='hidden' observed at every rest-state capture)."
+}

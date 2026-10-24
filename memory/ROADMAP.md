@@ -1,5 +1,11 @@
 # Fluxvex — Roadmap
 
+## Invariants (do not break)
+- **3D frame ordering**: App.js registers `lenis.raf` on the gsap ticker FIRST, then a second callback emitting `emitPostScrollFrame(time)`. SceneCanvas runs `frameloop="never"` and advances only from that bus. Reordering or giving the canvas its own loop re-introduces the "illustrations slide out of their cards while scrolling" bug (measured 451px drift).
+- One shared `SceneCanvas` + one root orthographic camera; no `makeDefault` cameras inside scenes (compose with `<group scale/position>`).
+- `Scene3D` claims canvas visibility exactly once and releases exactly once; the canvas layer must stay `visibility:hidden` while the loop is idle (a paused fixed canvas keeps its last frame pinned to the viewport).
+- Scenes must animate through `useSceneFrame` (sceneFrame.jsx), never raw `useFrame`, or off-screen sections burn frames.
+
 ## P0 (next)
 - Deploy the site; turn ON "Enable Search Engine Crawling and Optimisation"; verify canonical/sitemap/og + Googlebot & AI-crawler UAs on the live domain (preview-only until then).
 - Submit sitemap in Google Search Console once live.

@@ -5,6 +5,7 @@ import { FluxvexMark } from "@/components/brand/FluxvexLogo";
 const ITEMS = ["Client reporting, on autopilot", "Google Ads", "Meta Ads", "GA4"];
 
 export default function Marquee() {
+  const wrapRef = useRef(null);
   const trackRef = useRef(null);
   const tweenRef = useRef(null);
 
@@ -15,7 +16,13 @@ export default function Marquee() {
     gsap.set(track, { force3D: true });
     const tween = gsap.to(track, { xPercent: -50, duration: 22, ease: "none", repeat: -1 });
     tweenRef.current = tween;
+    /* An infinite transform tween repaints this band on every single frame of
+       the page's life. Off screen it buys nothing and costs a frame slice, so
+       it only runs while the band is actually in view. */
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? tween.play() : tween.pause()));
+    if (wrapRef.current) io.observe(wrapRef.current);
     return () => {
+      io.disconnect();
       tween.kill();
       gsap.set(track, { clearProps: "transform" });
     };
@@ -26,6 +33,7 @@ export default function Marquee() {
 
   return (
     <div
+      ref={wrapRef}
       className="overflow-hidden border-b border-line bg-page py-6 sm:py-8"
       data-testid="marquee-band"
       aria-label="Fluxvex promise and initial integrations"
